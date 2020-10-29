@@ -24,22 +24,22 @@ public class MapEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean quiet) {
+    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
         Object v = ctx.get(expr);
         if (v != null) {
-            return quiet ? TXT_EMPTY : v.toString();
+            return mute ? TXT_EMPTY : v.toString();
         }
         String s = System.getProperty(expr);
         if (s != null) {
-            return quiet ? TXT_EMPTY : s;
+            return mute ? TXT_EMPTY : s;
         }
 
         String e = System.getenv(expr);
         if (e != null) {
-            return quiet ? TXT_EMPTY : e;
+            return mute ? TXT_EMPTY : e;
         }
 
-        return quiet ? TXT_EMPTY : expr;
+        return mute ? TXT_EMPTY : expr;
     }
 
     @Override

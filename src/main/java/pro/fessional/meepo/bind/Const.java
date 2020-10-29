@@ -9,7 +9,7 @@ public interface Const {
     String TXT_EMPTY = "";
 
     // 解析
-    String TKN_HIMEEPO = "H!MEEPO";
+    String TKN_HIMEEPO = "HI-MEEPO";
 
     String TKN_DNA$ = "DNA:";
     String TKN_DNA$SET = "SET";

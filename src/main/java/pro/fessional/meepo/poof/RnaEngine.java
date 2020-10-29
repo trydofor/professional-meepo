@@ -18,11 +18,11 @@ public interface RnaEngine {
      * @param type  引擎类型
      * @param expr  功能体
      * @param ctx   执行环境
-     * @param quiet 是否忽略std out输出
+     * @param mute 是否忽略std out输出
      * @return 执行结果
      */
     @NotNull
-    String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean quiet);
+    String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute);
 
     /**
      * 可以被此引擎执行的类型。`*`表示any

@@ -2,14 +2,13 @@ package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
-import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
+import pro.fessional.meepo.bind.txt.TxtDnaSet;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -29,35 +28,30 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class DnaSet extends Exon {
+public class DnaSet extends Live {
 
+    @NotNull
+    public final Clop main;
     @NotNull
     public final Pattern find;
     @NotNull
     public final String repl;
 
-    public DnaSet(@NotNull String text, @NotNull Life life, Clop edge, Clop main, @NotNull Pattern find, @NotNull String repl) {
-        super(text, life, edge, main);
+    public DnaSet(@NotNull String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull Pattern find, @NotNull String repl) {
+        super(text, edge, life);
+        this.main = main;
         this.find = find;
         this.repl = repl;
     }
 
     @Override
-    public List<N> match(String txt, int off, int end) {
-        Matcher m = find.matcher(txt.substring(off, end));
-        // 匹配 TODO
-        return super.match(txt, off, end);
+    public Life.State match(List<N> lst, String txt) {
+        return match(lst, txt, find);
     }
 
     @Override
-    public void apply(N mtc, String txt, StringBuilder buf) {
-        // TODO
-        super.apply(mtc, txt, buf);
-    }
-
-    @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        // skip
+    public void apply(List<Exon> gen, Clop pos, String txt) {
+        gen.add(new TxtDnaSet(txt, pos, repl));
     }
 
     @Override

@@ -3,10 +3,9 @@ package pro.fessional.meepo.bind.dna;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Const;
-import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,19 +23,17 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class DnaBkb extends Exon {
+public class DnaBkb extends Live {
 
+    @NotNull
+    public final Clop main;
     @NotNull
     public final String name;
 
-    public DnaBkb(String text, Clop edge, Clop main, String name) {
-        super(text, Life.namedAny(name), edge, main);
+    public DnaBkb(String text, Clop edge, @NotNull Clop main, String name) {
+        super(text, edge, Life.namedAny(name));
+        this.main = main;
         this.name = name == null ? Const.TXT_EMPTY : name;
-    }
-
-    @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        // skip
     }
 
     @Override

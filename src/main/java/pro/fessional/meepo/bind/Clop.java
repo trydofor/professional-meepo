@@ -28,6 +28,10 @@ public class Clop implements Comparable<Clop> {
         this.length = until - start;
     }
 
+    public Clop shift(int off) {
+        return new Clop(start + off, until + off);
+    }
+
     /**
      * 两个区间是否有交叠
      *
@@ -54,5 +58,14 @@ public class Clop implements Comparable<Clop> {
     @Override
     public int compareTo(@NotNull Clop o) {
         return start == o.start ? o.until - until : start - o.start;
+    }
+
+    @Override
+    public String toString() {
+        return "Clop{" +
+                "start=" + start +
+                ", until=" + until +
+                ", length=" + length +
+                '}';
     }
 }

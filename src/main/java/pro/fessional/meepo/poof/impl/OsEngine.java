@@ -33,7 +33,7 @@ public class OsEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean quiet) {
+    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
 
         ProcessBuilder builder = new ProcessBuilder();
         Map<String, String> env = builder.environment();
@@ -54,7 +54,7 @@ public class OsEngine implements RnaEngine {
             p = builder.start();
 
             String stdOut = TXT_EMPTY;
-            if (!quiet) {
+            if (!mute) {
                 final InputStream out = p.getInputStream();
                 BufferedReader ord = new BufferedReader(new InputStreamReader(out, UTF_8));
 

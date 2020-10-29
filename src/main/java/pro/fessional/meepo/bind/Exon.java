@@ -1,8 +1,8 @@
 package pro.fessional.meepo.bind;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.meepo.poof.RnaEngine;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,57 +21,39 @@ public class Exon {
     /**
      * 边缘区
      */
+    @NotNull
     public final Clop edge;
-    /**
-     * 正文区
-     */
-    public final Clop main;
 
     /**
      * 原始文本
      */
     @NotNull
     public final String text;
-    /**
-     * 生命周期
-     */
-    @NotNull
-    public final Life life;
 
-    public Exon(@NotNull String text, @NotNull Life life, Clop edge) {
+    public Exon(@NotNull String text, @NotNull Clop edge) {
         this.edge = edge;
-        this.main = edge;
         this.text = text;
-        this.life = life;
-    }
-
-    public Exon(@NotNull String text, @NotNull Life life, Clop edge, Clop main) {
-        this.edge = edge;
-        this.main = main;
-        this.text = text;
-        this.life = life;
     }
 
     /**
-     * 匹配其他文本，并返回匹配区间
+     * 匹配其他文本，并根据匹配状态，设置匹配区间
      *
+     * @param lst 匹配区间
      * @param txt 文本
-     * @param off 开始位置，包含
-     * @param end 结束位置，不含
-     * @return -1，不能匹配
+     * @return 本次匹配状态
      */
-    public List<N> match(String txt, int off, int end) {
-        return Collections.emptyList();
+    public Life.State match(List<N> lst, String txt) {
+        return Life.State.Skip;
     }
 
     /**
      * 应用匹配的文本
      *
-     * @param mtc 匹配
+     * @param gen 匹配
+     * @param pos 匹配
      * @param txt 文本
-     * @param buf 输出
      */
-    public void apply(N mtc, String txt, StringBuilder buf) {
+    public void apply(List<Exon> gen, Clop pos, String txt) {
     }
 
     /**
@@ -87,24 +69,24 @@ public class Exon {
      * 合并模板输出结果，默认edge
      *
      * @param ctx 上下文
+     * @param eng 执行引擎
      * @param buf buff
      */
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        buf.append(text, edge.start, edge.until);
+    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
     }
 
-
-    public static class N {
+    public static class N implements Comparable<N> {
         public final Clop pos;
         public final Exon xna;
 
-        public N(int p0, int pos, Exon xna) {
-            this.pos = new Clop(p0, pos);
+        public N(int p0, int p1, Exon xna) {
+            this.pos = new Clop(p0, p1);
             this.xna = xna;
         }
 
-        public void apply(String txt, StringBuilder buf) {
-            xna.apply(this, txt, buf);
+        @Override
+        public int compareTo(@NotNull Exon.N o) {
+            return pos.compareTo(o.pos);
         }
     }
 }

@@ -1,8 +1,9 @@
 package pro.fessional.meepo.bind.dna;
 
+import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;
 import java.util.Objects;
@@ -23,15 +24,18 @@ import java.util.Objects;
  */
 public class DnaRaw extends Exon {
 
-    private final int raw0;
+    @NotNull
+    public final Clop main;
+    public final int raw0;
 
-    public DnaRaw(String text, Clop edge, Clop main, int raw0) {
-        super(text, Life.nobodyOne(), edge, main);
+    public DnaRaw(String text, Clop edge, @NotNull Clop main, int raw0) {
+        super(text, edge);
+        this.main = main;
         this.raw0 = raw0;
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
+    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
         buf.append(text, raw0, main.until);
     }
 

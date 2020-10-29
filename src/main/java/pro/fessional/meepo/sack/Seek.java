@@ -182,24 +182,31 @@ public class Seek {
         return new int[]{off, end};
     }
 
-    public static boolean isPrevEdge(String txt, int off) {
-        for (int i = off; i >= 0; i--) {
+    /**
+     * 左侧不包含`\n`，index为start
+     */
+    public static int seekPrevEdge(String txt, int end) {
+        for (int i = end - 1; i >= 0; i--) {
             char c = txt.charAt(i);
-            if (c != ' ' && c != '\t' && c != '\r') {
-                return c == '\n';
+            if (notWhite(c)) {
+                return c == '\n' ? i + 1 : -1;
             }
         }
-        return true;
+        return 0;
     }
 
-    public static boolean isNextEdge(String txt, int off) {
-        for (int i = off, len = txt.length(); i < len; i++) {
+    /**
+     * 右侧包含`\n`，index为end
+     */
+    public static int seekNextEdge(String txt, int off) {
+        int len = txt.length();
+        for (int i = off; i < len; i++) {
             char c = txt.charAt(i);
-            if (c != ' ' && c != '\t' && c != '\r') {
-                return c == '\n';
+            if (notWhite(c)) {
+                return c == '\n' ? i + 1 : -1;
             }
         }
-        return true;
+        return len;
     }
 
     public static boolean isAlnum(char c) {

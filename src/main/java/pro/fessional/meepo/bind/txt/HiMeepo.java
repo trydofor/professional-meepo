@@ -3,9 +3,7 @@ package pro.fessional.meepo.bind.txt;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -29,17 +27,30 @@ import java.util.Objects;
 public class HiMeepo extends Exon {
 
     @NotNull
+    public final Clop main;
+    @NotNull
     public final String head;
     @NotNull
     public final String tail;
-
+    /**
+     * 是否支持字符重复
+     */
     public final boolean echo;
-    public final boolean islf;
+    /**
+     * 是否以保留空白
+     */
+    public final boolean trim;
+    /**
+     * 是否以\n结尾
+     */
+    public final boolean crlf;
 
-    public HiMeepo(@NotNull String text, Clop edge, Clop main, @NotNull String head, @NotNull String tail) {
-        super(text, Life.nobodyAny(), edge, main);
+    public HiMeepo(@NotNull String text, Clop edge, @NotNull Clop main, @NotNull String head, @NotNull String tail, boolean trim) {
+        super(text, edge);
+        this.main = main;
         this.head = head;
         this.tail = tail;
+        this.trim = trim;
         boolean b = true;
         char c0 = head.charAt(0);
         for (int i = 1, len = head.length(); i < len; i++) {
@@ -49,12 +60,7 @@ public class HiMeepo extends Exon {
             }
         }
         this.echo = b;
-        this.islf = tail.equals("\n");
-    }
-
-    @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        // skip
+        this.crlf = tail.equals("\n");
     }
 
     @Override
@@ -62,13 +68,16 @@ public class HiMeepo extends Exon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         HiMeepo hiMeepo = (HiMeepo) o;
-        return head.equals(hiMeepo.head) &&
+        return echo == hiMeepo.echo &&
+                trim == hiMeepo.trim &&
+                crlf == hiMeepo.crlf &&
+                head.equals(hiMeepo.head) &&
                 tail.equals(hiMeepo.tail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(head, tail);
+        return Objects.hash(head, tail, echo, trim, crlf);
     }
 
     @Override
@@ -76,6 +85,9 @@ public class HiMeepo extends Exon {
         return "HiMeepo{" +
                 "head='" + head + '\'' +
                 ", tail='" + tail + '\'' +
+                ", echo=" + echo +
+                ", trim=" + trim +
+                ", crlf=" + crlf +
                 '}';
     }
 }

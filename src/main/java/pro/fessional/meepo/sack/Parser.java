@@ -1,9 +1,12 @@
 package pro.fessional.meepo.sack;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.dna.DnaBkb;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
@@ -12,15 +15,17 @@ import pro.fessional.meepo.bind.rna.RnaPut;
 import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
 import pro.fessional.meepo.bind.txt.HiMeepo;
-import pro.fessional.meepo.bind.txt.TxtPlain;
+import pro.fessional.meepo.bind.txt.TxtSimple;
 import pro.fessional.meepo.poof.RnaManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static pro.fessional.meepo.bind.Const.TKN_DNA$;
@@ -35,31 +40,35 @@ import static pro.fessional.meepo.bind.Const.TKN_RNA$RUN;
 import static pro.fessional.meepo.bind.Const.TKN_RNA$USE;
 
 /**
- * static thread safe parser
- * 0 - 表示起点，包含；
- * 1 - 表示终点，不含；
+ * static thread safe parser, if logger and you safe
  *
  * @author trydofor
  * @since 2020-10-15
  */
 public class Parser {
 
-    public static class Ctx {
-        protected final String txt;
-        protected final int end;
-        protected final ArrayList<Exon> gene = new ArrayList<>();
-        protected final ArrayList<Exon> proc = new ArrayList<>();
-        protected final Map<String, Life> life = new HashMap<>();
+    protected static final Logger logger = LoggerFactory.getLogger(Parser.class);
+    protected static final Exon SkipThis = new Exon("", new Clop(0, 0));
+    protected static final Exon DealText = new Exon("", new Clop(0, 0));
 
+    /**
+     * 命名约定：0 - 表示起点，包含；1 - 表示终点，不含；
+     */
+    protected static class Ctx {
+        protected final String txt; // 模板原始文本
+        protected final int end; // 文本的length（不含）
         protected int done1 = 0; // 已解析完毕的位置（不含）
         protected int edge0 = 0; // 待解析行块开始位置（包含）
         protected int main0 = -1; // 待解析指令开始位置（包含）
         protected int grpx1 = -1; // XNAGroup结束位置（不含）
         protected int main1 = -1; // 待解析指令结束位置（不含）
         protected int edge1 = -1; // 待解析行块结束位置（不含）
+        protected HiMeepo meepo = null; // 当前作用的米波
 
-        protected HiMeepo meepo = null;
-        protected HashSet<String> bkb = new HashSet<>();
+        protected final ArrayList<Exon> gene = new ArrayList<>();
+        protected final HashSet<String> bkb = new HashSet<>();
+        protected final ArrayList<Exon> proc = new ArrayList<>();
+        protected final Map<String, Life> life = new HashMap<>();
 
         public Ctx(String txt) {
             this.txt = txt;
@@ -73,6 +82,96 @@ public class Parser {
         public Clop toMain() {
             return new Clop(main0, main1);
         }
+
+        public boolean notBkb() {
+            return bkb.isEmpty();
+        }
+
+        public boolean endBkb(Exon exon) {
+            if (exon instanceof DnaEnd) {
+                bkb.removeAll(((DnaEnd) exon).name);
+            }
+            return bkb.isEmpty();
+        }
+
+        public void addExon(Exon exon) {
+            if (exon instanceof DnaBkb) {
+                DnaBkb dna = (DnaBkb) exon;
+                bkb.add(dna.name);
+            } else if (exon instanceof DnaEnd) {
+                Set<String> name = ((DnaEnd) exon).name;
+                for (String k : name) {
+                    Life lf = life.remove(k);
+                    if (lf != null) lf.close();
+                }
+            }
+
+            if (exon instanceof Live) {
+                Life lf = ((Live) exon).life;
+                String nm = lf.name;
+                if (nm.length() > 0) {
+                    this.life.put(nm, lf);
+                }
+            }
+
+            gene.add(exon);
+
+            if (exon instanceof DnaSet ||
+                    exon instanceof RnaUse ||
+                    exon instanceof RnaRun
+            ) {
+                proc.add(exon);
+            }
+        }
+
+        public void procText(final int done1, final int edge1) {
+            if (done1 >= edge1) return;
+
+            if (proc.isEmpty()) {
+                TxtSimple txt = new TxtSimple(this.txt, done1, edge1);
+                gene.add(txt);
+                return;
+            }
+
+            final List<Exon.N> rst = new ArrayList<>();
+            final String text = txt.substring(done1, edge1);
+            for (Iterator<Exon> it = proc.iterator(); it.hasNext(); ) {
+                Exon exon = it.next();
+                Life.State st = exon.match(rst, text);
+                if (st == Life.State.Dead) {
+                    it.remove();
+                }
+            }
+
+            if (rst.isEmpty()) {
+                TxtSimple txt = new TxtSimple(this.txt, done1, edge1);
+                gene.add(txt);
+                return;
+            }
+
+            for (Exon.N n1 : rst) {
+                for (Exon.N n2 : rst) {
+                    if (n1 != n2 && n1.pos.cross(n2.pos)) {
+                        throw new IllegalStateException("cross range, n1=" + n1.pos + ", n2=" + n2.pos + ", text=" + text);
+                    }
+                }
+            }
+
+            Collections.sort(rst);
+            int off = 0;
+            for (Exon.N n : rst) {
+                Clop pos = n.pos;
+                if (off < pos.start) {
+                    gene.add(new TxtSimple(txt, off + done1, pos.start + done1));
+                }
+                n.xna.apply(gene, pos.shift(done1), txt);
+                off = pos.until;
+            }
+            int len = text.length();
+            if (off < len) {
+                gene.add(new TxtSimple(txt, off + done1, len + done1));
+            }
+        }
     }
 
     public static Gene parse(String txt) {
@@ -80,26 +179,72 @@ public class Parser {
         final Ctx ctx = new Ctx(txt);
 
         for (ctx.edge0 = 0; ctx.edge0 < ctx.end; ctx.edge0 = ctx.edge1) {
-            // 处理文本，done1 - edge0 之间
-            dealTxtPlain(ctx);
 
             // 标记米波，文本分段，找到edge0
             if (markHiMeepo(ctx)) {
                 continue;
             }
 
+            Exon exon = SkipThis;
             // 查找`DNA:`
             if (findXnaGrp(ctx, TKN_DNA$)) {
-                dealDnaGroup(ctx);
+                exon = dealDnaGroup(ctx);
             }
 
             // 查找`RNA:`
             else if (findXnaGrp(ctx, TKN_RNA$)) {
-                dealRnaGroup(ctx);
+                exon = dealRnaGroup(ctx);
             }
+
+            dealTxtPlain(ctx, ctx.edge0, exon); // 循环处理
         }
 
-        return null;
+        dealTxtPlain(ctx, ctx.end, DealText); // 处理最后
+
+        return new Gene(ctx.gene, txt);
+    }
+
+
+    /**
+     * 处理 DNA 组
+     *
+     * @param ctx 上下文
+     */
+    @NotNull
+    protected static Exon dealDnaGroup(Ctx ctx) {
+        Exon exon = dealDnaEnd(ctx);
+        if (ctx.notBkb()) { // DNA:GROUP
+            if (exon == null) {
+                exon = dealDnaBkb(ctx);
+            }
+            if (exon == null) {
+                exon = dealDnaSet(ctx);
+            }
+            if (exon == null) {
+                exon = dealDnaRaw(ctx);
+            }
+        }
+        return exon == null ? SkipThis : exon;  // DNA:GROUP
+    }
+
+    /**
+     * 处理 RNA 组
+     *
+     * @param ctx 上下文
+     */
+    @NotNull
+    protected static Exon dealRnaGroup(Ctx ctx) {
+        Exon exon = null;
+        if (ctx.notBkb()) { // RNA:GROUP
+            exon = dealRnaPut(ctx);
+            if (exon == null) {
+                exon = dealRnaUse(ctx);
+            }
+            if (exon == null) {
+                exon = dealRnaRun(ctx);
+            }
+        }
+        return exon == null ? SkipThis : exon; // RNA:GROUP
     }
 
     /**
@@ -108,35 +253,56 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理
      */
-    public static boolean markHiMeepo(Ctx ctx) {
+    protected static boolean markHiMeepo(Ctx ctx) {
         final String txt = ctx.txt;
+        final int edg0 = ctx.edge0;
+        final int end1 = ctx.end;
         HiMeepo meepo = ctx.meepo;
         if (meepo == null) { // 首次查找
-            meepo = bornHiMeepo(txt, ctx.edge0, ctx.end);
+            meepo = bornHiMeepo(txt, edg0, end1);
             if (meepo == null) { // 不是米波模板
-                ctx.gene.add(new TxtPlain(txt, 0, ctx.end));
-                ctx.edge1 = ctx.end;
+                logger.trace("[👹markHiMeepo] no meepo found");
+                dealTxtPlain(ctx, end1, null); // 非米波模板
+                ctx.edge1 = end1;
                 return true;
+            } else {
+                logger.trace("[👹markHiMeepo] find first meepo at edge0={}", meepo.edge.start);
             }
         } else {
             // 标记起点
-            int edge0 = Seek.seekToken(txt, ctx.edge0, ctx.end, meepo.head, meepo.echo);
-            meepo = bornHiMeepo(txt, ctx.edge0, edge0);
+            String head = meepo.head;
+            int head0 = Seek.seekToken(txt, edg0, end1, head, meepo.echo);
+
+            meepo = null;
+            if (ctx.notBkb()) { // 米波-标记起点
+                meepo = bornHiMeepo(txt, edg0, head0 > edg0 ? head0 : end1);
+            } else {
+                logger.trace("[👹markHiMeepo] skip born-meepo in bkb");
+            }
+
             if (meepo == null) {
-                dealTxtPlain(ctx);
-                ctx.done1 = edge0;
-                ctx.edge0 = edge0;
-                return false;
+                if (head0 >= edg0) {
+                    ctx.edge0 = head0;
+                    ctx.edge1 = head0 + head.length();
+                    logger.trace("[👹markHiMeepo] find meepo head at edge0={}", head0);
+                    return false;
+                } else {
+                    dealTxtPlain(ctx, end1, DealText); // 无米波头
+                    ctx.edge1 = end1;
+                    logger.trace("[👹markHiMeepo] no meepo head found");
+                    return true;
+                }
+            } else {
+                logger.trace("[👹markHiMeepo] find other-meepo at edge0={}", meepo.edge.start);
             }
         }
 
-        //发现新标记
+        //发现新米波
         int edge0 = meepo.edge.start;
         int edge1 = meepo.edge.until;
 
-        dealTxtPlain(ctx);
-
-        ctx.gene.add(meepo);
+        logger.trace("[markHiMeepo] deal text at done1={}, edge0={}", ctx.done1, edge0);
+        dealTxtPlain(ctx, edge0, meepo); // 米波前文字
         ctx.meepo = meepo;
         ctx.done1 = edge1;
         ctx.edge0 = edge0;
@@ -144,51 +310,51 @@ public class Parser {
         return true;
     }
 
-    public static HiMeepo bornHiMeepo(String txt, int edge0, int edge1) {
-        int tkn0 = Seek.seekToken(txt, edge0, edge1, TKN_HIMEEPO, false);
-        if (tkn0 <= 0) return null;
-
-        int[] hd = Seek.seekPrevWords(txt, edge0, tkn0);
-        if (hd[0] == hd[1] || !Seek.isPrevEdge(txt, hd[0] - 1)) {
-            return null; // 不是边界
-        }
-        String head = txt.substring(hd[0], hd[1]);
-        int tk1 = tkn0 + TKN_HIMEEPO.length();
-        int[] tl = Seek.seekNextWords(txt, tk1, edge1);
-        if (!Seek.isNextEdge(txt, tl[1])) {
-            return null; // 不是边界
-        }
-
-        String tail;
-        if (tl[1] > tl[0]) {
-            tail = txt.substring(tl[0], tl[1]);
-        } else {
-            tail = "\n";
-            if (tl[1] < txt.length() && txt.charAt(tl[1]) == '\n') {
-                tl[1] = tl[1] + 1;
-            }
-        }
-        return new HiMeepo(txt, new Clop(hd[0], tl[1]), new Clop(tkn0, tk1), head, tail);
-    }
-
     /**
      * 处理普通文本
      *
      * @param ctx 上下文
      */
-    public static void dealTxtPlain(Ctx ctx) {
-        if (ctx.done1 >= ctx.edge1) return;
+    protected static void dealTxtPlain(Ctx ctx, int edge0, Exon exon) {
+        final int done1 = ctx.done1;
 
-        if (ctx.done1 < ctx.edge0) {
-            ctx.gene.add(new TxtPlain(ctx.txt, ctx.done1, ctx.edge0));
+        if (done1 >= edge0) {
+            if (exon != null && exon != SkipThis && exon != DealText) { // append gene if done
+                ctx.addExon(exon);
+                ctx.done1 = exon.edge.until;
+            }
+            return;
         }
-        for (Iterator<Exon> it = ctx.proc.iterator(); it.hasNext(); ) {
-            Exon en = it.next();
-            Life.State st = en.life.state();
-            if (st == Life.State.Dead) {
-                it.remove();
+
+        if (exon == null) {
+            logger.trace("deal whole text at done1={}, edge0={}", done1, edge0);
+            TxtSimple dna = new TxtSimple(ctx.txt, done1, edge0);
+            ctx.addExon(dna);
+            ctx.done1 = edge0;
+        } else if (exon == SkipThis) {  // skip for next
+            logger.trace("skip for next at done1={}, edge0={}", done1, edge0);
+        } else if (exon == DealText) {
+            ctx.procText(done1, edge0);
+            ctx.done1 = edge0;
+            logger.trace("deal next at done1={}, edge0={}", done1, edge0);
+        } else {
+            if (ctx.notBkb()) { // 处理文本
+                // 应用指令
+                ctx.procText(done1, edge0);
+                // 增加指令
+                ctx.addExon(exon);
+                ctx.done1 = exon.edge.until;
             } else {
-                // TODO dealTxtPlain(ctx);
+                if (ctx.endBkb(exon)) {
+                    // BKB文本
+                    TxtSimple txt = new TxtSimple(ctx.txt, done1, edge0);
+                    ctx.addExon(txt);
+                    // 增加指令
+                    ctx.addExon(exon);
+                    ctx.done1 = exon.edge.until;
+                } else {
+                    logger.trace("skip for bkb at done1={}, edge0={}", done1, edge0);
+                }
             }
         }
     }
@@ -200,41 +366,42 @@ public class Parser {
      * @param token 特征
      * @return 是否找到
      */
-    public static boolean findXnaGrp(Ctx ctx, String token) {
+    protected static boolean findXnaGrp(Ctx ctx, String token) {
         HiMeepo meepo = ctx.meepo;
-        int off = ctx.edge0 + meepo.head.length();
-        int main0 = Seek.seekFollow(ctx.txt, off, ctx.end, token);
+        int edge0 = ctx.edge0;
+        int off = edge0 + meepo.head.length();
+        String text = ctx.txt;
+        int main0 = Seek.seekFollow(text, off, ctx.end, token);
         if (main0 < 0) {
+            logger.trace("[👹findXnaGrp] skip {} un-follow meepo-head", token);
             return false;
         }
-        int main1 = Seek.seekToken(ctx.txt, main0, ctx.end, meepo.tail, false);
-        int edge1 = main1 + meepo.tail.length();
-        if (main1 < 0) {
-            if (meepo.islf) {
+
+        int main1 = Seek.seekToken(text, main0, ctx.end, meepo.tail, false);
+        int edge1;
+        if (main1 < main0) {
+            if (meepo.crlf) {
                 main1 = ctx.end;
                 edge1 = main1;
+                logger.trace("[👹findXnaGrp] use the end as meepo-tail when CRLF");
             } else {
+                logger.trace("[👹findXnaGrp] skip xna group without meepo-tail");
                 return false;
             }
+        } else {
+            edge1 = main1 + meepo.tail.length();
+            int grace = Seek.seekPrevGrace(text, main0, main1);
+            if (grace > main0 && grace < main1) {
+                main1 = grace + 1;
+            }
         }
+
         ctx.main0 = main0;
         ctx.grpx1 = main0 + token.length();
         ctx.main1 = main1;
         ctx.edge1 = edge1;
-
+        logger.trace("[👹findXnaGrp] find {} at main0={}", token, main0);
         return true;
-    }
-
-    /**
-     * 处理 DNA 组
-     *
-     * @param ctx 上下文
-     */
-    public static void dealDnaGroup(Ctx ctx) {
-        if (dealDnaEnd(ctx)) return;
-        if (dealDnaBkb(ctx)) return;
-        if (dealDnaSet(ctx)) return;
-        dealDnaRaw(ctx);
     }
 
     /**
@@ -243,17 +410,16 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealDnaRaw(Ctx ctx) {
+    protected static Exon dealDnaRaw(Ctx ctx) {
         String txt = ctx.txt;
         int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$RAW);
-        if (tkn0 < 0) return false;
+        if (tkn0 < 0) return null;
 
-        int raw0 = tkn0 + TKN_DNA$RAW.length();
-        DnaRaw dna = new DnaRaw(txt, ctx.toEdge(), ctx.toMain(), raw0);
-        ctx.gene.add(dna);
-        ctx.done1 = ctx.edge1;
-
-        return true;
+        int off = tkn0 + TKN_DNA$RAW.length();
+        int raw0 = Seek.seekNextGrace(txt, off, ctx.main1);
+        DnaRaw dna = new DnaRaw(txt, ctx.toEdge(), ctx.toMain(), Math.max(raw0, off));
+        logger.trace("[👹dealDnaRaw] find DNA:RAW at token0={}", tkn0);
+        return dna;
     }
 
     /**
@@ -262,24 +428,23 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealDnaBkb(Ctx ctx) {
+    protected static Exon dealDnaBkb(Ctx ctx) {
         String txt = ctx.txt;
         int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$BKB);
-        if (tkn0 < 0) return false;
+        if (tkn0 < 0) return null;
 
         int[] pos = Seek.seekNextWords(txt, tkn0 + TKN_DNA$BKB.length(), ctx.main1);
-        if (pos[1] <= pos[0]) {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, "Bad-Syntax DNA:BKB, without name");
-            ctx.gene.add(dna);
-        } else {
+        final Exon dna;
+        if (pos[1] > pos[0]) {
+            trimEdge(ctx); // DNA:BKB
             String name = txt.substring(pos[0], pos[1]);
-            DnaBkb dna = new DnaBkb(txt, ctx.toEdge(), ctx.toMain(), name);
-
-            ctx.gene.add(dna);
-            ctx.bkb.add(name);
+            dna = new DnaBkb(txt, ctx.toEdge(), ctx.toMain(), name);
+            logger.trace("[👹dealDnaBkb] find DNA:BKB at token0={}", tkn0);
+        } else {
+            dna = SkipThis; // DNA:BKB
+            logger.trace("[👹dealDnaBkb] skip bad DNA:BKB without name");
         }
-        ctx.done1 = ctx.edge1;
-        return true;
+        return dna;
     }
 
     /**
@@ -288,13 +453,13 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealDnaEnd(Ctx ctx) {
-        String txt = ctx.txt;
-        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$END);
-        if (tkn0 < 0) return false;
+    protected static Exon dealDnaEnd(Ctx ctx) {
+        final String txt = ctx.txt;
+        final int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$END);
+        if (tkn0 < 0) return null;
 
-        List<String> names = new ArrayList<>(8);
-        String head = ctx.meepo.head;
+        final List<String> names = new ArrayList<>(8);
+        final String head = ctx.meepo.head;
         int off = tkn0 + TKN_DNA$END.length();
         while (true) {
             int[] name = Seek.seekNextWords(txt, off, ctx.main1);
@@ -310,22 +475,17 @@ public class Parser {
                 break;
             }
         }
+
+        final Exon dna;
         if (names.isEmpty()) {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, "Bad-Syntax DNA:END, without any name");
-            ctx.gene.add(dna);
+            dna = SkipThis; // DNA:END
+            logger.trace("[👹dealDnaEnd] skip bad DNA:END without name");
         } else {
-            for (String name : names) {
-                ctx.bkb.remove(name);
-                Life life = ctx.life.remove(name);
-                if (life != null) {
-                    life.close();
-                }
-            }
-            DnaEnd dna = new DnaEnd(txt, ctx.toEdge(), ctx.toMain(), names);
-            ctx.gene.add(dna);
+            trimEdge(ctx); // DNA:END
+            dna = new DnaEnd(txt, ctx.toEdge(), ctx.toMain(), names);
+            logger.trace("[👹dealDnaEnd] find DNA:END at token0={}", tkn0);
         }
-        ctx.done1 = ctx.edge1;
-        return true;
+        return dna;
     }
 
     /**
@@ -334,47 +494,36 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealDnaSet(Ctx ctx) {
-        String txt = ctx.txt;
-        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$SET);
-        if (tkn0 < 0) return false;
+    protected static Exon dealDnaSet(Ctx ctx) {
+        final String txt = ctx.txt;
+        final int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_DNA$SET);
+        if (tkn0 < 0) return null;
 
         int off = tkn0 + TKN_DNA$SET.length();
         int spl0 = Seek.seekNextSplit(txt, off, ctx.main1);
         int[] pos3 = null;
-        String error;
+        String note;
         if (spl0 < 0) {
-            error = "Bad-Syntax DNA:SET, without split char";
+            note = "Bad-Syntax DNA:SET, without split char";
         } else {
             pos3 = new int[]{spl0, -1, -1};
-            error = parseSplit(txt, pos3, ctx.main1, "DNA:SET");
+            note = parseSplit(txt, pos3, ctx.main1, "DNA:SET");
         }
 
-        if (error == null) {
+        final Exon dna;
+        if (note == null) {
+            trimEdge(ctx); // DNA:SET
             Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
             String repl = txt.substring(pos3[1] + 1, pos3[2]);
 
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            DnaSet dna = new DnaSet(txt, life, ctx.toEdge(), ctx.toMain(), find, repl);
-
-            ctx.gene.add(dna);
+            dna = new DnaSet(txt, life, ctx.toEdge(), ctx.toMain(), find, repl);
+            logger.trace("[👹dealDnaSet] find DNA:SET at token0={}", tkn0);
         } else {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, error);
-            ctx.gene.add(dna);
+            dna = SkipThis; // DNA:SET
+            logger.trace("[👹dealDnaSet] skip bad DNA:SET {}", note);
         }
-        ctx.done1 = ctx.edge1;
-        return true;
-    }
-
-    /**
-     * 处理 RNA 组
-     *
-     * @param ctx 上下文
-     */
-    public static void dealRnaGroup(Ctx ctx) {
-        if (dealRnaPut(ctx)) return;
-        if (dealRnaUse(ctx)) return;
-        dealRnaRun(ctx);
+        return dna;
     }
 
     /**
@@ -383,40 +532,40 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealRnaRun(Ctx ctx) {
-        String txt = ctx.txt;
-        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$RUN);
-        if (tkn0 < 0) return false;
+    protected static Exon dealRnaRun(Ctx ctx) {
+        final String txt = ctx.txt;
+        final int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$RUN);
+        if (tkn0 < 0) return null;
 
         int off = tkn0 + TKN_RNA$RUN.length();
         int spl0 = Seek.seekNextSplit(txt, off, ctx.main1);
         int[] pos3 = null;
         String type = null;
         boolean mute = false;
-        String error;
+        String note;
         if (spl0 < 0) {
-            error = "Bad-Syntax RNA:RUN, without split char";
+            note = "Bad-Syntax RNA:RUN, without split char";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            error = parseSplit(txt, pos3, ctx.main1, "RNA:RUN");
+            note = parseSplit(txt, pos3, ctx.main1, "RNA:RUN");
         }
 
-        if (error == null) {
+        final Exon rna;
+        if (note == null) {
+            trimEdge(ctx); // RNA:RUN
             Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
-
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            RnaRun rna = new RnaRun(txt, life, ctx.toEdge(), ctx.toMain(), type, find, expr, mute);
-            ctx.gene.add(rna);
+            rna = new RnaRun(txt, life, ctx.toEdge(), ctx.toMain(), type, find, expr, mute);
+            logger.trace("[👹dealRnaRun] find RNA:RUN at token0={}", tkn0);
         } else {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, error);
-            ctx.gene.add(dna);
+            rna = SkipThis; // RNA:RUN
+            logger.trace("[👹dealRnaRun] skip bad RNA:RUN {}", note);
         }
-        ctx.done1 = ctx.edge1;
-        return true;
+        return rna;
     }
 
     /**
@@ -425,36 +574,35 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealRnaUse(Ctx ctx) {
-        String txt = ctx.txt;
-        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$USE);
-        if (tkn0 < 0) return false;
+    protected static Exon dealRnaUse(Ctx ctx) {
+        final String txt = ctx.txt;
+        final int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$USE);
+        if (tkn0 < 0) return null;
 
         int off = tkn0 + TKN_RNA$USE.length();
         int spl0 = Seek.seekNextSplit(txt, off, ctx.main1);
         int[] pos3 = null;
-        String error;
+        String note;
         if (spl0 < 0) {
-            error = "Bad-Syntax RNA:USE, without split char";
+            note = "Bad-Syntax RNA:USE, without split char";
         } else {
             pos3 = new int[]{spl0, -1, -1};
-            error = parseSplit(txt, pos3, ctx.main1, "RNA:USE");
+            note = parseSplit(txt, pos3, ctx.main1, "RNA:USE");
         }
 
-        if (error == null) {
+        final Exon rna;
+        if (note == null) {
+            trimEdge(ctx); // RNA:USE
             Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
             String para = txt.substring(pos3[1] + 1, pos3[2]);
-
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            RnaUse dna = new RnaUse(txt, life, ctx.toEdge(), ctx.toMain(), find, para);
-
-            ctx.gene.add(dna);
+            rna = new RnaUse(txt, life, ctx.toEdge(), ctx.toMain(), find, para);
+            logger.trace("[👹dealRnaUse] find RNA:USE at token0={}", tkn0);
         } else {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, error);
-            ctx.gene.add(dna);
+            rna = SkipThis; // RNA:USE
+            logger.trace("[👹dealRnaUse] skip bad RNA:USE {}", note);
         }
-        ctx.done1 = ctx.edge1;
-        return true;
+        return rna;
     }
 
     /**
@@ -463,41 +611,104 @@ public class Parser {
      * @param ctx 上下文
      * @return 是否停止后续处理。
      */
-    public static boolean dealRnaPut(Ctx ctx) {
-        String txt = ctx.txt;
-        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$PUT);
-        if (tkn0 < 0) return false;
+    protected static Exon dealRnaPut(Ctx ctx) {
+        final String txt = ctx.txt;
+        final int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN_RNA$PUT);
+        if (tkn0 < 0) return null;
 
         int off = tkn0 + TKN_RNA$PUT.length();
         int spl0 = Seek.seekNextSplit(txt, off, ctx.main1);
         int[] pos3 = null;
         String type = null;
         boolean mute = false;
-        String error;
+        String note;
         if (spl0 < 0) {
-            error = "Bad-Syntax RNA:PUT, without split char";
+            note = "Bad-Syntax RNA:PUT, without split char";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            error = parseSplit(txt, pos3, ctx.main1, "RNA:PUT");
+            note = parseSplit(txt, pos3, ctx.main1, "RNA:PUT");
         }
 
-        if (error == null) {
+        final Exon rna;
+        if (note == null) {
+            trimEdge(ctx); // RNA:PUT
             String para = txt.substring(pos3[0] + 1, pos3[1]);
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
-
-            RnaPut dna = new RnaPut(txt, ctx.toEdge(), ctx.toMain(), type, para, expr, mute);
-            ctx.gene.add(dna);
+            rna = new RnaPut(txt, ctx.toEdge(), ctx.toMain(), type, para, expr, mute);
+            logger.trace("[👹dealRnaPut] find RNA:PUT at token0={}", tkn0);
         } else {
-            TxtPlain dna = new TxtPlain(txt, ctx.edge0, ctx.edge1, error);
-            ctx.gene.add(dna);
+            rna = SkipThis; // RNA:PUT
+            logger.trace("[👹dealRnaPut] skip bad RNA:PUT {}", note);
         }
-        ctx.done1 = ctx.edge1;
-        return true;
+        return rna;
     }
 
+    // ////////////
+
+    private static HiMeepo bornHiMeepo(String txt, int edge0, int edge1) {
+        int tkn0 = Seek.seekToken(txt, edge0, edge1, TKN_HIMEEPO, false);
+        if (tkn0 <= 0) return null;
+
+        int[] hd = Seek.seekPrevWords(txt, edge0, tkn0);
+        int hd0 = Seek.seekPrevEdge(txt, hd[0]);
+        if (hd[0] == hd[1] || hd0 < 0) {
+            logger.trace("[👹bornHiMeepo] skip HI-MEEPO without prefix");
+            return null; // 不是边界
+        }
+        String head = txt.substring(hd[0], hd[1]);
+        int tk1 = tkn0 + TKN_HIMEEPO.length();
+        boolean trim = true;
+        if (tk1 < edge1 && txt.charAt(tk1) == '!') {
+            tk1++;
+            trim = false;
+        }
+        int[] tl = Seek.seekNextWords(txt, tk1, edge1);
+        int tl1 = Seek.seekNextEdge(txt, tl[1]);
+        if (tl1 < 0) {
+            logger.trace("[👹bornHiMeepo] skip HI-MEEPO without suffix");
+            return null; // 不是边界
+        }
+
+        String tail;
+        if (tl[1] > tl[0]) {
+            tail = txt.substring(tl[0], tl[1]);
+        } else {
+            tail = "\n";
+            if (tl[1] < txt.length() && txt.charAt(tl[1]) == '\n') {
+                tl[1] = tl[1] + 1;
+            }
+        }
+
+        if (trim) {
+            if (hd0 < hd[0]) {
+                hd[0] = hd0;
+            }
+            if (tl1 > tl[1]) {
+                tl[1] = tl1;
+            }
+        }
+        return new HiMeepo(txt, new Clop(hd[0], tl[1]), new Clop(tkn0, tk1), head, tail, trim);
+    }
+
+    private static void trimEdge(Ctx ctx) {
+        HiMeepo meepo = ctx.meepo;
+        if (meepo.trim) {
+            String text = ctx.txt;
+            int edge0 = ctx.edge0;
+            int edge1 = ctx.edge1;
+            int eg0 = Seek.seekPrevEdge(text, edge0);
+            if (eg0 < edge0 && eg0 >= 0) {
+                ctx.edge0 = eg0;
+            }
+            int eg1 = Seek.seekNextEdge(text, edge1);
+            if (eg1 > edge1) {
+                ctx.edge1 = eg1;
+            }
+        }
+    }
 
     private static boolean parseMute(String txt, int[] typ2) {
         if (typ2[0] == typ2[1]) {

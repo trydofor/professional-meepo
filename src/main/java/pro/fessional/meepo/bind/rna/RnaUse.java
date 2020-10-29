@@ -4,8 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
+import pro.fessional.meepo.bind.txt.TxtRnaUse;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -26,23 +28,30 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaUse extends Exon {
+public class RnaUse extends Live {
 
+    @NotNull
+    public final Clop main;
     @NotNull
     public final Pattern find;
     @NotNull
     public final String para;
 
-    public RnaUse(String text, Life life, Clop edge, Clop main, @NotNull Pattern find, @NotNull String para) {
-        super(text, life, edge, main);
+    public RnaUse(String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull Pattern find, @NotNull String para) {
+        super(text, edge, life);
+        this.main = main;
         this.find = find;
         this.para = para;
     }
 
+    @Override
+    public Life.State match(List<N> lst, String txt) {
+        return match(lst, txt, find);
+    }
 
     @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        //
+    public void apply(List<Exon> gen, Clop pos, String txt) {
+        gen.add(new TxtRnaUse(txt, pos, para));
     }
 
     @Override

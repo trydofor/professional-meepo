@@ -34,11 +34,13 @@ public class Life {
     }
 
     /**
-     * 测试当次状态
+     * 享受一次人生，并返回状态
      *
-     * @return 当次状态
+     * @return 当前状态
      */
-    public State state() {
+    public State enjoy() {
+        count++;
+
         int bs = book.size();
         if (index < 0 || (bs > 0 && index >= bs)) {
             return State.Dead;
@@ -47,26 +49,21 @@ public class Life {
             return State.Live;
         }
 
-        int next = count + 1;
         int[] page = book.get(index);
+        final State st;
         if (page.length == 2) {
-            return next >= page[0] && next <= page[1] ? State.Live : State.Skip;
+            st = count >= page[0] && count <= page[1] ? State.Live : State.Skip;
         } else {
-            return next == page[0] ? State.Live : State.Skip;
+            st = count == page[0] ? State.Live : State.Skip;
         }
+
+        if (count >= page[page.length - 1]) {
+            index++;
+        }
+        return st;
     }
 
-    /**
-     * 享受一次，返回已使用的次数
-     */
-    public int enjoy() {
-        count++;
-        if (index >= 0 && index < book.size()) {
-            int[] page = book.get(index);
-            if (count >= page[page.length - 1]) {
-                index++;
-            }
-        }
+    public int count() {
         return count;
     }
 

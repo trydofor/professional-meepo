@@ -1,4 +1,4 @@
-package pro.fessional.meepo.bind.rna;
+package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
@@ -9,40 +9,22 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * <pre>
- * ` <% RNA:PUT os/who/basename $(pwd)/ %> \n`
- * edge=`<% RNA:PUT os/who/basename $(pwd)/ %>`
- *
- * ` // RNA:PUT os/who/basename $(pwd)/ \n`
- * edge=`// RNA:PUT os/who/basename $(pwd)/ \n`
- *
- * main=`RNA:PUT os/who/basename $(pwd)/`
- * type=`os`
- * name=`who`
- * expr=`basename $(pwd)`
- * </pre>
+ * 通过引擎执行获得变量
  *
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaPut extends Exon {
+public class TxtRnaRun extends Exon {
 
     @NotNull
-    public final Clop main;
-    @NotNull
     public final String type;
-    @NotNull
-    public final String para;
     @NotNull
     public final String expr;
     public final boolean mute;
 
-
-    public RnaPut(String text, Clop edge, @NotNull Clop main, @NotNull String type, @NotNull String para, @NotNull String expr, boolean mute) {
+    public TxtRnaRun(@NotNull String text, Clop edge, @NotNull String type, @NotNull String expr, boolean mute) {
         super(text, edge);
-        this.main = main;
         this.type = type;
-        this.para = para;
         this.expr = expr;
         this.mute = mute;
     }
@@ -51,7 +33,7 @@ public class RnaPut extends Exon {
     public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
         if (eng != null) {
             String s = eng.eval(type, expr, ctx, mute);
-            ctx.put(para, s);
+            buf.append(s);
         }
     }
 
@@ -59,25 +41,23 @@ public class RnaPut extends Exon {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RnaPut rnaPut = (RnaPut) o;
-        return type.equals(rnaPut.type) &&
-                para.equals(rnaPut.para) &&
-                expr.equals(rnaPut.expr) &&
-                mute == rnaPut.mute;
+        TxtRnaRun txtRnaRun = (TxtRnaRun) o;
+        return mute == txtRnaRun.mute &&
+                type.equals(txtRnaRun.type) &&
+                expr.equals(txtRnaRun.expr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, para, expr, mute);
+        return Objects.hash(type, expr, mute);
     }
 
     @Override
     public String toString() {
-        return "RnaPut{" +
+        return "TxtRnaRun{" +
                 "type='" + type + '\'' +
-                ", para='" + para + '\'' +
                 ", expr='" + expr + '\'' +
-                ", quiet=" + mute +
+                ", mute=" + mute +
                 '}';
     }
 }

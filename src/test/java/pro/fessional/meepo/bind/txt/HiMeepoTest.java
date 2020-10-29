@@ -10,8 +10,8 @@ import pro.fessional.meepo.bind.Clop;
  */
 public class HiMeepoTest {
 
-    HiMeepo d1 = new HiMeepo("/* H!MEEPO */", new Clop(0,13), new Clop(3,10), "/*","*/");
-    HiMeepo d2 = new HiMeepo("/* H!MEEPO  */ ", new Clop(0,14), new Clop(3,10), "/*","*/");
+    HiMeepo d1 = new HiMeepo("/* H!MEEPO */", new Clop(0, 13), new Clop(3, 10), "/*", "*/", true);
+    HiMeepo d2 = new HiMeepo("/* H!MEEPO  */ ", new Clop(0, 14), new Clop(3, 10), "/*", "*/", true);
 
     @Test
     public void testEquals() {

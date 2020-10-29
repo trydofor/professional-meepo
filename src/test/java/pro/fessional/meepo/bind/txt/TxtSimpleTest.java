@@ -7,9 +7,9 @@ import org.junit.Test;
  * @author trydofor
  * @since 2020-10-22
  */
-public class TxtPlainTest {
-    TxtPlain d1 = new TxtPlain("0123456789", 1, 10, "test");
-    TxtPlain d2 = new TxtPlain("123456789", 0, 9, "test2");
+public class TxtSimpleTest {
+    TxtSimple d1 = new TxtSimple("0123456789", 1, 10);
+    TxtSimple d2 = new TxtSimple("123456789", 0, 9);
 
     @Test
     public void testEquals() {

@@ -1,0 +1,10 @@
+
+<body>
+  {% for article in articles %}
+  <h3>{{ article.title }}</h3>
+  <p>{{ article.content }}</p>
+  {% endfor %}
+  <script type="text/javascript">
+            var machineId = {{machineId}}
+  </script>
+</body>

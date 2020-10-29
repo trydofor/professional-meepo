@@ -4,8 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
+import pro.fessional.meepo.bind.txt.TxtRnaRun;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -27,8 +29,10 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaRun extends Exon {
+public class RnaRun extends Live {
 
+    @NotNull
+    public final Clop main;
     @NotNull
     public final String type;
     @NotNull
@@ -37,8 +41,9 @@ public class RnaRun extends Exon {
     public final String expr;
     public final boolean mute;
 
-    public RnaRun(String text, Life life, Clop edge, Clop main, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
-        super(text, life, edge, main);
+    public RnaRun(String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
+        super(text, edge, life);
+        this.main = main;
         this.type = type;
         this.find = find;
         this.expr = expr;
@@ -46,8 +51,13 @@ public class RnaRun extends Exon {
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        //
+    public Life.State match(List<Exon.N> lst, String txt) {
+        return match(lst, txt, find);
+    }
+
+    @Override
+    public void apply(List<Exon> gen, Clop pos, String txt) {
+        gen.add(new TxtRnaRun(txt, pos, type, expr, mute));
     }
 
     @Override

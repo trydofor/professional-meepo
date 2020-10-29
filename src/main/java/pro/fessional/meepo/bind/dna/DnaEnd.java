@@ -3,13 +3,11 @@ package pro.fessional.meepo.bind.dna;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,10 +29,13 @@ import java.util.Set;
 public class DnaEnd extends Exon {
 
     @NotNull
+    public final Clop main;
+    @NotNull
     public final Set<String> name;
 
-    public DnaEnd(String text, Clop edge, Clop main, Collection<String> name) {
-        super(text, Life.nobodyOne(), edge, main);
+    public DnaEnd(String text, Clop edge, @NotNull Clop main, Collection<String> name) {
+        super(text, edge);
+        this.main = main;
         if (name instanceof Set) {
             this.name = Collections.unmodifiableSet((Set<String>) name);
         } else {
@@ -45,11 +46,6 @@ public class DnaEnd extends Exon {
 
     public DnaEnd(String text, Clop edge, Clop main, String... name) {
         this(text, edge, main, Arrays.asList(name));
-    }
-
-    @Override
-    public void merge(Map<String, Object> ctx, StringBuilder buf) {
-        // skip
     }
 
     @Override

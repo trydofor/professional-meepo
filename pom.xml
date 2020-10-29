@@ -11,31 +11,40 @@
     <properties>
         <java.version>1.8</java.version>
         <maven.test.skip>true</maven.test.skip>
+        <slf4j.version>1.7.30</slf4j.version>
+        <pebble.version>3.1.4</pebble.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-            <version>1.0</version>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>19.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
+            <version>${pebble.version}</version>
             <scope>test</scope>
-            <version>3.1.4</version>
         </dependency>
     </dependencies>
 

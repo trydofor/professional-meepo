@@ -2,21 +2,19 @@ package pro.fessional.meepo.sack;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaSet;
 import pro.fessional.meepo.bind.rna.RnaPut;
 import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
 import pro.fessional.meepo.bind.txt.HiMeepo;
-import pro.fessional.meepo.bind.txt.TxtPlain;
-import pro.fessional.meepo.poof.RnaManager;
-import pro.fessional.meepo.poof.impl.JsEngine;
-import pro.fessional.meepo.poof.impl.MapEngine;
-import pro.fessional.meepo.poof.impl.OsEngine;
-import pro.fessional.meepo.poof.impl.RawEngine;
+import pro.fessional.meepo.bind.txt.TxtSimple;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +31,7 @@ import static pro.fessional.meepo.bind.Const.TKN_RNA$;
  */
 public class ParserTest {
 
-    static {
-        RnaManager.register(new JsEngine());
-        RnaManager.register(new MapEngine());
-        RnaManager.register(new OsEngine());
-        RnaManager.register(new RawEngine());
-    }
+    private final Logger logger = LoggerFactory.getLogger(ParserTest.class);
 
     private static class TestCtx extends Parser.Ctx {
         public TestCtx(String txt) {
@@ -55,38 +48,8 @@ public class ParserTest {
         }
     }
 
-    private final HiMeepo level5 = new HiMeepo("/*H!MEEPO*/", new Clop(0, 11), new Clop(2, 9), "/*", "*/");
-    private final HiMeepo single = new HiMeepo("//H!MEEPO", new Clop(0, 9), new Clop(2, 9), "//", "\n");
-
-    @Test
-    public void findXnaGrp() {
-//        {
-//            String str = " //  DNA:MEEPO  ";
-//            int s3 = str.length();
-//            int[] p1 = {str.indexOf("//"), str.indexOf("DNA:")+4, s3};
-//            int[] t1 = {0, -1, s3};
-//            Parser.findXnaGrp(str, t1, "//", "DNA:", null);
-//            Assert.assertArrayEquals(p1, t1);
-//        }
-//
-//        {
-//            String str = "//DNA:";
-//            int s3 = str.length();
-//            int[] p1 = {str.indexOf("//"), str.indexOf("DNA:")+4, s3};
-//            int[] t1 = {0, -1, s3};
-//            Parser.findXnaGrp(str, t1, "//", "DNA:", null);
-//            Assert.assertArrayEquals(p1, t1);
-//        }
-//
-//        {
-//            String str = " // w DNA:MEEPO";
-//            int s3 = str.length();
-//            int[] t1 = {0, -1, s3};
-//            int[] p1 = {str.indexOf("//"), -1, s3};
-//            Seek.findXnaGrp(str, t1, "//", "DNA:", null);
-//            Assert.assertArrayEquals(p1, t1);
-//        }
-    }
+    private final HiMeepo level5 = new HiMeepo("/*HI-MEEPO*/", new Clop(0, 11), new Clop(2, 9), "/*", "*/", false);
+    private final HiMeepo single = new HiMeepo("//HI-MEEPO", new Clop(0, 9), new Clop(2, 9), "//", "\n", false);
 
     private void checkHiMeepo(String txt, String pre, String suf, String edge, String main) {
         TestCtx ctx = new TestCtx(txt);
@@ -95,47 +58,49 @@ public class ParserTest {
         List<Exon> gene = ctx.gene;
         Exon exon = gene.get(gene.size() - 1);
 
-        StringBuilder buf = new StringBuilder();
         if (pre == null) {
             assertNull(meepo);
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertTrue(exon instanceof TxtSimple);
             Assert.assertEquals(txt, exon.text);
         } else {
+            StringBuilder buf = new StringBuilder();
             Assert.assertNotNull(meepo);
             Assert.assertEquals(pre, meepo.head);
             Assert.assertEquals(suf, meepo.tail);
             Assert.assertEquals(edge, txt.substring(meepo.edge.start, meepo.edge.until));
             Assert.assertEquals(main, txt.substring(meepo.main.start, meepo.main.until));
 
-            exon.merge(new HashMap<>(), buf);
+            exon.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(edge, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(edge, buf.toString());
     }
 
     @Test
     public void dealHiMeepo() {
-        checkHiMeepo("//H!MEEPO", "//", "\n", "//H!MEEPO", "H!MEEPO");
-        checkHiMeepo(" //H!MEEPO", "//", "\n", "//H!MEEPO", "H!MEEPO");
-        checkHiMeepo(" // H!MEEPO", "//", "\n", "// H!MEEPO", "H!MEEPO");
-        checkHiMeepo(" // H!MEEPO ", "//", "\n", "// H!MEEPO ", "H!MEEPO");
-        checkHiMeepo(" // H!MEEPO \n", "//", "\n", "// H!MEEPO \n", "H!MEEPO");
-        checkHiMeepo(" // H!MEEPO \nhaha", "//", "\n", "// H!MEEPO \n", "H!MEEPO");
+        checkHiMeepo("//HI-MEEPO", "//", "\n", "//HI-MEEPO", "HI-MEEPO");
+        checkHiMeepo(" //HI-MEEPO!", "//", "\n", "//HI-MEEPO!", "HI-MEEPO!");
+        checkHiMeepo(" // HI-MEEPO", "//", "\n", " // HI-MEEPO", "HI-MEEPO");
+        checkHiMeepo(" // HI-MEEPO ", "//", "\n", " // HI-MEEPO ", "HI-MEEPO");
+        checkHiMeepo(" // HI-MEEPO \n", "//", "\n", " // HI-MEEPO \n", "HI-MEEPO");
+        checkHiMeepo(" // HI-MEEPO \nhaha", "//", "\n", " // HI-MEEPO \n", "HI-MEEPO");
 
-        checkHiMeepo("/*H!MEEPO*/", "/*", "*/", "/*H!MEEPO*/", "H!MEEPO");
-        checkHiMeepo("/* H!MEEPO*/", "/*", "*/", "/* H!MEEPO*/", "H!MEEPO");
-        checkHiMeepo("/* H!MEEPO */", "/*", "*/", "/* H!MEEPO */", "H!MEEPO");
-        checkHiMeepo(" /* H!MEEPO */", "/*", "*/", "/* H!MEEPO */", "H!MEEPO");
-        checkHiMeepo(" /* H!MEEPO */ ", "/*", "*/", "/* H!MEEPO */", "H!MEEPO");
-        checkHiMeepo(" /* H!MEEPO */ \n", "/*", "*/", "/* H!MEEPO */", "H!MEEPO");
-        checkHiMeepo(" /* H!MEEPO */ \nhaha", "/*", "*/", "/* H!MEEPO */", "H!MEEPO");
+        checkHiMeepo("/*HI-MEEPO*/", "/*", "*/", "/*HI-MEEPO*/", "HI-MEEPO");
+        checkHiMeepo("/* HI-MEEPO*/", "/*", "*/", "/* HI-MEEPO*/", "HI-MEEPO");
+        checkHiMeepo("/* HI-MEEPO */", "/*", "*/", "/* HI-MEEPO */", "HI-MEEPO");
+        checkHiMeepo(" /* HI-MEEPO */", "/*", "*/", " /* HI-MEEPO */", "HI-MEEPO");
+        checkHiMeepo(" /* HI-MEEPO */ ", "/*", "*/", " /* HI-MEEPO */ ", "HI-MEEPO");
+        checkHiMeepo(" /* HI-MEEPO! */ \n", "/*", "*/", "/* HI-MEEPO! */", "HI-MEEPO!");
+        checkHiMeepo(" /* HI-MEEPO! */ \nhaha", "/*", "*/", "/* HI-MEEPO! */", "HI-MEEPO!");
+        checkHiMeepo(" /* HI-MEEPO */ \n", "/*", "*/", " /* HI-MEEPO */ \n", "HI-MEEPO");
+        checkHiMeepo(" /* HI-MEEPO */ \nhaha", "/*", "*/", " /* HI-MEEPO */ \n", "HI-MEEPO");
 
-        checkHiMeepo(" H!MEEPO */ \nhaha", null, null, " H!MEEPO */ \nhaha", null);
-        checkHiMeepo(" H!MEEPO ", null, null, " H!MEEPO ", null);
-        checkHiMeepo("H!MEEPO", null, null, "H!MEEPO", null);
-        checkHiMeepo("\nH!MEEPO\n", null, null, "\nH!MEEPO\n", null);
+        checkHiMeepo(" HI-MEEPO */ \nhaha", null, null, " HI-MEEPO */ \nhaha", null);
+        checkHiMeepo(" HI-MEEPO ", null, null, " HI-MEEPO ", null);
+        checkHiMeepo("HI-MEEPO", null, null, "HI-MEEPO", null);
+        checkHiMeepo("\nHI-MEEPO\n", null, null, "\nHI-MEEPO\n", null);
     }
 
     private void checkDnaRaw(HiMeepo meepo, String txt, String merge, String build) {
@@ -144,34 +109,30 @@ public class ParserTest {
         ctx.edge0 = ctx.txt.indexOf(ctx.meepo.head);
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
-        Parser.dealDnaRaw(ctx);
-        List<Exon> gene = ctx.gene;
+        Exon exon = Parser.dealDnaRaw(ctx);
+        Assert.assertNotNull(exon);
 
         StringBuilder buf = new StringBuilder();
-        for (Exon exon : gene) {
-            exon.merge(new HashMap<>(), buf);
-        }
+        exon.merge(new HashMap<>(), null, buf);
         assertEquals(merge, buf.toString());
         buf.setLength(0);
-        for (Exon exon : gene) {
-            exon.build(buf);
-        }
+        exon.build(buf);
         assertEquals(build, buf.toString());
     }
 
     @Test
     public void dealDnaRaw() {
-        checkDnaRaw(single, "// DNA:RAW SUPER @@", " SUPER @@", "// DNA:RAW SUPER @@");
-        checkDnaRaw(single, "@@// DNA:RAW SUPER @@", " SUPER @@", "// DNA:RAW SUPER @@");
-        checkDnaRaw(single, "@@// DNA:RAW SUPER @@", " SUPER @@", "// DNA:RAW SUPER @@");
-        checkDnaRaw(single, "@@// DNA:RAW SUPER @@\n", " SUPER @@", "// DNA:RAW SUPER @@\n");
+        checkDnaRaw(single, "// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+        checkDnaRaw(single, "@@// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+        checkDnaRaw(single, "@@// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+        checkDnaRaw(single, "@@// DNA:RAW SUPER @@\n", "SUPER @@", "// DNA:RAW SUPER @@\n");
 
         checkDnaRaw(single, "// DNA:RAW\n", "", "// DNA:RAW\n");
 
-        checkDnaRaw(level5, "/* DNA:RAW SUPER */", " SUPER ", "/* DNA:RAW SUPER */");
-        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */", " SUPER ", "/* DNA:RAW SUPER */");
-        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */@@", " SUPER ", "/* DNA:RAW SUPER */");
-        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */\n@@", " SUPER ", "/* DNA:RAW SUPER */");
+        checkDnaRaw(level5, "/* DNA:RAW SUPER */", "SUPER", "/* DNA:RAW SUPER */");
+        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */", "SUPER", "/* DNA:RAW SUPER */");
+        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */@@", "SUPER", "/* DNA:RAW SUPER */");
+        checkDnaRaw(level5, "@@/* DNA:RAW SUPER */\n@@", "SUPER", "/* DNA:RAW SUPER */");
 
         checkDnaRaw(level5, "@@/* DNA:RAW*/\n@@", "", "/* DNA:RAW*/");
     }
@@ -182,22 +143,20 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
-        Parser.dealDnaBkb(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        StringBuilder buf = new StringBuilder();
-
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealDnaBkb(ctx);
+        Assert.assertNotNull(exon);
+        System.out.println(exon);
         if (name == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
-            assertEquals(name, exon.life.name);
-            exon.merge(new HashMap<>(), buf);
+            StringBuilder buf = new StringBuilder();
+            assertEquals(name, ((Live) exon).life.name);
+            exon.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
@@ -225,27 +184,26 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
-        Parser.dealDnaEnd(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealDnaEnd(ctx);
+        Assert.assertNotNull(exon);
+        logger.debug(exon.toString());
 
-        StringBuilder buf = new StringBuilder();
         if (name == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
+            StringBuilder buf = new StringBuilder();
             DnaEnd dna = (DnaEnd) exon;
             String[] nms = name.split("[, ]+");
             assertEquals(nms.length, dna.name.size());
             for (String nm : nms) {
                 assertTrue(dna.name.contains(nm));
             }
-            dna.merge(new HashMap<>(), buf);
+            dna.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
@@ -274,26 +232,25 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
-        Parser.dealDnaSet(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealDnaSet(ctx);
+        Assert.assertNotNull(exon);
+        logger.debug(exon.toString());
 
-        StringBuilder buf = new StringBuilder();
         if (life == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
+            StringBuilder buf = new StringBuilder();
             DnaSet dna = (DnaSet) exon;
             Assert.assertEquals(find, dna.find.pattern());
             Assert.assertEquals(repl, dna.repl);
             Assert.assertEquals(life, dna.life);
 
-            dna.merge(new HashMap<>(), buf);
+            dna.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
@@ -331,27 +288,26 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
-        Parser.dealRnaRun(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealRnaRun(ctx);
+        Assert.assertNotNull(exon);
+        logger.debug(exon.toString());
 
-        StringBuilder buf = new StringBuilder();
         if (type == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
+            StringBuilder buf = new StringBuilder();
             RnaRun rna = (RnaRun) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(find, rna.find.pattern());
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(life, rna.life);
             Assert.assertEquals(quiet, rna.mute);
-            rna.merge(new HashMap<>(), buf);
+            rna.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
@@ -395,15 +351,14 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
-        Parser.dealRnaUse(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealRnaUse(ctx);
+        Assert.assertNotNull(exon);
+        logger.debug(exon.toString());
 
-        StringBuilder buf = new StringBuilder();
         if (life == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
+            StringBuilder buf = new StringBuilder();
             RnaUse rna = (RnaUse) exon;
             Assert.assertEquals(find, rna.find.pattern());
             Assert.assertEquals(para, rna.para);
@@ -411,12 +366,12 @@ public class ParserTest {
 
             HashMap<String, Object> ctx1 = new HashMap<>();
             ctx1.put("who", "meepo");
-            rna.merge(ctx1, buf);
+            rna.merge(ctx1, null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
@@ -454,57 +409,56 @@ public class ParserTest {
         ctx.edge0 = txt.indexOf("/");
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
-        Parser.dealRnaPut(ctx);
-        List<Exon> gene = ctx.gene;
-        Exon exon = gene.get(gene.size() - 1);
-        System.out.println(exon.toString());
+        Exon exon = Parser.dealRnaPut(ctx);
+        Assert.assertNotNull(exon);
+        logger.debug(exon.toString());
 
-        StringBuilder buf = new StringBuilder();
         if (type == null) {
-            Assert.assertTrue(exon instanceof TxtPlain);
+            Assert.assertEquals(0, exon.edge.until);
         } else {
+            StringBuilder buf = new StringBuilder();
             RnaPut rna = (RnaPut) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(para, rna.para);
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(mute, rna.mute);
-            rna.merge(new HashMap<>(), buf);
+            rna.merge(new HashMap<>(), null, buf);
             assertEquals("", buf.toString());
+            buf.setLength(0);
+            exon.build(buf);
+            assertEquals(build, buf.toString());
         }
-        buf.setLength(0);
-        exon.build(buf);
-        assertEquals(build, buf.toString());
     }
 
     @Test
     public void dealRnaPut() {
-        checkRnaPut(single, "// RNA:PUT /who/meepo/", "map", "who", "meepo", false,"// RNA:PUT /who/meepo/");
-        checkRnaPut(single, "// RNA:PUT !/who/meepo/", "map", "who", "meepo", true,"// RNA:PUT !/who/meepo/");
-        checkRnaPut(single, "// RNA:PUT js/how/2*(1+3)/", "js", "how", "2*(1+3)", false,"// RNA:PUT js/how/2*(1+3)/");
-        checkRnaPut(single, "// RNA:PUT js!/how/2*(1+3)/", "js", "how", "2*(1+3)", true,"// RNA:PUT js!/how/2*(1+3)/");
-        checkRnaPut(single, "// RNA:PUT ///", "map", "", "", false,"// RNA:PUT ///");
-        checkRnaPut(single, "// RNA:PUT //meepo/", "map", "", "meepo", false,"// RNA:PUT //meepo/");
-        checkRnaPut(single, "// RNA:PUT /who//", "map", "who", "", false,"// RNA:PUT /who//");
-        checkRnaPut(single, "// RNA:PUT /who/meepo/ @@", "map", "who", "meepo", false,"// RNA:PUT /who/meepo/ @@");
-        checkRnaPut(single, "// RNA:PUT raw/who/meepo/ @@", "raw", "who", "meepo", false,"// RNA:PUT raw/who/meepo/ @@");
-        checkRnaPut(single, "// RNA:PUT /who/meepo/ @@\n", "map", "who", "meepo", false,"// RNA:PUT /who/meepo/ @@\n");
-        checkRnaPut(single, "// RNA:PUT raw/who/meepo/ @@\n", "raw", "who", "meepo", false,"// RNA:PUT raw/who/meepo/ @@\n");
+        checkRnaPut(single, "// RNA:PUT /who/meepo/", "map", "who", "meepo", false, "// RNA:PUT /who/meepo/");
+        checkRnaPut(single, "// RNA:PUT !/who/meepo/", "map", "who", "meepo", true, "// RNA:PUT !/who/meepo/");
+        checkRnaPut(single, "// RNA:PUT js/how/2*(1+3)/", "js", "how", "2*(1+3)", false, "// RNA:PUT js/how/2*(1+3)/");
+        checkRnaPut(single, "// RNA:PUT js!/how/2*(1+3)/", "js", "how", "2*(1+3)", true, "// RNA:PUT js!/how/2*(1+3)/");
+        checkRnaPut(single, "// RNA:PUT ///", "map", "", "", false, "// RNA:PUT ///");
+        checkRnaPut(single, "// RNA:PUT //meepo/", "map", "", "meepo", false, "// RNA:PUT //meepo/");
+        checkRnaPut(single, "// RNA:PUT /who//", "map", "who", "", false, "// RNA:PUT /who//");
+        checkRnaPut(single, "// RNA:PUT /who/meepo/ @@", "map", "who", "meepo", false, "// RNA:PUT /who/meepo/ @@");
+        checkRnaPut(single, "// RNA:PUT raw/who/meepo/ @@", "raw", "who", "meepo", false, "// RNA:PUT raw/who/meepo/ @@");
+        checkRnaPut(single, "// RNA:PUT /who/meepo/ @@\n", "map", "who", "meepo", false, "// RNA:PUT /who/meepo/ @@\n");
+        checkRnaPut(single, "// RNA:PUT raw/who/meepo/ @@\n", "raw", "who", "meepo", false, "// RNA:PUT raw/who/meepo/ @@\n");
 
-        checkRnaPut(single, "// RNA:PUT who/meepo/ @@\n", null, null, null, false,"// RNA:PUT who/meepo/ @@\n");
-        checkRnaPut(single, "// RNA:PUT /who/meepo @@\n", null, null, null, false,"// RNA:PUT /who/meepo @@\n");
+        checkRnaPut(single, "// RNA:PUT who/meepo/ @@\n", null, null, null, false, "// RNA:PUT who/meepo/ @@\n");
+        checkRnaPut(single, "// RNA:PUT /who/meepo @@\n", null, null, null, false, "// RNA:PUT /who/meepo @@\n");
 
-        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/", "map", "who", "meepo", false,"/* RNA:PUT /who/meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT js/how/2*(1+3)/*/", "js", "how", "2*(1+3)", false,"/* RNA:PUT js/how/2*(1+3)/*/");
-        checkRnaPut(level5, "/* RNA:PUT js!/how/2*(1+3)/*/", "js", "how", "2*(1+3)", true,"/* RNA:PUT js!/how/2*(1+3)/*/");
-        checkRnaPut(level5, "/* RNA:PUT ///*/", "map", "", "", false,"/* RNA:PUT ///*/");
-        checkRnaPut(level5, "/* RNA:PUT //meepo/*/", "map", "", "meepo", false,"/* RNA:PUT //meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT /who//*/", "map", "who", "", false,"/* RNA:PUT /who//*/");
-        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/@@", "map", "who", "meepo", false,"/* RNA:PUT /who/meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT raw/who/meepo/*/@@", "raw", "who", "meepo", false,"/* RNA:PUT raw/who/meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/@@\n", "map", "who", "meepo", false,"/* RNA:PUT /who/meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT raw/who/meepo/*/@@\n", "raw", "who", "meepo", false,"/* RNA:PUT raw/who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/", "map", "who", "meepo", false, "/* RNA:PUT /who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT js/how/2*(1+3)/*/", "js", "how", "2*(1+3)", false, "/* RNA:PUT js/how/2*(1+3)/*/");
+        checkRnaPut(level5, "/* RNA:PUT js!/how/2*(1+3)/*/", "js", "how", "2*(1+3)", true, "/* RNA:PUT js!/how/2*(1+3)/*/");
+        checkRnaPut(level5, "/* RNA:PUT ///*/", "map", "", "", false, "/* RNA:PUT ///*/");
+        checkRnaPut(level5, "/* RNA:PUT //meepo/*/", "map", "", "meepo", false, "/* RNA:PUT //meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT /who//*/", "map", "who", "", false, "/* RNA:PUT /who//*/");
+        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/@@", "map", "who", "meepo", false, "/* RNA:PUT /who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT raw/who/meepo/*/@@", "raw", "who", "meepo", false, "/* RNA:PUT raw/who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT /who/meepo/*/@@\n", "map", "who", "meepo", false, "/* RNA:PUT /who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT raw/who/meepo/*/@@\n", "raw", "who", "meepo", false, "/* RNA:PUT raw/who/meepo/*/");
 
-        checkRnaPut(level5, "/* RNA:PUT who/meepo/*/", null, null, null, false,"/* RNA:PUT who/meepo/*/");
-        checkRnaPut(level5, "/* RNA:PUT /who/meepo*/", null, null, null, false,"/* RNA:PUT /who/meepo*/");
+        checkRnaPut(level5, "/* RNA:PUT who/meepo/*/", null, null, null, false, "/* RNA:PUT who/meepo/*/");
+        checkRnaPut(level5, "/* RNA:PUT /who/meepo*/", null, null, null, false, "/* RNA:PUT /who/meepo*/");
     }
 }
