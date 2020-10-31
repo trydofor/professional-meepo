@@ -17,6 +17,7 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Live;
 import pro.fessional.meepo.poof.RnaManager;
+import pro.fessional.meepo.util.Seek;
 
 import java.util.ArrayList;
 import java.util.Collections;

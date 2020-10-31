@@ -47,7 +47,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领
 
 ### 2.1.忽略指令行空白，可读性优先
 
-底层模板[blog-trim.peb](src/test/resources/template/blog/blog-trim.peb)，
+底层模板的[blog-trim.peb](src/test/resources/template/blog/blog-trim.peb)，
 不能有效的被html和js语法加持，IDE插件能够识别pebble语法。
 ``` pebble
 <body>
@@ -61,9 +61,9 @@ Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领
 </body>
 ```
 
-同等输出[blog-trim.htm](src/test/resources/template/blog/blog-trim.htm)，
+同等输出的[blog-trim.htm](src/test/resources/template/blog/blog-trim.htm)，
 保留原本的html和js特性，可以以html编辑。也可以使用pebble插件编辑。  
-没有使用`!`，如果指令行独占一行，切行内全为空白，则不输出此行。第一行故意有个空格。
+没有使用`!`，如果指令行独占一行，且行内全为空白，则不输出此行。第一行故意有个空格。
 ``` html
  <!-- HI-MEEPO -->
 <body>
@@ -81,8 +81,8 @@ Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领
 
 ### 2.2.保留指令行空白，一致性优先
 
-底层模板[blog-pure.peb](src/test/resources/template/blog/blog-pure.peb)，
-注意`<body>`上有一空行，`var`前有12个空格（var前2行各4个空格）
+底层模板的[blog-pure.peb](src/test/resources/template/blog/blog-pure.peb)，
+注意`<body>`上有一空行，`var`前共有有4x3=12个空格。
 ``` pebble
 
 <body>
@@ -96,8 +96,8 @@ Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领
 </body>
 ```
 
-同等输出[blog-pure.htm](src/test/resources/template/blog/blog-pure.htm)，
-使用了`!`，使得米波只处理注释首尾间的内容，保留之外的换行和空白。
+同等输出的[blog-pure.htm](src/test/resources/template/blog/blog-pure.htm)，
+使用了`!`，使得米波只处理注释首尾间的内容，保留之外的换行和空白（var前2行各4个空格）。
 ``` html
 <!-- HI-MEEPO! -->
 <body>
@@ -115,14 +115,14 @@ Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领
 
 ### 2.3.全部替换，使用匿名全局
 
-输出结果[replace-all-o.htm](src/test/resources/template/repl/replace-all-o.htm)
+输出结果的[replace-all-o.htm](src/test/resources/template/repl/replace-all-o.htm)
 ```html
 <div>
 use anonymous all-life to replace div to div
 </div>
 ```
 
-米波模板[replace-all-i.htm](src/test/resources/template/repl/replace-all-i.htm)，使用`*`为匿名全局替换。
+米波模板的[replace-all-i.htm](src/test/resources/template/repl/replace-all-i.htm)，使用`*`为匿名全局替换。
 ```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET /body/div/* -->
@@ -133,14 +133,14 @@ use anonymous all-life to replace body to div
 
 ### 2.4.间隔替换，使用指定范围
 
-输出结果[replace-1a3-o.htm](src/test/resources/template/repl/replace-1a3-o.htm)
+输出结果的[replace-1a3-o.htm](src/test/resources/template/repl/replace-1a3-o.htm)
 ```html
 <div>
 use ranged-life to replace 1st and 3rd body to div
 </div>
 ```
 
-米波模板[replace-1a3-i.htm](src/test/resources/template/repl/replace-1a3-i.htm)，使用`1,3`逗号分隔，确认次数。
+米波模板的[replace-1a3-i.htm](src/test/resources/template/repl/replace-1a3-i.htm)，使用`1,3`逗号分隔，确认次数。
 ```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET /body/div/1,3 -->
@@ -151,14 +151,14 @@ use ranged-life to replace 1st and 3rd body to div
 
 ### 2.5.范围替换，使用命名全局
 
-输出结果[replace-end-o.htm](src/test/resources/template/repl/replace-end-o.htm)
+输出结果的[replace-end-o.htm](src/test/resources/template/repl/replace-end-o.htm)
 ```html
 <body>
 use named-life to replace scoped div to div
 </body>
 ```
 
-米波模板[replace-end-i.htm](src/test/resources/template/repl/replace-end-i.htm)，使用`end`和命名生命周期。
+米波模板的[replace-end-i.htm](src/test/resources/template/repl/replace-end-i.htm)，使用`end`和命名生命周期。
 ```html
 <!-- HI-MEEPO -->
 <body>
@@ -170,7 +170,7 @@ use named-life to replace scoped body to div
 
 ### 2.6.保留原样，使用魔免黑皇杖
 
-输出结果[black-king-bar-o.htm](src/test/resources/template/bkb/black-king-bar-o.htm)
+输出结果的[black-king-bar-o.htm](src/test/resources/template/bkb/black-king-bar-o.htm)
 ```html
 <!-- DNA:SET /body/div/* -->
 <body>
@@ -178,7 +178,7 @@ in bkb, all are plain text, including DNA:SET
 </body>
 ```
 
-米波模板[black-king-bar-i.htm](src/test/resources/template/bkb/black-king-bar-i.htm)，使用`end`和命名生命周期。
+米波模板的[black-king-bar-i.htm](src/test/resources/template/bkb/black-king-bar-i.htm)，使用`end`和命名生命周期。
 ```html
 <!-- HI-MEEPO -->
 <!-- DNA:BKB bkb -->
@@ -191,13 +191,13 @@ in bkb, all are plain text, including DNA:SET
 
 ### 2.7.删除行块，实际是替换为空
 
-输出结果[delete-1a3-o.htm](src/test/resources/template/del/delete-1a3-o.htm)
+输出结果的[delete-1a3-o.htm](src/test/resources/template/del/delete-1a3-o.htm)
 ```html
 delete all, but this line
 
 ```
 
-米波模板[delete-1a3-i.htm](src/test/resources/template/del/delete-1a3-i.htm)，删除（替换为空）第1和3匹配行。
+米波模板的[delete-1a3-i.htm](src/test/resources/template/del/delete-1a3-i.htm)，删除（替换为空）第1和3匹配行。
 ```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET /^.*\n?//1,3 -->
@@ -206,7 +206,7 @@ delete all, but this line
 </body>
 ```
 
-米波模板[delete-all-i.htm](src/test/resources/template/del/delete-all-i.htm)，删除body及期间所有。
+米波模板的[delete-all-i.htm](src/test/resources/template/del/delete-all-i.htm)，删除body及期间所有。
 ```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET :<body>[\s\S]*</body>:: -->
@@ -217,7 +217,7 @@ delete all, but this line
 
 ### 2.8.单次执行，使用变量，以便后续读取
 
-输出结果[put-use-o.htm](src/test/resources/template/rna/put-use-o.htm)
+输出结果的[put-use-o.htm](src/test/resources/template/rna/put-use-o.htm)
 ```html
 <body>
 1009+10+7=1026
@@ -225,7 +225,7 @@ delete all, but this line
 </body>
 ```
 
-米波模板[put-use-i.htm](src/test/resources/template/rna/put-use-i.htm)，用PUT和USE做单次执行，到处使用。
+米波模板的[put-use-i.htm](src/test/resources/template/rna/put-use-i.htm)，用PUT和USE做单次执行，到处使用。
 ```html
 <!-- HI-MEEPO -->
 <!-- RNA:PUT js/calc/1009+10+7/ -->
@@ -238,7 +238,7 @@ delete all, but this line
 
 ### 2.9.每次执行，一个js版的计数器
 
-输出结果[run-any-o.htm](src/test/resources/template/rna/run-any-o.htm)
+输出结果的[run-any-o.htm](src/test/resources/template/rna/run-any-o.htm)
 ```html
 <body>
 i=1009+10+7=1026
@@ -247,7 +247,7 @@ i++ == 1028
 </body>
 ```
 
-米波模板[run-any-i.htm](src/test/resources/template/rna/run-any-i.htm)，用PUT和USE做单次执行，到处使用。
+米波模板的[run-any-i.htm](src/test/resources/template/rna/run-any-i.htm)，用PUT和USE做单次执行，到处使用。
 ```html
 <!-- HI-MEEPO -->
 <!-- RNA:RUN js//i=1009+10+7/ -->
@@ -259,7 +259,46 @@ i++ == counter
 </body>
 ```
 
-### 2.10.替换的界定符，不想用`/`
+### 2.10.导入外部模板，import uri
+
+通过uri引擎，可以读取 `file://`,`classpath:`和`http://`等外部资源
+
+输出结果的[import-o.htm](src/test/resources/template/imp/import-o.htm)
+```html
+imported text
+```
+
+米波模板的[import-i.htm](src/test/resources/template/imp/import-i.htm)，读入[import-f.htm](src/test/resources/template/imp/import-f.htm)。
+```html
+<!-- HI-MEEPO -->
+<!-- RNA:RUN uri#import-here#classpath:/template/imp/import-f.htm# -->
+import-here
+```
+
+### 2.11.执行java代码，java引擎
+
+输出结果的[compile-java-o.htm](src/test/resources/template/java/compile-java-o.htm)
+```html
+2020-07-09 00:00:00
+```
+
+米波模板的[compile-java-i.htm](src/test/resources/template/java/compile-java-i.htm)
+```html
+<!-- HI-MEEPO -->
+<!-- RNA:RUN java#java-output#
+import java.time.LocalTime, java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+LocalDate date = LocalDate.parse("2020-07-09");
+LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+return ldt.format(fmt);
+# -->
+java-output
+```
+
+### 2.12.替换的界定符，不想用`/`
 
 `界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。  
 所以只要避免和指令中内容重复即可，但是，像👹这种的3,4字节不可以，getChar会分裂。
@@ -476,6 +515,8 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
  * `map` - `session`级，以`功能体`为key，到`环境`中取值，没有则输出key。
  * `raw` - `nothing`级，直接把`功能体`当字符串返回，不会展开转义字符。
 
+米波在多行注释时，使用多行的块解析，所以`功能体`天然支持多行，提高可读性。
+
 ### 6.1.RNA:USE 使用变量
 
 语法：`RNA:USE` `空白`+ `界定` `查找` `界定` `变量` `界定` `作用`?
@@ -536,7 +577,7 @@ var userPass = "16345-31415";
 
 执行中的引擎环境，在每次eval时，可以被context覆盖，也可以不覆盖，依赖于引擎实现。
 
-### 7.1.字典引擎，map
+### 7.1.字典引擎(map)
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
@@ -545,29 +586,51 @@ var userPass = "16345-31415";
  * 顺序为context,System.getProperty,System.getenv
  * 没有找到`非null`值，直接返回`功能体`
 
-### 7.2.来啥回啥，raw
+### 7.2.来啥回啥(raw)
 
 `nothing`级，直接把`功能体`当字符串返回，但mute时返回`字符串空`。
 
-### 7.3.javascript，js
+### 7.3.内容引入(uri)
+
+`nothing`级，把uri的内容以UTF8输出为字符串。首次读入，后续缓存。
+
+ * `http://`,`https://`时，以GET读取
+ * `file://`,`/`或`.`时，从file system读取
+ * `classpath:`时，从classloader读入，注意没有`//`
+ * 其他，以URLConnection读取，超时为3秒
+
+### 7.4.直接执行(exe)
+
+`nothing`级，直接执行命令，解析引号块和转义，捕获std_out输出。  
+注意的是，每次eval时，engine会用context覆盖环境变量。
+
+### 7.5.win下命令(cmd)
+
+在window系，以`cmd /c`执行的exe。
+
+### 7.6.unx下命令(sh)
+
+在bash系，以`bash -c`执行的exe。
+
+### 7.7.执行js脚本(js)
 
 session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 注意的是，每次eval时，engine会用context覆盖内部变量。
 
-### 7.4.win下命令，cmd
+### 7.8.执行java代码(java)
 
-在window系统系，以`cmd /c`直接运行，捕获std_out输出，mute时返回`字符串空`。  
-注意的是，每次eval时，engine会用context覆盖环境变量。
+session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
-### 7.5.unx下命令，sh
-
-以`bash -c`直接运行，捕获std_out输出。注意引号块和转义，mute时返回`字符串空`。  
-注意的是，每次eval时，engine会用context覆盖环境变量。
-
-### 7.6.直接执行，exe
-
-`nothing`级，直接执行命令，解析引号块和转义，捕获std_out输出。  
-注意的是，每次eval时，engine会用context覆盖环境变量。
+ * 依赖于`joor`编译代码，使用时，需要自行设置依赖
+ * 头部`import java.util.*,java.util.Map;`，可以`,`分隔多个
+ * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
+ * 尾部以`return obj`返回，`;`可以省略。
+ * 编译后的java代码实现了`JavaEngine.Java`接口
+ * 传入`Map<String, Object> ctx`，可读取context
+ * 已经import的class有，
+    - org.jetbrains.annotations.NotNull;
+    - pro.fessional.meepo.poof.impl.JavaEngine;
+    - java.util.Map;
 
 ## 9.常见问题
 

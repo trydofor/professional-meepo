@@ -2,6 +2,7 @@ package pro.fessional.meepo.sack;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.util.Seek;
 
 /**
  * @author trydofor

@@ -25,8 +25,10 @@ public interface Const {
     // 引擎
     String ENGINE_MAP = "map";
     String ENGINE_RAW = "raw";
-    String ENGINE_JS = "js";
+    String ENGINE_URI = "uri";
+    String ENGINE_EXE = "exe";
     String ENGINE_CMD = "cmd";
     String ENGINE_SH = "sh";
-    String ENGINE_EXE = "exe";
+    String ENGINE_JS = "js";
+    String ENGINE_JAVA = "java";
 }

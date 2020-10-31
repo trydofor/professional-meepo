@@ -1,4 +1,4 @@
-package pro.fessional.meepo.sack;
+package pro.fessional.meepo.util;
 
 /**
  * @author trydofor
