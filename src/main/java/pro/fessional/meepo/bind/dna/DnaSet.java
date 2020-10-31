@@ -1,11 +1,11 @@
 package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
-import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.txt.TxtDnaSet;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.wow.Live;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +51,9 @@ public class DnaSet extends Live {
 
     @Override
     public void apply(List<Exon> gen, Clop pos, String txt) {
-        gen.add(new TxtDnaSet(txt, pos, repl));
+        if (pos.length > 0) {
+            gen.add(new TxtDnaSet(txt, pos, repl));
+        }
     }
 
     @Override

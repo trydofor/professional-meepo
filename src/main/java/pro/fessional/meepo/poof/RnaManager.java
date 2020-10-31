@@ -1,7 +1,12 @@
 package pro.fessional.meepo.poof;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.poof.impl.JsEngine;
 import pro.fessional.meepo.poof.impl.MapEngine;
+import pro.fessional.meepo.poof.impl.OsEngine;
+import pro.fessional.meepo.poof.impl.RawEngine;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,9 +18,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RnaManager {
 
+    protected static final Logger logger = LoggerFactory.getLogger(RnaManager.class);
     private static final ConcurrentHashMap<String, RnaEngine> engines = new ConcurrentHashMap<>();
 
     private static RnaEngine defaultEngine = new MapEngine();
+
+    // init engine
+    static {
+        register(new JsEngine());
+        register(new OsEngine());
+        register(new RawEngine());
+        register(defaultEngine);
+    }
 
     /**
      * 返回一个新的引擎
@@ -37,21 +51,15 @@ public class RnaManager {
      */
     public static void register(RnaEngine engine) {
         if (engine != null) {
+            String clz = engine.getClass().getName();
             for (String t : engine.type()) {
-                engines.put(t, engine);
+                RnaEngine old = engines.put(t, engine);
+                if (old == null) {
+                    logger.info("register new engine for type={}, clz={}", t, clz);
+                } else {
+                    logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
+                }
             }
-        }
-    }
-
-    /**
-     * 注册一个引擎
-     *
-     * @param type   类型
-     * @param engine 引擎
-     */
-    public static void register(String type, RnaEngine engine) {
-        if (engine != null && type != null) {
-            engines.put(type, engine);
         }
     }
 

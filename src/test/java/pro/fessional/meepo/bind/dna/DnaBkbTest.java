@@ -2,7 +2,7 @@ package pro.fessional.meepo.bind.dna;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.fessional.meepo.bind.Clop;
+import pro.fessional.meepo.bind.wow.Clop;
 
 /**
  * @author trydofor

@@ -2,8 +2,8 @@ package pro.fessional.meepo.bind.dna;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.fessional.meepo.bind.Clop;
-import pro.fessional.meepo.bind.Life;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
 
 import java.util.regex.Pattern;
 

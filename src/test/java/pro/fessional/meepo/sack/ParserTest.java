@@ -4,10 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
-import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaSet;
 import pro.fessional.meepo.bind.rna.RnaPut;
@@ -15,6 +12,9 @@ import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
 import pro.fessional.meepo.bind.txt.HiMeepo;
 import pro.fessional.meepo.bind.txt.TxtSimple;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.wow.Live;
 
 import java.util.HashMap;
 import java.util.List;
@@ -105,8 +105,7 @@ public class ParserTest {
 
     private void checkDnaRaw(HiMeepo meepo, String txt, String merge, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = ctx.txt.indexOf(ctx.meepo.head);
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
         Exon exon = Parser.dealDnaRaw(ctx);
@@ -135,12 +134,15 @@ public class ParserTest {
         checkDnaRaw(level5, "@@/* DNA:RAW SUPER */\n@@", "SUPER", "/* DNA:RAW SUPER */");
 
         checkDnaRaw(level5, "@@/* DNA:RAW*/\n@@", "", "/* DNA:RAW*/");
+
+        checkDnaRaw(single, "/// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+        checkDnaRaw(single, "//// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+        checkDnaRaw(single, "///// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
     }
 
     private void checkDnaBkb(HiMeepo meepo, String txt, String name, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
         Exon exon = Parser.dealDnaBkb(ctx);
@@ -180,8 +182,7 @@ public class ParserTest {
 
     private void checkDnaEnd(HiMeepo meepo, String txt, String name, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
         Exon exon = Parser.dealDnaEnd(ctx);
@@ -221,15 +222,14 @@ public class ParserTest {
         checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */@@", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
         checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */\n@@", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
 
-        checkDnaEnd(single, "@@/* DNA:END \n", null, "/* DNA:END \n");
-        checkDnaEnd(single, "@@/* DNA:END\n", null, "/* DNA:END\n");
+        checkDnaEnd(level5, "@@/* DNA:END */\n", null, "/* DNA:END */\n");
+        checkDnaEnd(level5, "@@/* DNA:END*/\n", null, "/* DNA:END*/\n");
     }
 
 
     private void checkDnaSet(HiMeepo meepo, String txt, Life life, String find, String repl, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_DNA$);
 
         Exon exon = Parser.dealDnaSet(ctx);
@@ -262,10 +262,10 @@ public class ParserTest {
         checkDnaSet(single, "// DNA:SET //{{user.male}}/", one, "", "{{user.male}}", "// DNA:SET //{{user.male}}/");
         checkDnaSet(single, "// DNA:SET /false//", one, "false", "", "// DNA:SET /false//");
         checkDnaSet(single, "// DNA:SET /false/{{user.male}}/", one, "false", "{{user.male}}", "// DNA:SET /false/{{user.male}}/");
-        checkDnaSet(single, "@@// DNA:SET /false/{{user.male}}/ @@", one, "false", "{{user.male}}", "// DNA:SET /false/{{user.male}}/ @@");
-        checkDnaSet(single, "@@// DNA:SET /false/{{user.male}}/ @@\n", one, "false", "{{user.male}}", "// DNA:SET /false/{{user.male}}/ @@\n");
-        checkDnaSet(single, "@@// DNA:SET /false/{{user.male}}/1,3-5,9 @@\n", num, "false", "{{user.male}}", "// DNA:SET /false/{{user.male}}/1,3-5,9 @@\n");
-        checkDnaSet(single, "@@// DNA:SET /false/{{user.male}}/mail @@\n", name, "false", "{{user.male}}", "// DNA:SET /false/{{user.male}}/mail @@\n");
+        checkDnaSet(single, "@@// DNA:SET :false:{{user.male}}: @@", one, "false", "{{user.male}}", "// DNA:SET :false:{{user.male}}: @@");
+        checkDnaSet(single, "@@// DNA:SET ⑨false⑨{{user.male}}⑨ @@\n", one, "false", "{{user.male}}", "// DNA:SET ⑨false⑨{{user.male}}⑨ @@\n");
+        checkDnaSet(single, "@@// DNA:SET |false|{{user.male}}|1,3-5,9 @@\n", num, "false", "{{user.male}}", "// DNA:SET |false|{{user.male}}|1,3-5,9 @@\n");
+        checkDnaSet(single, "@@// DNA:SET 汉false汉{{user.male}}汉mail @@\n", name, "false", "{{user.male}}", "// DNA:SET 汉false汉{{user.male}}汉mail @@\n");
 
         checkDnaSet(single, "@@// DNA:SET false/{{user.male}}/mail @@\n", null, null, null, "// DNA:SET false/{{user.male}}/mail @@\n");
         checkDnaSet(single, "@@// DNA:SET /false/mail @@\n", null, null, null, "// DNA:SET /false/mail @@\n");
@@ -284,8 +284,7 @@ public class ParserTest {
 
     private void checkRnaRun(HiMeepo meepo, String txt, Life life, String type, String find, String expr, boolean quiet, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
         Exon exon = Parser.dealRnaRun(ctx);
@@ -347,8 +346,7 @@ public class ParserTest {
 
     private void checkRnaUse(HiMeepo meepo, String txt, Life life, String find, String para, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
         Exon exon = Parser.dealRnaUse(ctx);
@@ -405,8 +403,7 @@ public class ParserTest {
 
     private void checkRnaPut(HiMeepo meepo, String txt, String type, String para, String expr, boolean mute, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
-        ctx.done1 = 0;
-        ctx.edge0 = txt.indexOf("/");
+        Parser.markHiMeepo(ctx);
         Parser.findXnaGrp(ctx, TKN_RNA$);
 
         Exon exon = Parser.dealRnaPut(ctx);

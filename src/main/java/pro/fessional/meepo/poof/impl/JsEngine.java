@@ -31,13 +31,13 @@ public class JsEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
+    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
         try {
             for (Map.Entry<String, Object> e : ctx.entrySet()) {
                 engine.put(e.getKey(), e.getValue());
             }
             Object v = engine.eval(expr);
-            return v == null || mute ? TXT_EMPTY : v.toString();
+            return v == null || mute ? TXT_EMPTY : v;
         } catch (ScriptException e) {
             throw new IllegalStateException(e);
         }

@@ -1,10 +1,10 @@
 package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Const;
-import pro.fessional.meepo.bind.Life;
-import pro.fessional.meepo.bind.Live;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.wow.Live;
 
 import java.util.Objects;
 

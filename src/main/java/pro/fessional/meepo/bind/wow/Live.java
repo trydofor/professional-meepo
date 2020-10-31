@@ -1,14 +1,15 @@
-package pro.fessional.meepo.bind;
+package pro.fessional.meepo.bind.wow;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.meepo.bind.Exon;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static pro.fessional.meepo.bind.Life.State.Dead;
-import static pro.fessional.meepo.bind.Life.State.Live;
-import static pro.fessional.meepo.bind.Life.State.Skip;
+import static pro.fessional.meepo.bind.wow.Life.State.Dead;
+import static pro.fessional.meepo.bind.wow.Life.State.Live;
+import static pro.fessional.meepo.bind.wow.Life.State.Skip;
 
 /**
  * @author trydofor

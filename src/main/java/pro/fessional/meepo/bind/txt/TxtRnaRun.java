@@ -1,8 +1,9 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
+import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class TxtRnaRun extends Exon {
+public class TxtRnaRun extends Exon implements Dyn {
 
     @NotNull
     public final String type;
@@ -32,8 +33,10 @@ public class TxtRnaRun extends Exon {
     @Override
     public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
         if (eng != null) {
-            String s = eng.eval(type, expr, ctx, mute);
-            buf.append(s);
+            Object s = eng.eval(type, expr, ctx, mute);
+            if (edge.length > 0) {
+                buf.append(s);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package pro.fessional.meepo.sack;
 
+import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.rna.RnaPut;
 import pro.fessional.meepo.bind.txt.TxtRnaRun;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author trydofor
@@ -17,25 +19,48 @@ import java.util.Map;
  */
 public class Gene {
 
+    private static final int magic9 = 19;
     public final String text;
     public final int size;
     private final List<Exon> exon;
 
-    public Gene(List<Exon> exon, String text) {
-        this.exon = new ArrayList<>(exon);
-        this.text = text;
-        this.size = text.length();
+    private final AtomicReference<String> cache;
+    private volatile int leng = -1;
+
+    public Gene(List<Exon> xna, String txt) {
+        this.exon = new ArrayList<>(xna);
+        this.text = txt;
+        this.size = txt.length() + magic9;
+        this.cache = new AtomicReference<>();
     }
 
-    public String merge() {
-        StringBuilder buf = new StringBuilder(size);
-        Map<String, Object> ctx = new HashMap<>();
+    public String merge(Map<String, Object> ctx) {
+        String s = cache.get();
+        if (s != null) return s;
+        if (ctx == null) ctx = new HashMap<>();
+
+        final int len = Math.max(leng, size);
+        StringBuilder buf = new StringBuilder(len);
+
         Map<String, RnaEngine> egx = new HashMap<>();
+        boolean cac = true;
         for (Exon exon : exon) {
+            if (exon instanceof Dyn) cac = false;
+
             RnaEngine eg = getEngine(egx, exon);
             exon.merge(ctx, eg, buf);
         }
-        return buf.toString();
+
+        String rst = buf.toString();
+        if (cac) {
+            cache.set(rst);
+        } else {
+            int bl = rst.length();
+            if (bl > len) {
+                this.leng = bl + magic9;
+            }
+        }
+        return rst;
     }
 
     public String origin() {

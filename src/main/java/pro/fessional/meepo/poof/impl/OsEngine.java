@@ -33,12 +33,15 @@ public class OsEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull String eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
+    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
 
         ProcessBuilder builder = new ProcessBuilder();
         Map<String, String> env = builder.environment();
         for (Map.Entry<String, Object> en : ctx.entrySet()) {
-            env.put(en.getKey(), en.getValue().toString());
+            Object v = en.getValue();
+            if (v != null) {
+                env.put(en.getKey(), v.toString());
+            }
         }
 
         if (ENGINE_CMD.equals(type)) {

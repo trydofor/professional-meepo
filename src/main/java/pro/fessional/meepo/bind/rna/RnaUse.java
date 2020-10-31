@@ -1,11 +1,11 @@
 package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
-import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.txt.TxtRnaUse;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.wow.Live;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,24 +1,24 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 
 import java.util.Objects;
 
 /**
  * <pre>
- * ` <% H!MEEPO %> \n`
+ * ` <% HI-MEEPO %> \n`
  * head=`<%`
  * tail=`%>`
- * edge=`<% H!MEEPO %>`
- * main=`H!MEEPO`
+ * edge=`<% HI-MEEPO %>`
+ * main=`HI-MEEPO`
  *
- * ` // H!MEEPO \n`
+ * ` // HI-MEEPO \n`
  * head=`//`
  * tail=`\n`
- * edge=`// H!MEEPO \n`
- * main=`H!MEEPO`
+ * edge=`// HI-MEEPO \n`
+ * main=`HI-MEEPO`
  * </pre>
  *
  * @author trydofor

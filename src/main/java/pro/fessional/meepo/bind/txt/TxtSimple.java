@@ -1,8 +1,8 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;

@@ -1,6 +1,8 @@
 package pro.fessional.meepo.bind;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.List;

@@ -1,6 +1,7 @@
-package pro.fessional.meepo.bind;
+package pro.fessional.meepo.bind.wow;
 
 import org.jetbrains.annotations.NotNull;
+import pro.fessional.meepo.bind.Const;
 
 import java.util.ArrayList;
 import java.util.Arrays;

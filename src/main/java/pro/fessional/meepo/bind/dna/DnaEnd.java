@@ -1,8 +1,8 @@
 package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 
 import java.util.Arrays;
 import java.util.Collection;

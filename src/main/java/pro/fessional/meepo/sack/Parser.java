@@ -3,10 +3,7 @@ package pro.fessional.meepo.sack;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fessional.meepo.bind.Clop;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.Life;
-import pro.fessional.meepo.bind.Live;
 import pro.fessional.meepo.bind.dna.DnaBkb;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
@@ -16,6 +13,9 @@ import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
 import pro.fessional.meepo.bind.txt.HiMeepo;
 import pro.fessional.meepo.bind.txt.TxtSimple;
+import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.wow.Live;
 import pro.fessional.meepo.poof.RnaManager;
 
 import java.util.ArrayList;
@@ -50,6 +50,7 @@ public class Parser {
     protected static final Logger logger = LoggerFactory.getLogger(Parser.class);
     protected static final Exon SkipThis = new Exon("", new Clop(0, 0));
     protected static final Exon DealText = new Exon("", new Clop(0, 0));
+    protected static final int RegxFlag = Pattern.UNIX_LINES | Pattern.MULTILINE;
 
     /**
      * 命名约定：0 - 表示起点，包含；1 - 表示终点，不含；
@@ -513,7 +514,7 @@ public class Parser {
         final Exon dna;
         if (note == null) {
             trimEdge(ctx); // DNA:SET
-            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
+            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]), RegxFlag);
             String repl = txt.substring(pos3[1] + 1, pos3[2]);
 
             Life life = parseLife(txt, pos3[2], ctx.main1);
@@ -556,7 +557,7 @@ public class Parser {
         final Exon rna;
         if (note == null) {
             trimEdge(ctx); // RNA:RUN
-            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
+            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]), RegxFlag);
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
             Life life = parseLife(txt, pos3[2], ctx.main1);
             rna = new RnaRun(txt, life, ctx.toEdge(), ctx.toMain(), type, find, expr, mute);
@@ -593,7 +594,7 @@ public class Parser {
         final Exon rna;
         if (note == null) {
             trimEdge(ctx); // RNA:USE
-            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]));
+            Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]), RegxFlag);
             String para = txt.substring(pos3[1] + 1, pos3[2]);
             Life life = parseLife(txt, pos3[2], ctx.main1);
             rna = new RnaUse(txt, life, ctx.toEdge(), ctx.toMain(), find, para);

@@ -1,8 +1,9 @@
 package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
+import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaPut extends Exon {
+public class RnaPut extends Exon implements Dyn {
 
     @NotNull
     public final Clop main;
@@ -50,7 +51,7 @@ public class RnaPut extends Exon {
     @Override
     public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
         if (eng != null) {
-            String s = eng.eval(type, expr, ctx, mute);
+            Object s = eng.eval(type, expr, ctx, mute);
             ctx.put(para, s);
         }
     }

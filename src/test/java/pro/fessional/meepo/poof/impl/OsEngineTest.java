@@ -14,7 +14,7 @@ public class OsEngineTest {
     @Test
     public void testSh() {
         OsEngine engine = new OsEngine();
-        String r1 = engine.eval("sh", "me=trydofor;echo $me \\$100", new HashMap<>(), false);
+        Object r1 = engine.eval("sh", "me=trydofor;echo $me \\$100", new HashMap<>(), false);
         Assert.assertEquals("trydofor $100", r1);
     }
 
@@ -25,7 +25,7 @@ public class OsEngineTest {
         ctx.put("me","trydofor");
         // "/bin/bash", "-c", "echo $u"
         // "cmd", "/c", "echo $u"
-        String r1 = engine.eval("exe", "/bin/bash -c \"echo $me \\$100\"", ctx, false);
+        Object r1 = engine.eval("exe", "/bin/bash -c \"echo $me \\$100\"", ctx, false);
         Assert.assertEquals("trydofor $100", r1);
     }
 }

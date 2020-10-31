@@ -1,8 +1,9 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Clop;
+import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class TxtRnaUse extends Exon {
+public class TxtRnaUse extends Exon implements Dyn {
     @NotNull
     public final String para;
 

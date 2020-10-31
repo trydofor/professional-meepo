@@ -1,4 +1,4 @@
-package pro.fessional.meepo.bind;
+package pro.fessional.meepo.bind.wow;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -15,12 +15,6 @@ public class Clop implements Comparable<Clop> {
     public final int start;
     public final int until;
     public final int length;
-
-    public Clop(int start) {
-        this.start = start;
-        this.until = start + 1;
-        this.length = until - start;
-    }
 
     public Clop(int start, int until) {
         this.start = start;
