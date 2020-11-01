@@ -3,9 +3,9 @@ package pro.fessional.meepo.bind.txt;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
-import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.sack.Acid;
+import pro.fessional.meepo.util.Dent;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,7 +25,7 @@ public class TxtDnaSet extends Exon {
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
+    public void merge(Acid acid, StringBuilder buf) {
         buf.append(repl);
     }
 
@@ -44,8 +44,11 @@ public class TxtDnaSet extends Exon {
 
     @Override
     public String toString() {
-        return "TxtDnaSet{" +
-                "repl='" + repl + '\'' +
-                '}';
+        StringBuilder buff = new StringBuilder("TxtDnaSet{");
+        buff.append("repl='");
+        Dent.line(buff, repl);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

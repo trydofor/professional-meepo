@@ -2,13 +2,16 @@ package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.mark.Dyn;
+import pro.fessional.meepo.bind.kin.Dyn;
+import pro.fessional.meepo.bind.kin.Ngx;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
-import java.util.Map;
 import java.util.Objects;
+
+import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
 
 /**
  * 从环境中获得变量
@@ -16,7 +19,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class TxtRnaUse extends Exon implements Dyn {
+public class TxtRnaUse extends Exon implements Dyn, Ngx {
     @NotNull
     public final String para;
     public final int left;
@@ -28,11 +31,17 @@ public class TxtRnaUse extends Exon implements Dyn {
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
-        Object o = ctx.get(para);
-        if (o != null) {
-            Dent.left(buf, left, o);
-        }
+    public @NotNull String getType() {
+        return ENGINE$MAP;
+    }
+
+    @Override
+    public void merge(Acid acid, StringBuilder buf) {
+        RnaEngine eng = acid.getEngine(this);
+        if (eng == null) return;
+
+        Object o = eng.eval(ENGINE$MAP, para, acid.context, false);
+        Dent.left(buf, left, o);
     }
 
     @Override
@@ -50,8 +59,11 @@ public class TxtRnaUse extends Exon implements Dyn {
 
     @Override
     public String toString() {
-        return "TxtRnaUse{" +
-                "para='" + para + '\'' +
-                '}';
+        StringBuilder buff = new StringBuilder("TxtRnaUse{");
+        buff.append("para='");
+        Dent.line(buff, para);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

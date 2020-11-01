@@ -3,6 +3,7 @@ package pro.fessional.meepo.bind.txt;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.Objects;
 
@@ -82,12 +83,19 @@ public class HiMeepo extends Exon {
 
     @Override
     public String toString() {
-        return "HiMeepo{" +
-                "head='" + head + '\'' +
-                ", tail='" + tail + '\'' +
-                ", echo=" + echo +
-                ", trim=" + trim +
-                ", crlf=" + crlf +
-                '}';
+        StringBuilder buff = new StringBuilder("HiMeepo{");
+        buff.append("head='");
+        Dent.line(buff, head);
+        buff.append("', tail='");
+        Dent.line(buff, tail);
+        buff.append("', echo=");
+        buff.append(echo);
+        buff.append(", trim=");
+        buff.append(trim);
+        buff.append(", crlf=");
+        buff.append(crlf);
+        buff.append('}');
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

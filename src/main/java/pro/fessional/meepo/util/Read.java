@@ -70,7 +70,7 @@ public class Read {
      */
     @NotNull
     public static String read(InputStream is, Charset cs) {
-        if (is == null) return Const.TXT_EMPTY;
+        if (is == null) return Const.TXT$EMPTY;
         if (cs == null) cs = UTF_8;
 
         StringBuilder sb = new StringBuilder();

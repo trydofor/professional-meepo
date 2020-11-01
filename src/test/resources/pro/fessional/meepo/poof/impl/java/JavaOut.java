@@ -1,7 +1,6 @@
 package pro.fessional.meepo.poof.impl.java;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.poof.impl.JavaEngine;
 
 import java.util.Map;
 import java.time.LocalTime;
@@ -14,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * @author trydofor
  * @since 2020-10-31
  */
-public class JavaOut implements JavaEngine.Java {
+public class JavaOut implements JavaEval {
     @Override
     public Object eval(@NotNull Map<String, Object> ctx) {
         LocalDate date = LocalDate.parse("2020-07-09");

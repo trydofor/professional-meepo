@@ -9,6 +9,6 @@ import org.junit.Test;
 public class ImpTest {
     @Test
     public void imp() {
-        TmplHelp.assertTmpl("/template/imp/import-i.htm", "/template/imp/import-o.htm");
+        TmplHelp.assertTmpl("/template/imp/import-o.htm", "/template/imp/import-i.htm");
     }
 }

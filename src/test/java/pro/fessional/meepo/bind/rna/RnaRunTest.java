@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
  */
 public class RnaRunTest {
 
-    RnaRun d1 = new RnaRun("// DNA:RUN os/rand/echo $RANDOM/1-3", Life.parse("1-3"), new Clop(0, 35), new Clop(3, 35), "os", Pattern.compile("rand"), "echo $RANDOM", false);
-    RnaRun d2 = new RnaRun(" // DNA:RUN os/rand/echo $RANDOM/1-3", Life.parse("1-3"), new Clop(1, 36), new Clop(4, 36), "os", Pattern.compile("rand"), "echo $RANDOM", false);
+    RnaRun d1 = new RnaRun("// DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(0, 35), Life.parse("1-3"), new Clop(3, 35), "os", Pattern.compile("rand"), "echo $RANDOM", false);
+    RnaRun d2 = new RnaRun(" // DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(1, 36), Life.parse("1-3"), new Clop(4, 36), "os", Pattern.compile("rand"), "echo $RANDOM", false);
 
     @Test
     public void testEquals() {

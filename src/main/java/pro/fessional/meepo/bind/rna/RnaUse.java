@@ -2,11 +2,13 @@ package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.mark.Bar;
+import pro.fessional.meepo.bind.kin.Bar;
+import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.txt.TxtRnaUse;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
-import pro.fessional.meepo.bind.wow.Live;
+import pro.fessional.meepo.bind.wow.Tick;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +31,7 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaUse extends Live implements Bar {
+public class RnaUse extends Tick implements Bar, Prc {
 
     @NotNull
     public final Clop main;
@@ -38,7 +40,7 @@ public class RnaUse extends Live implements Bar {
     @NotNull
     public final String para;
 
-    public RnaUse(String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull Pattern find, @NotNull String para) {
+    public RnaUse(String text, Clop edge, @NotNull Life life, @NotNull Clop main, @NotNull Pattern find, @NotNull String para) {
         super(text, edge, life);
         this.main = main;
         this.find = find;
@@ -72,10 +74,14 @@ public class RnaUse extends Live implements Bar {
 
     @Override
     public String toString() {
-        return "RnaUse{" +
-                "find='" + find.pattern() + '\'' +
-                ", para='" + para + '\'' +
-                ", life=" + life +
-                '}';
+        StringBuilder buff = new StringBuilder("RnaUse{");
+        buff.append("find='");
+        Dent.line(buff, find.pattern());
+        buff.append("', para='");
+        Dent.line(buff, para);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        buff.append("; ").append(life);
+        return buff.toString();
     }
 }

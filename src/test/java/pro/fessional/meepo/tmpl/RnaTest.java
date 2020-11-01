@@ -9,11 +9,11 @@ import org.junit.Test;
 public class RnaTest {
     @Test
     public void putUse() {
-        TmplHelp.assertTmpl("/template/rna/put-use-i.htm", "/template/rna/put-use-o.htm");
+        TmplHelp.assertTmpl("/template/rna/put-use-o.htm", "/template/rna/put-use-i.htm");
     }
 
     @Test
     public void runAny() {
-        TmplHelp.assertTmpl("/template/rna/run-any-i.htm", "/template/rna/run-any-o.htm");
+        TmplHelp.assertTmpl("/template/rna/run-any-o.htm", "/template/rna/run-any-i.htm");
     }
 }

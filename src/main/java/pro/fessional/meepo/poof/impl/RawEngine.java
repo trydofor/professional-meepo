@@ -5,8 +5,8 @@ import pro.fessional.meepo.poof.RnaEngine;
 
 import java.util.Map;
 
-import static pro.fessional.meepo.bind.Const.ENGINE_RAW;
-import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
+import static pro.fessional.meepo.bind.Const.ENGINE$RAW;
+import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 依次从context，System.getProperty 和System.getenv 取值
@@ -16,7 +16,7 @@ import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
  */
 public class RawEngine implements RnaEngine {
 
-    private static final String[] TYPE = {ENGINE_RAW};
+    private static final String[] TYPE = {ENGINE$RAW};
 
     @Override
     public @NotNull String[] type() {
@@ -25,7 +25,7 @@ public class RawEngine implements RnaEngine {
 
     @Override
     public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        return mute ? TXT_EMPTY : expr;
+        return mute ? TXT$EMPTY : expr;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class Life {
     public final String name;
 
     private Life(String name, List<int[]> book) {
-        this.name = name == null ? Const.TXT_EMPTY : name;
+        this.name = name == null ? Const.TXT$EMPTY : name;
         this.book = book == null ? Collections.emptyList() : book;
     }
 

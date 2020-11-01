@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static pro.fessional.meepo.bind.Const.ENGINE_CMD;
-import static pro.fessional.meepo.bind.Const.ENGINE_EXE;
-import static pro.fessional.meepo.bind.Const.ENGINE_SH;
-import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
+import static pro.fessional.meepo.bind.Const.ENGINE$CMD;
+import static pro.fessional.meepo.bind.Const.ENGINE$EXE;
+import static pro.fessional.meepo.bind.Const.ENGINE$SH;
+import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 单线程简单的执行 exec (Runtime, ProcessBuilder);
@@ -25,7 +25,7 @@ import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
  */
 public class OsEngine implements RnaEngine {
 
-    private static final String[] TYPE = {ENGINE_CMD, ENGINE_SH, ENGINE_EXE};
+    private static final String[] TYPE = {ENGINE$CMD, ENGINE$SH, ENGINE$EXE};
 
     @Override
     public @NotNull String[] type() {
@@ -44,9 +44,9 @@ public class OsEngine implements RnaEngine {
             }
         }
 
-        if (ENGINE_CMD.equals(type)) {
+        if (ENGINE$CMD.equals(type)) {
             builder.command("cmd", "/c", expr);
-        } else if (ENGINE_SH.equals(type)) {
+        } else if (ENGINE$SH.equals(type)) {
             builder.command("bash", "-c", expr);
         } else {
             builder.command(arg(expr));
@@ -56,7 +56,7 @@ public class OsEngine implements RnaEngine {
         try {
             p = builder.start();
 
-            String stdOut = TXT_EMPTY;
+            String stdOut = TXT$EMPTY;
             if (!mute) {
                 final InputStream out = p.getInputStream();
                 BufferedReader ord = new BufferedReader(new InputStreamReader(out, UTF_8));

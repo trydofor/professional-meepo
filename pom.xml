@@ -12,7 +12,6 @@
         <java.version>1.8</java.version>
         <maven.test.skip>true</maven.test.skip>
         <nonull.version>19.0.0</nonull.version>
-        <joor.version>0.9.13</joor.version>
         <slf4j.version>1.7.30</slf4j.version>
         <pebble.version>3.1.4</pebble.version>
         <junit.version>4.12</junit.version>
@@ -30,13 +29,7 @@
             <version>${slf4j.version}</version>
         </dependency>
         <!-- optional -->
-        <dependency>
-            <!-- java engine-->
-            <groupId>org.jooq</groupId>
-            <artifactId>joor-java-8</artifactId>
-            <version>${joor.version}</version>
-            <optional>true</optional>
-        </dependency>
+
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>
@@ -70,18 +63,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
@@ -89,6 +70,30 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>pro.fessional.wings.WhoAmI</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

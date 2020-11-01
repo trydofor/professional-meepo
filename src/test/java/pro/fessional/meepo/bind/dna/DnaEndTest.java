@@ -4,14 +4,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import pro.fessional.meepo.bind.wow.Clop;
 
+import java.util.Arrays;
+
 /**
  * @author trydofor
  * @since 2020-10-22
  */
 public class DnaEndTest {
 
-    DnaEnd d1 = new DnaEnd("// DNA:END 黑皇杖,id", new Clop(0, 17), new Clop(3, 17), "黑皇杖", "id");
-    DnaEnd d2 = new DnaEnd(" // DNA:END 黑皇杖,id", new Clop(1, 18), new Clop(4, 18), "id", "黑皇杖");
+    DnaEnd d1 = new DnaEnd("// DNA:END 黑皇杖,id", new Clop(0, 17), new Clop(3, 17), Arrays.asList("黑皇杖", "id"));
+    DnaEnd d2 = new DnaEnd(" // DNA:END 黑皇杖,id", new Clop(1, 18), new Clop(4, 18), Arrays.asList("id", "黑皇杖"));
 
     @Test
     public void testEquals() {

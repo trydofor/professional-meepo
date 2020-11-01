@@ -3,8 +3,8 @@ package pro.fessional.meepo.bind.dna;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
+import pro.fessional.meepo.util.Dent;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,10 +44,6 @@ public class DnaEnd extends Exon {
         }
     }
 
-    public DnaEnd(String text, Clop edge, Clop main, String... name) {
-        this(text, edge, main, Arrays.asList(name));
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,8 +59,11 @@ public class DnaEnd extends Exon {
 
     @Override
     public String toString() {
-        return "DnaEnd{" +
-                "name=" + name +
-                '}';
+        StringBuilder buff = new StringBuilder("DnaEnd{");
+        buff.append("name=[");
+        Dent.line(buff, String.join(",", name));
+        buff.append("]}");
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

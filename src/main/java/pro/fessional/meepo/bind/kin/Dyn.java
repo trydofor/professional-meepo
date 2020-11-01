@@ -1,4 +1,4 @@
-package pro.fessional.meepo.bind.mark;
+package pro.fessional.meepo.bind.kin;
 
 /**
  * dynamic aware

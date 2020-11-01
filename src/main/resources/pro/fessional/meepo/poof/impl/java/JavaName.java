@@ -1,7 +1,6 @@
 package pro.fessional.meepo.poof.impl.java;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.poof.impl.JavaEngine;
 
 import java.util.Map;
 // HI-MEEPO
@@ -13,7 +12,7 @@ import java.util.Map;
  * @since 2020-10-31
  */
 // RNA:USE #JavaName#class#
-public class JavaName implements JavaEngine.Java {
+public class JavaName implements JavaEval {
     @Override
     public Object eval(@NotNull Map<String, Object> ctx) {
         // RNA:USE #return +null#method#

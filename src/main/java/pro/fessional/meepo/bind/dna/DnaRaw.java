@@ -3,9 +3,9 @@ package pro.fessional.meepo.bind.dna;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
-import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.sack.Acid;
+import pro.fessional.meepo.util.Dent;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -35,8 +35,8 @@ public class DnaRaw extends Exon {
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
-        buf.append(text, raw0, main.until);
+    public void merge(Acid acid, StringBuilder buff) {
+        buff.append(text, raw0, main.until);
     }
 
     @Override
@@ -55,8 +55,11 @@ public class DnaRaw extends Exon {
 
     @Override
     public String toString() {
-        return "DnaRaw{" +
-                "text='" + text.substring(raw0, main.until) +
-                "'}";
+        StringBuilder buff = new StringBuilder("DnaRaw{");
+        buff.append("text='");
+        Dent.line(buff, text, raw0, main.until);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

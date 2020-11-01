@@ -3,10 +3,9 @@ package pro.fessional.meepo.bind;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
-import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.sack.Acid;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>
@@ -71,11 +70,10 @@ public class Exon {
     /**
      * 合并模板输出结果，默认edge
      *
-     * @param ctx 上下文
-     * @param eng 执行引擎
-     * @param buf buff
+     * @param acid 执行环境
+     * @param buff 输出buff
      */
-    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
+    public void merge(Acid acid, StringBuilder buff) {
     }
 
     public static class N implements Comparable<N> {

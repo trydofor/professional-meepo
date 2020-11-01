@@ -9,6 +9,6 @@ import org.junit.Test;
 public class BkbTest {
     @Test
     public void bkb() {
-        TmplHelp.assertTmpl("/template/bkb/black-king-bar-i.htm", "/template/bkb/black-king-bar-o.htm");
+        TmplHelp.assertTmpl("/template/bkb/black-king-bar-o.htm", "/template/bkb/black-king-bar-i.htm");
     }
 }

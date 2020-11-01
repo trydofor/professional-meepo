@@ -4,7 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
-import pro.fessional.meepo.bind.wow.Live;
+import pro.fessional.meepo.bind.wow.Tick;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-10-16
  */
-public class DnaBkb extends Live {
+public class DnaBkb extends Tick {
 
     @NotNull
     public final Clop main;
@@ -33,7 +34,7 @@ public class DnaBkb extends Live {
     public DnaBkb(String text, Clop edge, @NotNull Clop main, String name) {
         super(text, edge, Life.namedAny(name));
         this.main = main;
-        this.name = name == null ? Const.TXT_EMPTY : name;
+        this.name = name == null ? Const.TXT$EMPTY : name;
     }
 
     @Override
@@ -51,8 +52,13 @@ public class DnaBkb extends Live {
 
     @Override
     public String toString() {
-        return "DnaBkb{" +
-                "name='" + name + '\'' +
-                '}';
+        StringBuilder buff = new StringBuilder("DnaBkb{");
+        buff.append("name='");
+        Dent.line(buff, name);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        buff.append("; ").append(life);
+        buff.append("; ").append(life);
+        return buff.toString();
     }
 }

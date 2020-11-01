@@ -2,10 +2,12 @@ package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.txt.TxtDnaSet;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
-import pro.fessional.meepo.bind.wow.Live;
+import pro.fessional.meepo.bind.wow.Tick;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +30,7 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class DnaSet extends Live {
+public class DnaSet extends Tick implements Prc {
 
     @NotNull
     public final Clop main;
@@ -37,7 +39,7 @@ public class DnaSet extends Live {
     @NotNull
     public final String repl;
 
-    public DnaSet(@NotNull String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull Pattern find, @NotNull String repl) {
+    public DnaSet(@NotNull String text, Clop edge, @NotNull Life life, @NotNull Clop main, @NotNull Pattern find, @NotNull String repl) {
         super(text, edge, life);
         this.main = main;
         this.find = find;
@@ -73,10 +75,14 @@ public class DnaSet extends Live {
 
     @Override
     public String toString() {
-        return "DnaSet{" +
-                "find='" + find.pattern() +
-                "', repl='" + repl +
-                "', life=" + life +
-                '}';
+        StringBuilder buff = new StringBuilder("DnaSet{");
+        buff.append("find='");
+        Dent.line(buff, find.pattern());
+        buff.append("', repl='");
+        Dent.line(buff, repl);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        buff.append("; ").append(life);
+        return buff.toString();
     }
 }

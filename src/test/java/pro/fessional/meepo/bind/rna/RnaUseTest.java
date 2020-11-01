@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
  */
 public class RnaUseTest {
 
-    RnaUse d1 = new RnaUse("// DNA:USE /meepo/who/1-3", Life.parse("1-3"), new Clop(0, 35), new Clop(3, 35), Pattern.compile("meepo"), "who");
-    RnaUse d2 = new RnaUse(" // DNA:USE /meepo/who/1-3", Life.parse("1-3"), new Clop(1, 36), new Clop(4, 36), Pattern.compile("meepo"), "who");
+    RnaUse d1 = new RnaUse("// DNA:USE /meepo/who/1-3", new Clop(0, 35), Life.parse("1-3"), new Clop(3, 35), Pattern.compile("meepo"), "who");
+    RnaUse d2 = new RnaUse(" // DNA:USE /meepo/who/1-3", new Clop(1, 36), Life.parse("1-3"), new Clop(4, 36), Pattern.compile("meepo"), "who");
 
     @Test
     public void testEquals() {

@@ -7,8 +7,8 @@ import pro.fessional.meepo.util.Read;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.fessional.meepo.bind.Const.ENGINE_URI;
-import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
+import static pro.fessional.meepo.bind.Const.ENGINE$URI;
+import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 以UTF8输出URI内容
@@ -18,7 +18,7 @@ import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
  */
 public class UriEngine implements RnaEngine {
 
-    private static final String[] TYPE = {ENGINE_URI};
+    private static final String[] TYPE = {ENGINE$URI};
 
     private final Map<String, String> cache = new HashMap<>();
 
@@ -35,7 +35,7 @@ public class UriEngine implements RnaEngine {
         String str = Read.read(expr);
         cache.put(expr, str);
 
-        return mute ? TXT_EMPTY : str;
+        return mute ? TXT$EMPTY : str;
     }
 
     @Override

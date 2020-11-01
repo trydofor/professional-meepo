@@ -6,29 +6,49 @@ package pro.fessional.meepo.bind;
  */
 public interface Const {
 
-    String TXT_EMPTY = "";
+    String TXT$EMPTY = "";
 
     // 解析
-    String TKN_HIMEEPO = "HI-MEEPO";
+    String TKN$HIMEEPO = "HI-MEEPO";
 
-    String TKN_DNA$ = "DNA:";
-    String TKN_DNA$SET = "SET";
-    String TKN_DNA$END = "END";
-    String TKN_DNA$BKB = "BKB";
-    String TKN_DNA$RAW = "RAW";
+    String TKN$DNA_ = "DNA:";
+    String TKN$DNA_SET = "SET";
+    String TKN$DNA_END = "END";
+    String TKN$DNA_BKB = "BKB";
+    String TKN$DNA_RAW = "RAW";
 
-    String TKN_RNA$ = "RNA:";
-    String TKN_RNA$PUT = "PUT";
-    String TKN_RNA$USE = "USE";
-    String TKN_RNA$RUN = "RUN";
+    String TKN$RNA_ = "RNA:";
+    String TKN$RNA_PUT = "PUT";
+    String TKN$RNA_USE = "USE";
+    String TKN$RNA_RUN = "RUN";
+
+    String TKN$RNA_WHEN = "WHEN";
+    String TKN$RNA_EACH = "EACH";
+    String TKN$RNA_ELSE = "ELSE";
+    String TKN$RNA_DONE = "DONE";
+
+    String TKN$WHEN_YES = "y|yes";
+    String TKN$WHEN_NOT = "n|no|not";
 
     // 引擎
-    String ENGINE_MAP = "map";
-    String ENGINE_RAW = "raw";
-    String ENGINE_URI = "uri";
-    String ENGINE_EXE = "exe";
-    String ENGINE_CMD = "cmd";
-    String ENGINE_SH = "sh";
-    String ENGINE_JS = "js";
-    String ENGINE_JAVA = "java";
+    String ENGINE$MAP = "map";
+    String ENGINE$RAW = "raw";
+    String ENGINE$URI = "uri";
+    String ENGINE$EXE = "exe";
+    String ENGINE$CMD = "cmd";
+    String ENGINE$SH = "sh";
+    String ENGINE$JS = "js";
+    String ENGINE$JAVA = "java";
+
+    // map 变量
+    String KEY$ENVS_NOW = "now";
+    String KEY$ENVS_NOW_DATE = "now.date";
+    String KEY$ENVS_NOW_TIME = "now.time";
+
+    // 对象
+    char OBJ$NAVIGATOR = ':';
+
+    // each
+    String DOT$EACH_COUNT = ".count";
+    String DOT$EACH_TOTAL = ".total";
 }

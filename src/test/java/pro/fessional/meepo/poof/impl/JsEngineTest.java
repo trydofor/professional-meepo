@@ -23,7 +23,7 @@ public class JsEngineTest {
         JsEngine engine = new JsEngine();
         HashMap<String, Object> ctx = new HashMap<>();
         ctx.put("me", "trydofor");
-        Object r1 = engine.eval("js", "me +' $100'", ctx, false);
+        Object r1 = engine.eval("js", "ctx.me +' $100'", ctx, false);
         Assert.assertEquals("trydofor $100", r1);
 
     }

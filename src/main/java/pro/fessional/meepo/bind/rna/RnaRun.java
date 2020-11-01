@@ -2,11 +2,13 @@ package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.mark.Bar;
+import pro.fessional.meepo.bind.kin.Bar;
+import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.txt.TxtRnaRun;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
-import pro.fessional.meepo.bind.wow.Live;
+import pro.fessional.meepo.bind.wow.Tick;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +32,7 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaRun extends Live implements Bar {
+public class RnaRun extends Tick implements Bar, Prc {
 
     @NotNull
     public final Clop main;
@@ -42,7 +44,7 @@ public class RnaRun extends Live implements Bar {
     public final String expr;
     public final boolean mute;
 
-    public RnaRun(String text, @NotNull Life life, Clop edge, @NotNull Clop main, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
+    public RnaRun(String text, Clop edge, @NotNull Life life, @NotNull Clop main, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
         super(text, edge, life);
         this.main = main;
         this.type = type;
@@ -80,12 +82,18 @@ public class RnaRun extends Live implements Bar {
 
     @Override
     public String toString() {
-        return "RnaRun{" +
-                "type='" + type + '\'' +
-                ", find='" + find.pattern() + '\'' +
-                ", expr='" + expr + '\'' +
-                ", quiet=" + mute +
-                ", life=" + life +
-                '}';
+        StringBuilder buff = new StringBuilder("RnaRun{");
+        buff.append("type='");
+        Dent.line(buff, type);
+        buff.append("', find='");
+        Dent.line(buff, find.pattern());
+        buff.append("', expr='");
+        Dent.line(buff, expr);
+        buff.append("', mute=");
+        buff.append(mute);
+        buff.append("}");
+        buff.append("; ").append(edge);
+        buff.append("; ").append(life);
+        return buff.toString();
     }
 }

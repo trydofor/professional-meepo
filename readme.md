@@ -1,16 +1,16 @@
 # pro.fessional.meepo
 
-米波，地卜师，主狗和分身狗具有同等的技能和待遇。  
-一个基于注释和标记的不破坏母版语法的模板引擎翻译器。
+米波，地卜师，主身和分身具有同等的技能，一荣俱荣，一损俱损的待遇。  
+一个基于`母版`语法注释和标记的不破坏`母版`语法的非专业模板引擎。
 
 ![meepo](./meepo_full.png)
 
-解决现代模板引擎语法，会破坏其模板文件本身的预览和编辑的特性。  
-米波只做中间层翻译，类似C的宏功能，支持任何有注释的语言做模板。
+解决现代模板引擎自身语法，会破坏其目标文件的语法，预览和编辑的特性的干扰。  
+米波仅做静态翻译和有限的动态控制（动态编译java），类似C的宏功能，性能高效。
 
- * 从`java`生成`*.java`，模板和目标都是可编译
- * 从`sql`生成`*.sql`，模板和目标都可以执行
- * 从`htm`生成`*.htm`，模板和目标都可以预览
+ * 从`java`生成`*.java`，模板和目标文件都是可编译
+ * 从`sql`生成`*.sql`，模板和目标文件都可以执行
+ * 从`htm`生成`*.htm`，模板和目标文件都可以预览
 
 ## 1.模板特性
 
@@ -26,10 +26,11 @@
 母版的处理分为`解析parse`和`合并merge`两个过程，解析时的查找依赖正则表达式。  
 合并时，除了部分`RNA`外，都是直接输出，效能等于`StringBuilder.append`。
 
-因没有`流程控制`及`执行函数`的功能，所以一次`解析`后，所以`合并`非常高效，因为
+在RNA中没有复杂的`流程控制`及`执行函数`的功能，所以一次`解析`后，后续`合并`非常高效，
 
  * 没有`RNA`时，相当于幂等操作的静态字符串，仅merge一次，后续直接使用。
  * `RNA`依赖于`执行引擎`，除动态语言外，相当于`Map`+`StringBuilder`
+ * `java`执行引擎，动态编译成字节码，首次编译后等于原生java class
  * `StringBuilder`预先计算长度，以避免过程中扩容复制。
 
 ## 2.应用举例
@@ -39,11 +40,13 @@
 Pebble，FreeMarker和Velocity此类模板有自己的语法特性，在行业内大量使用。  
 有些IDE有插件支持，但都是模板语言，而非目标文件的语言的支持，包括语法高亮，纠错等加持。
 
-Thymeleaf(近期停止更新了)类的模板不会破坏语法，并且应用领域和具体语言特性绑定。
+Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并且应用领域和具体语言特性绑定。
 
  * [thymeleaf template](https://www.thymeleaf.org/)
  * [pebble template](https://pebbletemplates.io/)
  * [template-benchmark](https://github.com/trydofor/template-benchmark)
+
+虽然，米波本身的动态控制能力有限，但使用`执行引擎`（如js和java）可以做很复杂的功能操作。
 
 ### 2.1.忽略指令行空白，可读性优先
 
@@ -377,6 +380,10 @@ TODO
  * `RNA:PUT` 存入变量，使用引擎运行`执行体`，结果存入环境。
  * `RNA:USE` 使用变量，使用环境变量，内置或`PUT`的变量。
  * `RNA:RUN` 每次执行，每次都会执行功能体，比如计数器。
+ * `RNA:WHEN` 条件执行，组合成if-elseif-else逻辑块。
+ * `RNA:EACH` 循环执行，应用于数组或集合，循环输出。
+ * `RNA:ELSE` 否则条件，对`WHEN`和`EACH`执行否则分支。
+ * `RNA:DONE` 结束执行，结束`WHEN`和`EACH`的作用域。
 
 在处理`行符`时，以`\n`断行，window的`\r\n`也做`\n`处理。  
 单行注释型，若结尾有`\n`，会作为语法的结束符，即合并时不会输出。
@@ -553,7 +560,8 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 
 语法：`RNA:USE` `空白`+ `界定` `查找` `界定` `变量` `界定` `作用`?
 
-`SET`的`RNA`版本，区别在于从`环境`中取得`变量`值，而非底层模板的字面量替换。
+`SET`的`RNA`版本，区别在于从`map`引擎中取得`变量`值，而非底层模板的字面量替换。  
+变量获取规则，详见map引擎说明。
 
 在`变量`合并时，会根据`变量值`的类型进行自动`多段缩排`支持，同时满足，
 
@@ -610,6 +618,120 @@ var userPass = "16345-31415";
 */
 ```
 
+### 6.4.RNA:WHEN 条件执行
+
+语法：`RNA:WHEN` `空白`+ `引擎`? `界定` `真假` `界定` `功能体` `界定` `归组`
+
+可以使用多个`WHEN`组合成`if`-`else if`-`else`逻辑块。
+
+ * `真假` - 必须是`y|yes|n|no|not`，表示求值的`取真`或`取假`。
+ * `功能体` - 引擎执行结果，并对结果求值。
+ * `归组` - 必须是`英数`，可别`ELSE`和`DONE`归组。
+
+求值时，以下情况为`false`，对`false`执行`n`则为`true`
+
+  * boolean的`false`
+  * 对象 `null`
+  * Number的double值是`NaN`或在正负`0.000000001`间（9位）
+  * `empty`  空字符串，空数组，空Collection，空Map
+
+``` html
+<!-- RNA:WHEN /yes/it:rem0/bg -->
+<li value="code">rem0-name</li>
+<!-- RNA:WHEN /not/it:rem1/bg -->
+<li value="code">rem2-name</li>
+<!-- RNA:ELSE bg -->
+<li value="code">rem1-name</li>
+<!-- RNA:DONE bg -->
+```
+
+等同于以下js的伪代码的`if(a){}else if(!b){}else{}` 分支逻辑
+``` js
+if (it.rem0){
+    console.log('<li value="code">rem0-name</li>')
+} else if (!it.rem1){
+    console.log('<li value="code">rem2-name</li>')
+} else {
+    console.log('<li value="code">rem1-name</li>')
+}
+```
+
+### 6.5.RNA:EACH 循环执行
+
+语法：`RNA:EACH` `空白`+ `引擎`? `界定` `步长` `界定` `功能体` `界定` `归组`
+
+通过`归组`做为元素引用的循环体。若`归组`名为`it`，则`it.x`表示当前元素的`x`属性。
+
+ * `步长` - 必须`-`和`数字`，表示循环顺序和步长，负数表示`倒序`
+ * `功能体` - 引擎执行结果，需要是数组或集合，否则等同于`RNA:PUT`效果。
+ * `归组` - 必须是`英数`，可别`ELSE`和`DONE`归组，引用当前元素和内置状态属性。
+
+根据不同的数据类型，执行不同的循环处理，空或null跳过，可被`ELSE`执行。
+
+ * Array - Class.isArray()
+ * Collection<E> -  instance of Collection
+ * 其他类型，不做任何循环
+ * 倒序循环时，非RandomAccess和ReverseIterator，会toArray
+
+循环体中，存在以下内置属性，用来表示循环的状态，若`归组`名为`it`，则，
+
+ * 引用当前元素的`x`属性时，其格式为`it:x`，注意不是`it.x`
+ * `it` - 当前循环的元素，避免同名，而产生环境污染
+ * `it.count` - 内置变量，当前循环计数，1-base，未循环时为0
+ * `it.total` - 内置变量，`归组`内所有元素的数量
+ * 内置变量在循环结束后不移除，可以在循环外部使用。
+
+因为米波是`专业`的`非专业`模板引擎，所以此`for-each`十分低级，
+
+ * 支持有限的对象导航，使用`:`分隔对象，详见`map`引擎。
+ * 集合内元素仅支持Map<String,?>和JavaBean的Getter取值。
+ * 没有作用域隔离，同名`归组`，会造成context内变量覆盖。
+
+``` html
+<!-- RNA:EACH map/2/items/it -->
+<!-- RNA:USE /name/it:name/* -->
+<li value="code">rem0-name</li>
+<!-- RNA:ELSE it -->
+<li>no item</li>
+<!-- RNA:DONE it -->
+<!-- RNA:USE /total/it.total/ -->
+<!-- RNA:USE /count/it.count/ -->
+<div>result=count/total</div>
+```
+
+等同于以下js的伪代码的`for(;;)`或`for-in`循环逻辑，依`集合`类型和`步长`正负而定
+``` js
+let step=2 // 循环步长，负数为倒序，不可为0
+let index=0 // 过程量
+let it = null, count=0, total=items.length; // 内置变量
+for(it in items){
+    if(index++ % step !== 0) continue // 控制步长
+    count++
+    console.log('<li value="code">rem0-'+it.name+'</li>')
+}
+if(count === 0){
+    console.log('<li>no item</li>')
+}
+console.log('<div>result='+count+'/'+total+'</div>')
+```
+
+### 6.6.RNA:ELSE 否则条件
+
+语法：`RNA:ELSE` `空白`+  `归组`
+
+通过`作用`归组，对同组的`WHEN`或`EACH`执行否则分支，情况如何。
+
+ * `WHEN`时，表示没有任何一个`WHEN`被执行。
+ * `EACH`时，表示循环体从未执行（如集合无元素）
+ * `EACH-ELSE`和`pebble`语义相同，和python的`for-else`不同。
+
+### 6.7.RNA:DONE 结束执行
+
+语法：`RNA:DONE` (`空白`+  `归组`)+
+
+通过`归组`归组，结束一个或多个`WHEN`和`EACH`的`归组`。
+
+
 ## 7.执行引擎
 
 其中各`引擎`的实现和执行上下文是不一样的，即变量作用域不一样，存在以下2个级别，
@@ -624,9 +746,33 @@ var userPass = "16345-31415";
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
  * 如果mute，直接返回`字符串空`
- * 以`功能体`为`key`，依次查找，找到`非null`即返回。
- * 顺序为context,System.getProperty,System.getenv
- * 没有找到`非null`值，直接返回`功能体`
+ * 以`功能体`为`key`，依次查找，找到`非null`即返回
+ * 顺序为context,System.property,System.env,Builtin
+ * 没有找到`非null`值，直接返回`字符串空`
+
+支持简单的对象导航，以`:`分隔对象，而非`.`，主要是避免以下情况，
+
+ * java的System中有大量`.`型变量，如`os.name`，`user.home`
+ * 如果用户存有`os`或`user`，使用`.`导航，则会发生混乱
+ * 因为有`.`分隔的字符串变量存在，无法正确识别导航对象
+
+以`:`分隔的对象导航，采用以下查找顺序和规则，以key为`out:it:name`为例，
+
+ * 以key直接查找，有`非null`值，则return
+ * 如key中存在`:`，以`:`分隔成`out`，`it`和`name`
+ * 依次以`out`和`it`为对象key递归查找对象。
+    - 若为任意递归中返回null，则return`字符串空`。
+    - 若为Map类型，则以getKey的方式取值。
+    - 其他类型，通过反射取值，以Getter命名规则和Field查找。
+ * 递归中的最终对象，以`name`为key取值（map或反射）
+
+内置以下`变量`，有些是动态计算，每次获得不同，有些是静态变量。
+
+ * `now` - String, 动态计算，当前日期时间 `yyyy-MM-dd HH:mm:ss`
+ * `now.date` - String, 动态计算，系统日期 `yyyy-MM-dd`
+ * `now.time` - String, 动态计算，系统时间 `HH:mm:ss`
+ * `user.name` - String, 当前系统用户，java内置
+ * `user.dir` - String, 当前的工作目录，java内置
 
 ### 7.2.来啥回啥(raw)
 
@@ -657,17 +803,17 @@ var userPass = "16345-31415";
 ### 7.7.执行js脚本(js)
 
 `session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
-注意的是，每次eval时，engine会用context覆盖内部变量。
+执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
 ### 7.8.执行java代码(java)
 
 `session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
- * 依赖于`joor`编译代码，使用时，需要自行设置依赖
  * 头部`import java.util.*,java.util.Map;`，可以`,`分隔多个
  * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
  * 尾部以`return obj`返回，`;`可以省略。
- * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)编译后的代码实现了`JavaEngine.Java`接口，
+ * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
+ * 编译的java实现了`JavaEval`接口，位于`pro.fessional.meepo.poof.impl.java`
  * 传入`Map<String, Object> ctx`，可读取context
  * 已经import的class有，
     - org.jetbrains.annotations.NotNull;

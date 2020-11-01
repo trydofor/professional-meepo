@@ -3,9 +3,8 @@ package pro.fessional.meepo.bind.txt;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
-import pro.fessional.meepo.poof.RnaEngine;
-
-import java.util.Map;
+import pro.fessional.meepo.sack.Acid;
+import pro.fessional.meepo.util.Dent;
 
 /**
  * <pre>
@@ -24,7 +23,7 @@ public class TxtSimple extends Exon {
     }
 
     @Override
-    public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
+    public void merge(Acid acid, StringBuilder buf) {
         buf.append(text, edge.start, edge.until);
     }
 
@@ -43,8 +42,11 @@ public class TxtSimple extends Exon {
 
     @Override
     public String toString() {
-        return "TxtSimple{text='" +
-                text.substring(edge.start, edge.until) +
-                "'}";
+        StringBuilder buff = new StringBuilder("TxtSimple{");
+        buff.append("text='");
+        Dent.line(buff, text, edge.start, edge.until);
+        buff.append("'}");
+        buff.append("; ").append(edge);
+        return buff.toString();
     }
 }

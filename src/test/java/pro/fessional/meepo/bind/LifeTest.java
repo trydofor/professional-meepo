@@ -15,7 +15,7 @@ public class LifeTest {
         // 1,3,5-9
         Life l1 = Life.parse("1,5-7,6-8,5-8,7-9,6-9,5-9,7,7,8,3");
         for (int i = 0; i < 10; i++) {
-            Assert.assertEquals(Const.TXT_EMPTY, l1.name);
+            Assert.assertEquals(Const.TXT$EMPTY, l1.name);
             Assert.assertEquals(Life.State.Live, l1.enjoy());
             Assert.assertEquals(1, l1.count());
             Assert.assertEquals(Life.State.Skip, l1.enjoy());
@@ -44,7 +44,7 @@ public class LifeTest {
     public void testOne() {
         Life l1 = Life.parse("");
         for (int i = 0; i < 10; i++) {
-            Assert.assertEquals(Const.TXT_EMPTY, l1.name);
+            Assert.assertEquals(Const.TXT$EMPTY, l1.name);
             Assert.assertEquals(Life.State.Live, l1.enjoy());
             Assert.assertEquals(1, l1.count());
             Assert.assertEquals(Life.State.Dead, l1.enjoy());
@@ -53,7 +53,7 @@ public class LifeTest {
         }
 
         Life l2 = Life.parse("1");
-        Assert.assertEquals(Const.TXT_EMPTY, l2.name);
+        Assert.assertEquals(Const.TXT$EMPTY, l2.name);
         Assert.assertEquals(Life.State.Live, l2.enjoy());
         Assert.assertEquals(1, l2.count());
         Assert.assertEquals(Life.State.Dead, l2.enjoy());
@@ -63,7 +63,7 @@ public class LifeTest {
     @Test
     public void testAny() {
         Life l1 = Life.parse("*");
-        Assert.assertEquals(Const.TXT_EMPTY, l1.name);
+        Assert.assertEquals(Const.TXT$EMPTY, l1.name);
         for (int i = 1; i <= 256; i++) {
             Assert.assertEquals(Life.State.Live, l1.enjoy());
             Assert.assertEquals(i, l1.count());

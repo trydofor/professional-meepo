@@ -1,12 +1,12 @@
 package pro.fessional.meepo.poof.impl;
 
 import org.jetbrains.annotations.NotNull;
-import org.joor.Reflect;
-import org.joor.ReflectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.Meepo;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.impl.java.JavaEval;
+import pro.fessional.meepo.util.Java;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static pro.fessional.meepo.bind.Const.ENGINE_JAVA;
-import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
+import static pro.fessional.meepo.bind.Const.ENGINE$JAVA;
+import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 编译java代码并执行
@@ -27,9 +27,9 @@ import static pro.fessional.meepo.bind.Const.TXT_EMPTY;
 public class JavaEngine implements RnaEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaEngine.class);
-    private static final String[] TYPE = {ENGINE_JAVA};
+    private static final String[] TYPE = {ENGINE$JAVA};
     private static final AtomicInteger counter = new AtomicInteger(0);
-    private static final ConcurrentHashMap<String, Java> exprJava = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, JavaEval> exprJava = new ConcurrentHashMap<>();
 
     @Override
     public @NotNull String[] type() {
@@ -38,9 +38,9 @@ public class JavaEngine implements RnaEngine {
 
     @Override
     public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        Java java = exprJava.computeIfAbsent(expr, this::compile);
+        JavaEval java = exprJava.computeIfAbsent(expr, this::compile);
         Object rst = java.eval(ctx);
-        return mute ? TXT_EMPTY : rst;
+        return mute ? TXT$EMPTY : rst;
     }
 
     @Override
@@ -48,13 +48,9 @@ public class JavaEngine implements RnaEngine {
         return this;
     }
 
-    public interface Java {
-        Object eval(@NotNull Map<String, Object> ctx);
-    }
-
     private static final Pattern PtnImps = Pattern.compile("\\s*import\\s+[^;]+;\\s*", Pattern.MULTILINE);
 
-    public Java compile(String expr) {
+    public JavaEval compile(String expr) {
         final long s = System.currentTimeMillis();
         Matcher m = PtnImps.matcher(expr);
         String imps, body, colon;
@@ -75,10 +71,10 @@ public class JavaEngine implements RnaEngine {
             imps = buf.toString();
             body = expr.substring(end);
         } else {
-            imps = TXT_EMPTY;
+            imps = TXT$EMPTY;
             body = expr;
         }
-        colon = TXT_EMPTY;
+        colon = TXT$EMPTY;
         for (int i = body.length() - 1; i >= 0; i--) {
             char c = body.charAt(i);
             if (!Character.isWhitespace(c)) {
@@ -95,15 +91,13 @@ public class JavaEngine implements RnaEngine {
         ctx.put("colon", colon);
         String uri = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
         String code = Meepo.merge(ctx, uri, Meepo.CACHE_ALWAYS);
-
         try {
-            Java java = Reflect.compile("pro.fessional.meepo.poof.impl.java." + name, code)
-                               .create()
-                               .get();
+            Class<JavaEval> clz = Java.compile("pro.fessional.meepo.poof.impl.java." + name, code);
+            JavaEval java = Java.create(clz);
             logger.info("cost {}ms to compile {}", System.currentTimeMillis() - s, expr);
             return java;
-        } catch (ReflectException e) {
-            logger.error("java-code=\n" + code + "\n", e);
+        } catch (RuntimeException e) {
+            logger.error("failed to create java-code=\n" + code + "\n", e);
             throw e;
         }
     }

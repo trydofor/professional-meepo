@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class JavaTest {
     @Test
     public void java() {
-        TmplHelp.assertTmpl("/template/java/compile-java-i.htm", "/template/java/compile-java-o.htm");
+        TmplHelp.assertTmpl("/template/java/compile-java-o.htm", "/template/java/compile-java-i.htm");
     }
 
     @Test

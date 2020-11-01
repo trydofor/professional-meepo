@@ -12,15 +12,17 @@ import static pro.fessional.meepo.bind.wow.Life.State.Live;
 import static pro.fessional.meepo.bind.wow.Life.State.Skip;
 
 /**
+ * 生命倒计时
+ *
  * @author trydofor
  * @since 2020-10-29
  */
-public class Live extends Exon {
+public class Tick extends Exon {
 
     @NotNull
     public final Life life;
 
-    public Live(@NotNull String text, @NotNull Clop edge, @NotNull Life life) {
+    public Tick(@NotNull String text, @NotNull Clop edge, @NotNull Life life) {
         super(text, edge);
         this.life = life;
     }
