@@ -5,10 +5,8 @@ import org.joor.Reflect;
 import org.joor.ReflectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.Meepo;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.sack.Gene;
-import pro.fessional.meepo.sack.Parser;
-import pro.fessional.meepo.util.Read;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,16 +87,14 @@ public class JavaEngine implements RnaEngine {
             }
         }
 
-        String pkg = "/pro/fessional/meepo/poof/impl/java/JavaName.java";
-        String tmpl = Read.read(JavaEngine.class.getResourceAsStream(pkg));
-        Gene gene = Parser.parse(tmpl);
-        HashMap<String, Object> c = new HashMap<>();
+        HashMap<String, Object> ctx = new HashMap<>();
         String name = "Java" + counter.incrementAndGet();
-        c.put("import", imps);
-        c.put("class", name);
-        c.put("method", body);
-        c.put("colon", colon);
-        String code = gene.merge(c);
+        ctx.put("import", imps);
+        ctx.put("class", name);
+        ctx.put("method", body);
+        ctx.put("colon", colon);
+        String uri = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
+        String code = Meepo.merge(ctx, uri, Meepo.CACHE_ALWAYS);
 
         try {
             Java java = Reflect.compile("pro.fessional.meepo.poof.impl.java." + name, code)

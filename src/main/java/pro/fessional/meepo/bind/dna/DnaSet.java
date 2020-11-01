@@ -50,7 +50,7 @@ public class DnaSet extends Live {
     }
 
     @Override
-    public void apply(List<Exon> gen, Clop pos, String txt) {
+    public void apply(List<Exon> gen, Clop pos, String txt, int bar) {
         if (pos.length > 0) {
             gen.add(new TxtDnaSet(txt, pos, repl));
         }

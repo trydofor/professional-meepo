@@ -1,10 +1,11 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.mark.Dyn;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.Map;
 import java.util.Objects;
@@ -22,12 +23,15 @@ public class TxtRnaRun extends Exon implements Dyn {
     @NotNull
     public final String expr;
     public final boolean mute;
+    public final int left;
 
-    public TxtRnaRun(@NotNull String text, Clop edge, @NotNull String type, @NotNull String expr, boolean mute) {
+
+    public TxtRnaRun(@NotNull String text, Clop edge, @NotNull String type, @NotNull String expr, boolean mute, int left) {
         super(text, edge);
         this.type = type;
         this.expr = expr;
         this.mute = mute;
+        this.left = left;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class TxtRnaRun extends Exon implements Dyn {
         if (eng != null) {
             Object s = eng.eval(type, expr, ctx, mute);
             if (edge.length > 0) {
-                buf.append(s);
+                Dent.left(buf, left, s);
             }
         }
     }

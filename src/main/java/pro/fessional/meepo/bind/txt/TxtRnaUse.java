@@ -1,10 +1,11 @@
 package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.mark.Dyn;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.util.Dent;
 
 import java.util.Map;
 import java.util.Objects;
@@ -18,17 +19,19 @@ import java.util.Objects;
 public class TxtRnaUse extends Exon implements Dyn {
     @NotNull
     public final String para;
+    public final int left;
 
-    public TxtRnaUse(@NotNull String text, Clop edge, @NotNull String para) {
+    public TxtRnaUse(@NotNull String text, Clop edge, @NotNull String para, int left) {
         super(text, edge);
         this.para = para;
+        this.left = left;
     }
 
     @Override
     public void merge(Map<String, Object> ctx, RnaEngine eng, StringBuilder buf) {
         Object o = ctx.get(para);
         if (o != null) {
-            buf.append(o.toString());
+            Dent.left(buf, left, o);
         }
     }
 

@@ -310,6 +310,38 @@ java-output
 // RNA:RUN js汉counter汉i++;i.toFixed()汉
 ```
 
+### 2.13.自动缩排多行代码，美观易读
+
+参加测试[JavaTest.java](src/test/java/pro/fessional/meepo/tmpl/JavaTest.java)，`变量`为集合类，其元素自带换行
+
+``` txt
+c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");\n",
+                "LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));\n",
+                "DateTimeFormatter fmt = DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\");\n",
+                "return ldt.format(fmt);"));
+```
+会输出有了缩排的[JavaOut.java](src/test/resources/pro/fessional/meepo/poof/impl/java/JavaOut.java)
+
+``` java
+    public Object eval(@NotNull Map<String, Object> ctx) {
+        LocalDate date = LocalDate.parse("2020-07-09");
+        LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return ldt.format(fmt);
+    }
+```
+如果，`变量`不是集合类，而是带有`\n`的字符串，那么会这样的呲牙效果
+
+``` java
+    public Object eval(@NotNull Map<String, Object> ctx) {
+        LocalDate date = LocalDate.parse("2020-07-09");
+LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+return ldt.format(fmt);
+    }
+```
+
+
 ## 3.框架集成
 
 ## 3.1.与Spring体系集成
@@ -523,6 +555,16 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 
 `SET`的`RNA`版本，区别在于从`环境`中取得`变量`值，而非底层模板的字面量替换。
 
+在`变量`合并时，会根据`变量值`的类型进行自动`多段缩排`支持，同时满足，
+
+ * `被查找`的字符串前有缩排的空白。
+ * `变量值`是Array和Collection时，其内条目数大于1个。
+
+对2个起的元素进行缩进，和第1个元素列对齐。缩排后会出现不智能的情况，影响了美观。
+
+ * 缩排的对象，没有`\n`结尾，不换行，出现斑马线效果。
+ * 未缩排对象，包含`\n`，换行了，出现呲牙的效果。
+
 ``` js
 // DNA:USE /meepo/user.home/
 var userHome = "meepo";
@@ -552,7 +594,7 @@ var userHome = "/home/trydofor";
 
 语法：`RNA:RUN` `空白`+ `引擎`? `界定` `查找` `界定` `功能体` `界定` `作用`?
 
-`PUT`和`USE`的结合体，区别在于，
+`PUT`和`USE`的结合体，同样支持缩排，区别在于，
 
  * `查找`为空时，表示仅执行，不替换
  * `功能体`执行结果立即使用，不存入`变量`
@@ -614,18 +656,18 @@ var userPass = "16345-31415";
 
 ### 7.7.执行js脚本(js)
 
-session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
+`session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 注意的是，每次eval时，engine会用context覆盖内部变量。
 
 ### 7.8.执行java代码(java)
 
-session`级，通过米波模板动态编译java代码，并以context为参加执行。
+`session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
  * 依赖于`joor`编译代码，使用时，需要自行设置依赖
  * 头部`import java.util.*,java.util.Map;`，可以`,`分隔多个
  * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
  * 尾部以`return obj`返回，`;`可以省略。
- * 编译后的java代码实现了`JavaEngine.Java`接口
+ * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)编译后的代码实现了`JavaEngine.Java`接口，
  * 传入`Map<String, Object> ctx`，可读取context
  * 已经import的class有，
     - org.jetbrains.annotations.NotNull;
@@ -639,6 +681,8 @@ session`级，通过米波模板动态编译java代码，并以context为参加�
 调试主要集中在Parse和RnaEngine执行上，因此logger只在此2处存在。
 米波工程本身的test中，slf4j的日志基本是trace，因此在其他工程引入时，
 需要把设置`pro.fessional.meepo`的级别为`trace`。
+
+如果通过日志，不能调试到位，可以通过继承Parser，调用protected方法。
 
 ### 02.有关性能和线程安全
 

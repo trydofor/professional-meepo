@@ -1,7 +1,7 @@
 package pro.fessional.meepo.sack;
 
-import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.mark.Dyn;
 import pro.fessional.meepo.bind.rna.RnaPut;
 import pro.fessional.meepo.bind.txt.TxtRnaRun;
 import pro.fessional.meepo.poof.RnaEngine;
@@ -22,6 +22,7 @@ public class Gene {
     private static final int magic9 = 19;
     public final String text;
     public final int size;
+    public final long born;
     private final List<Exon> exon;
 
     private final AtomicReference<String> cache;
@@ -31,6 +32,7 @@ public class Gene {
         this.exon = new ArrayList<>(xna);
         this.text = txt;
         this.size = txt.length() + magic9;
+        this.born = System.currentTimeMillis();
         this.cache = new AtomicReference<>();
     }
 

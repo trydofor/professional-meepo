@@ -2,6 +2,7 @@ package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.mark.Bar;
 import pro.fessional.meepo.bind.txt.TxtRnaRun;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
  * @author trydofor
  * @since 2020-10-16
  */
-public class RnaRun extends Live {
+public class RnaRun extends Live implements Bar {
 
     @NotNull
     public final Clop main;
@@ -56,8 +57,8 @@ public class RnaRun extends Live {
     }
 
     @Override
-    public void apply(List<Exon> gen, Clop pos, String txt) {
-        gen.add(new TxtRnaRun(txt, pos, type, expr, mute));
+    public void apply(List<Exon> gen, Clop pos, String txt, int bar) {
+        gen.add(new TxtRnaRun(txt, pos, type, expr, mute, bar));
     }
 
     @Override

@@ -8,6 +8,7 @@ import pro.fessional.meepo.bind.dna.DnaBkb;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
 import pro.fessional.meepo.bind.dna.DnaSet;
+import pro.fessional.meepo.bind.mark.Bar;
 import pro.fessional.meepo.bind.rna.RnaPut;
 import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
@@ -17,6 +18,7 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Live;
 import pro.fessional.meepo.poof.RnaManager;
+import pro.fessional.meepo.util.Dent;
 import pro.fessional.meepo.util.Seek;
 
 import java.util.ArrayList;
@@ -163,10 +165,16 @@ public class Parser {
             int off = 0;
             for (Exon.N n : rst) {
                 Clop pos = n.pos;
-                if (off < pos.start) {
-                    gene.add(new TxtSimple(txt, off + done1, pos.start + done1));
+                int st0 = pos.start;
+                if (off < st0) {
+                    gene.add(new TxtSimple(txt, off + done1, st0 + done1));
                 }
-                n.xna.apply(gene, pos.shift(done1), txt);
+                if (n.xna instanceof Bar) {
+                    int bar = Dent.left(text, st0);
+                    n.xna.apply(gene, pos.shift(done1), txt, bar);
+                } else {
+                    n.xna.apply(gene, pos.shift(done1), txt, 0);
+                }
                 off = pos.until;
             }
             int len = text.length();

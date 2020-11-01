@@ -54,8 +54,9 @@ public class Exon {
      * @param gen 匹配
      * @param pos 匹配
      * @param txt 文本
+     * @param bar 左距
      */
-    public void apply(List<Exon> gen, Clop pos, String txt) {
+    public void apply(List<Exon> gen, Clop pos, String txt, int bar) {
     }
 
     /**

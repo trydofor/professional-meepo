@@ -1,8 +1,8 @@
 package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Dyn;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.bind.mark.Dyn;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
 
