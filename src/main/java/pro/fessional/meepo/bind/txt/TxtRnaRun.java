@@ -6,6 +6,7 @@ import pro.fessional.meepo.bind.kin.Dyn;
 import pro.fessional.meepo.bind.kin.Ngx;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaProtein;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
@@ -25,7 +26,8 @@ public class TxtRnaRun extends Exon implements Dyn, Ngx {
     public final String expr;
     public final boolean mute;
     public final int left;
-
+    @NotNull
+    private final RnaProtein prot;
 
     public TxtRnaRun(@NotNull String text, Clop edge, @NotNull String type, @NotNull String expr, boolean mute, int left) {
         super(text, edge);
@@ -33,21 +35,21 @@ public class TxtRnaRun extends Exon implements Dyn, Ngx {
         this.expr = expr;
         this.mute = mute;
         this.left = left;
+        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public @NotNull String getType() {
-        return type;
+    public void check(StringBuilder err) {
+        prot.check(err, expr, this);
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
-        RnaEngine eng = acid.getEngine(this);
-        if (eng == null) return;
+    public void merge(Acid acid, Appendable buff) {
+        RnaEngine eng = acid.dirty(prot);
 
         Object s = eng.eval(type, expr, acid.context, mute);
         if (edge.length > 0) {
-            Dent.left(buf, left, s);
+            Dent.left(buff, left, s);
         }
     }
 

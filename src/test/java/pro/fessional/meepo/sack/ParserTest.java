@@ -38,13 +38,13 @@ public class ParserTest {
 
     private static class TestCtx extends Parser.Ctx {
         public TestCtx(String txt) {
-            super(txt);
+            super(txt, true);
             edge0 = 0;
             edge1 = txt.length();
         }
 
         public TestCtx(String txt, HiMeepo mp) {
-            super(txt);
+            super(txt, true);
             edge0 = 0;
             edge1 = txt.length();
             meepo = mp;
@@ -548,7 +548,7 @@ public class ParserTest {
         checkRnaEach(level5, "/* RNA:EACH js!//2*(1+3)/tock*/", "tock", null, 0, "2*(1+3)", true, "/* RNA:EACH js!//2*(1+3)/tock*/");
         checkRnaEach(level5, "/* RNA:EACH js!/not/2*(1+3)/*/", "tock", null, 0, "2*(1+3)", true, "/* RNA:EACH js!/not/2*(1+3)/tock*/");
     }
-    
+
     private void checkRnaElse(HiMeepo meepo, String txt, String tock, String build) {
         TestCtx ctx = new TestCtx(txt, meepo);
         Parser.markHiMeepo(ctx);

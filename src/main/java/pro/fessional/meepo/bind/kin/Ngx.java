@@ -1,7 +1,5 @@
 package pro.fessional.meepo.bind.kin;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * 使用了RnaEngine
  *
@@ -9,7 +7,4 @@ import org.jetbrains.annotations.NotNull;
  * @since 2020-10-30
  */
 public interface Ngx {
-
-    @NotNull
-    String getType();
 }

@@ -29,10 +29,10 @@ public class Tock extends Exon {
     }
 
     @Override
-    public void build(StringBuilder buf) {
-        super.build(buf);
+    public void build(Appendable buff) {
+        super.build(buff);
         for (Exon exon : gene) {
-            exon.build(buf);
+            exon.build(buff);
         }
     }
 

@@ -75,7 +75,7 @@ public class OsEngine implements RnaEngine {
             p.waitFor();
             return stdOut;
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException(expr, e);
         } finally {
             if (p != null) p.destroy();
         }

@@ -35,8 +35,8 @@ public class DnaRaw extends Exon {
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buff) {
-        buff.append(text, raw0, main.until);
+    public void merge(Acid acid, Appendable buff) {
+        Dent.pend(buff, text, raw0, main.until);
     }
 
     @Override

@@ -4,7 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.sack.Acid;
+import pro.fessional.meepo.util.Dent;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,21 +52,23 @@ public class Exon {
     /**
      * 应用匹配的文本
      *
-     * @param gen 匹配
      * @param pos 匹配
      * @param txt 文本
      * @param bar 左距
+     * @return 基因
      */
-    public void apply(List<Exon> gen, Clop pos, String txt, int bar) {
+    @NotNull
+    public List<Exon> apply(Clop pos, String txt, int bar) {
+        return Collections.emptyList();
     }
 
     /**
      * 重建回解析前的模板，默认edge
      *
-     * @param buf buff
+     * @param buff buff
      */
-    public void build(StringBuilder buf) {
-        buf.append(text, edge.start, edge.until);
+    public void build(Appendable buff) {
+        Dent.pend(buff, text, edge.start, edge.until);
     }
 
     /**
@@ -73,7 +77,15 @@ public class Exon {
      * @param acid 执行环境
      * @param buff 输出buff
      */
-    public void merge(Acid acid, StringBuilder buff) {
+    public void merge(Acid acid, Appendable buff) {
+    }
+
+    /**
+     * parse时，在加入gene时，对自身检查，预处理（引擎预热）
+     *
+     * @param err 错误信息队列
+     */
+    public void check(StringBuilder err) {
     }
 
     public static class N implements Comparable<N> {

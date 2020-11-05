@@ -10,6 +10,7 @@ import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.util.Dent;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -53,8 +54,8 @@ public class RnaUse extends Tick implements Bar, Prc {
     }
 
     @Override
-    public void apply(List<Exon> gen, Clop pos, String txt, int bar) {
-        gen.add(new TxtRnaUse(txt, pos, para, bar));
+    public @NotNull List<Exon> apply(Clop pos, String txt, int bar) {
+        return Collections.singletonList(new TxtRnaUse(txt, pos, para, bar));
     }
 
     @Override

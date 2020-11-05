@@ -7,6 +7,7 @@ import pro.fessional.meepo.bind.kin.Ngx;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaProtein;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
@@ -51,6 +52,9 @@ public class RnaEach extends Tock implements Dyn, Ngx {
     public final String expr;
     public final boolean mute;
 
+    @NotNull
+    private final RnaProtein prot;
+
     public RnaEach(String text, Clop edge, String tock, @NotNull Clop main, @NotNull String type, int step, @NotNull String expr, boolean mute) {
         super(text, edge, tock);
         this.main = main;
@@ -58,18 +62,17 @@ public class RnaEach extends Tock implements Dyn, Ngx {
         this.step = step;
         this.expr = expr;
         this.mute = mute;
-    }
-
-
-    @Override
-    public @NotNull String getType() {
-        return type;
+        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
-        RnaEngine eng = acid.getEngine(this);
-        if (eng == null) return;
+    public void check(StringBuilder err) {
+        prot.check(err, expr, this);
+    }
+
+    @Override
+    public void merge(Acid acid, Appendable buff) {
+        RnaEngine eng = acid.dirty(prot);
 
         Map<String, Object> ctx = acid.context;
         Object obj = eng.eval(type, expr, ctx, mute);
@@ -94,11 +97,11 @@ public class RnaEach extends Tock implements Dyn, Ngx {
 
             ctx.put(keyTotal, size);
             ctx.put(keyCount, 0);
-            loop(acid, buf, obj, size, tock, keyCount);
+            loop(acid, buff, obj, size, tock, keyCount);
         }
     }
 
-    private void loop(Acid acid, StringBuilder buf, Object obj, int size, String keyRefer, String keyCount) {
+    private void loop(Acid acid, Appendable buf, Object obj, int size, String keyRefer, String keyCount) {
         final Map<String, Object> ctx = acid.context;
         if (obj instanceof List && obj instanceof RandomAccess) {
             int count = 1;

@@ -29,12 +29,7 @@ public class UriEngine implements RnaEngine {
 
     @Override
     public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        String s = cache.get(expr);
-        if (s != null) return s;
-
-        String str = Read.read(expr);
-        cache.put(expr, str);
-
+        String str = cache.computeIfAbsent(expr, Read::read);
         return mute ? TXT$EMPTY : str;
     }
 

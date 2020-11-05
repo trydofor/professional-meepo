@@ -23,8 +23,8 @@ public class TxtSimple extends Exon {
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
-        buf.append(text, edge.start, edge.until);
+    public void merge(Acid acid, Appendable buff) {
+        Dent.pend(buff, text, edge.start, edge.until);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class JsEngine implements RnaEngine {
             Object v = engine.eval(expr);
             return v == null || mute ? TXT$EMPTY : v;
         } catch (ScriptException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException(expr, e);
         }
     }
 

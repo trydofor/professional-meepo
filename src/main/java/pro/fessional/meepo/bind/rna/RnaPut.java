@@ -6,6 +6,7 @@ import pro.fessional.meepo.bind.kin.Dyn;
 import pro.fessional.meepo.bind.kin.Ngx;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaProtein;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
@@ -41,6 +42,7 @@ public class RnaPut extends Exon implements Dyn, Ngx {
     public final String expr;
     public final boolean mute;
 
+    private final RnaProtein prot;
 
     public RnaPut(String text, Clop edge, @NotNull Clop main, @NotNull String type, @NotNull String para, @NotNull String expr, boolean mute) {
         super(text, edge);
@@ -49,17 +51,18 @@ public class RnaPut extends Exon implements Dyn, Ngx {
         this.para = para;
         this.expr = expr;
         this.mute = mute;
+        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public @NotNull String getType() {
-        return type;
+    public void check(StringBuilder err) {
+        prot.check(err, expr, this);
     }
 
+
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
-        RnaEngine eng = acid.getEngine(this);
-        if (eng == null) return;
+    public void merge(Acid acid, Appendable buff) {
+        RnaEngine eng = acid.dirty(prot);
 
         Map<String, Object> ctx = acid.context;
         Object s = eng.eval(type, expr, ctx, mute);

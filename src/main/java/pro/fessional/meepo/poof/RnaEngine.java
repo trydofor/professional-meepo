@@ -1,6 +1,7 @@
 package pro.fessional.meepo.poof;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -15,9 +16,9 @@ public interface RnaEngine {
     /**
      * 对功能体求值，null以""代替
      *
-     * @param type  引擎类型
-     * @param expr  功能体
-     * @param ctx   执行环境。
+     * @param type 引擎类型
+     * @param expr 功能体
+     * @param ctx  执行环境。
      * @param mute 是否忽略std out输出
      * @return 执行结果
      */
@@ -40,4 +41,16 @@ public interface RnaEngine {
      */
     @NotNull
     RnaEngine fork();
+
+    /**
+     * 解析阶段，方法体预热，如语法检查，预编译等
+     *
+     * @param type 引擎类型
+     * @param expr 功能体
+     * @return 警告信息，无则返回null
+     */
+    @Nullable
+    default String warm(@NotNull String type, @NotNull String expr) {
+        return null;
+    }
 }

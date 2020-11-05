@@ -22,6 +22,7 @@ public class RnaManager {
 
     protected static final Logger logger = LoggerFactory.getLogger(RnaManager.class);
     private static final ConcurrentHashMap<String, RnaEngine> engines = new ConcurrentHashMap<>();
+    private static volatile int count = 0;
 
     private static RnaEngine defaultEngine = new MapEngine();
 
@@ -47,7 +48,6 @@ public class RnaManager {
         return engine == null ? defaultEngine : engine.fork();
     }
 
-
     /**
      * 根据 engine的type注册
      *
@@ -64,15 +64,25 @@ public class RnaManager {
                     logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
                 }
             }
+            count = engines.size();
         }
     }
 
+    /**
+     * 当前存在的引擎数量
+     *
+     * @return 数量
+     */
+    public static int getCount() {
+        return count;
+    }
+
     @NotNull
-    public static RnaEngine getDefaultEngine() {
+    public static RnaEngine getDefault() {
         return defaultEngine;
     }
 
-    public static void setDefaultEngine(@NotNull RnaEngine engine) {
+    public static void setDefault(@NotNull RnaEngine engine) {
         defaultEngine = engine;
     }
 }

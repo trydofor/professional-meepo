@@ -29,12 +29,12 @@ public class RnaElse extends Tock implements Dyn {
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
+    public void merge(Acid acid, Appendable buff) {
         Tock tk = acid.execute.computeIfAbsent(tock, s -> this);
         if (tk == this) {
             logger.trace("[👹Merge:tock] deal RNA:ELSE tock={}", tock);
             for (Exon exon : gene) {
-                exon.merge(acid, buf);
+                exon.merge(acid, buff);
             }
         } else {
             logger.trace("[👹Merge:tock] skip RNA:ELSE tock={}", tock);

@@ -39,13 +39,24 @@ public class JavaEngine implements RnaEngine {
     @Override
     public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
         JavaEval java = exprJava.computeIfAbsent(expr, this::compile);
-        Object rst = java.eval(ctx);
+        Object rst;
+        try {
+            rst = java.eval(ctx);
+        } catch (Exception e) {
+            throw new IllegalStateException(expr, e);
+        }
         return mute ? TXT$EMPTY : rst;
     }
 
     @Override
     public @NotNull RnaEngine fork() {
         return this;
+    }
+
+    @Override
+    public String warm(@NotNull String type, @NotNull String expr) {
+        exprJava.computeIfAbsent(expr, this::compile);
+        return null;
     }
 
     private static final Pattern PtnImps = Pattern.compile("\\s*import\\s+[^;]+;\\s*", Pattern.MULTILINE);

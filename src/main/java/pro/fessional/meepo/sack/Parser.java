@@ -10,6 +10,7 @@ import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
 import pro.fessional.meepo.bind.dna.DnaSet;
 import pro.fessional.meepo.bind.kin.Bar;
+import pro.fessional.meepo.bind.kin.Dyn;
 import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.rna.RnaDone;
 import pro.fessional.meepo.bind.rna.RnaEach;
@@ -24,7 +25,6 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.bind.wow.Tock;
-import pro.fessional.meepo.poof.RnaManager;
 import pro.fessional.meepo.util.Dent;
 import pro.fessional.meepo.util.Seek;
 
@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_BKB;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_END;
@@ -69,9 +70,26 @@ public class Parser {
     protected static final Exon DealText = new Exon("", new Clop(0, 0));
     protected static final int RegxFlag = Pattern.UNIX_LINES | Pattern.MULTILINE;
 
+    /**
+     * 解析文本，严格模式。
+     *
+     * @param txt 文本
+     * @return 记忆
+     */
     public static Gene parse(String txt) {
+        return parse(txt, false);
+    }
+
+    /**
+     * 解析文本。发现指令的语法错误时，有放松模式（日志warn，并视为普通文本）和严格模式（抛异常）
+     *
+     * @param txt 文本
+     * @param lax 放松模式
+     * @return 记忆
+     */
+    public static Gene parse(String txt, boolean lax) {
         if (txt == null) return null;
-        final Ctx ctx = new Ctx(txt);
+        final Ctx ctx = new Ctx(txt, lax);
 
         for (ctx.edge0 = 0; ctx.edge0 < ctx.end; ctx.edge0 = ctx.edge1) {
 
@@ -346,8 +364,12 @@ public class Parser {
             dna = new DnaBkb(txt, ctx.toEdge(), ctx.toMain(), name);
             logger.trace("[👹Parse:dealDnaBkb] find DNA:BKB at token0={}", tkn0);
         } else {
-            dna = SkipThis; // DNA:BKB
-            logger.trace("[👹Parse:dealDnaBkb] skip bad DNA:BKB without name");
+            if (ctx.lax) {
+                dna = SkipThis; // DNA:BKB
+                logger.warn("[👹Parse:dealDnaBkb] skip bad DNA:BKB without name");
+            } else {
+                throw new IllegalStateException("DNA:BKB [" + ctx.main0 + "," + ctx.main1 + "], without name");
+            }
         }
         return dna;
     }
@@ -367,8 +389,12 @@ public class Parser {
 
         final Exon dna;
         if (names.isEmpty()) {
-            dna = SkipThis; // DNA:END
-            logger.trace("[👹Parse:dealDnaEnd] skip bad DNA:END without name");
+            if (ctx.lax) {
+                dna = SkipThis; // DNA:END
+                logger.warn("[👹Parse:dealDnaEnd] skip bad DNA:END without name");
+            } else {
+                throw new IllegalStateException("DNA:END [" + ctx.main0 + "," + ctx.main1 + "], without name");
+            }
         } else {
             trimEdge(ctx); // DNA:END
             dna = new DnaEnd(txt, ctx.toEdge(), ctx.toMain(), names);
@@ -393,7 +419,7 @@ public class Parser {
         int[] pos3 = null;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax DNA:SET, without split char";
+            note = "without split-bar";
         } else {
             pos3 = new int[]{spl0, -1, -1};
             note = parseSplit(txt, pos3, ctx.main1, "DNA:SET");
@@ -409,8 +435,12 @@ public class Parser {
             dna = new DnaSet(txt, ctx.toEdge(), life, ctx.toMain(), find, repl);
             logger.trace("[👹Parse:dealDnaSet] find DNA:SET at token0={}", tkn0);
         } else {
-            dna = SkipThis; // DNA:SET
-            logger.trace("[👹Parse:dealDnaSet] skip bad DNA:SET {}", note);
+            if (ctx.lax) {
+                dna = SkipThis; // DNA:SET
+                logger.warn("[👹Parse:dealDnaSet] skip bad DNA:SET {}", note);
+            } else {
+                throw new IllegalStateException("DNA:SET [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return dna;
     }
@@ -433,7 +463,7 @@ public class Parser {
         boolean mute = false;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax RNA:RUN, without split char";
+            note = "Bad-Syntax RNA:RUN, without split-bar";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
@@ -451,8 +481,12 @@ public class Parser {
             rna = new RnaRun(txt, ctx.toEdge(), life, ctx.toMain(), type, find, expr, mute);
             logger.trace("[👹Parse:dealRnaRun] find RNA:RUN at token0={}", tkn0);
         } else {
-            rna = SkipThis; // RNA:RUN
-            logger.trace("[👹Parse:dealRnaRun] skip bad RNA:RUN {}", note);
+            if (ctx.lax) {
+                rna = SkipThis; // RNA:RUN
+                logger.warn("[👹Parse:dealRnaRun] skip bad RNA:RUN {}", note);
+            } else {
+                throw new IllegalStateException("DNA:RUN [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return rna;
     }
@@ -473,7 +507,7 @@ public class Parser {
         int[] pos3 = null;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax RNA:USE, without split char";
+            note = "Bad-Syntax RNA:USE, without split-bar";
         } else {
             pos3 = new int[]{spl0, -1, -1};
             note = parseSplit(txt, pos3, ctx.main1, "RNA:USE");
@@ -488,8 +522,12 @@ public class Parser {
             rna = new RnaUse(txt, ctx.toEdge(), life, ctx.toMain(), find, para);
             logger.trace("[👹Parse:dealRnaUse] find RNA:USE at token0={}", tkn0);
         } else {
-            rna = SkipThis; // RNA:USE
-            logger.trace("[👹Parse:dealRnaUse] skip bad RNA:USE {}", note);
+            if (ctx.lax) {
+                rna = SkipThis; // RNA:USE
+                logger.warn("[👹Parse:dealRnaUse] skip bad RNA:USE {}", note);
+            } else {
+                throw new IllegalStateException("RNA:USE [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return rna;
     }
@@ -512,7 +550,7 @@ public class Parser {
         boolean mute = false;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax RNA:PUT, without split char";
+            note = "Bad-Syntax RNA:PUT, without split-bar";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
@@ -529,8 +567,12 @@ public class Parser {
             rna = new RnaPut(txt, ctx.toEdge(), ctx.toMain(), type, para, expr, mute);
             logger.trace("[👹Parse:dealRnaPut] find RNA:PUT at token0={}", tkn0);
         } else {
-            rna = SkipThis; // RNA:PUT
-            logger.trace("[👹Parse:dealRnaPut] skip bad RNA:PUT {}", note);
+            if (ctx.lax) {
+                rna = SkipThis; // RNA:PUT
+                logger.warn("[👹Parse:dealRnaPut] skip bad RNA:PUT {}", note);
+            } else {
+                throw new IllegalStateException("RNA:PUT [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return rna;
     }
@@ -553,7 +595,7 @@ public class Parser {
         boolean mute = false;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax RNA:WHEN, without split char";
+            note = "Bad-Syntax RNA:WHEN, without split-bar";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
@@ -591,8 +633,12 @@ public class Parser {
             rna = new RnaWhen(txt, ctx.toEdge(), tock, ctx.toMain(), type, nope, expr, mute);
             logger.trace("[👹Parse:dealRnaWhen] find RNA:WHEN at token0={}", tkn0);
         } else {
-            rna = SkipThis; // RNA:WHEN
-            logger.trace("[👹Parse:dealRnaWhen] skip bad RNA:WHEN {}", note);
+            if (ctx.lax) {
+                rna = SkipThis; // RNA:WHEN
+                logger.warn("[👹Parse:dealRnaWhen] skip bad RNA:WHEN {}", note);
+            } else {
+                throw new IllegalStateException("RNA:WHEN [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return rna;
     }
@@ -615,7 +661,7 @@ public class Parser {
         boolean mute = false;
         String note;
         if (spl0 < 0) {
-            note = "Bad-Syntax RNA:EACH, without split char";
+            note = "Bad-Syntax RNA:EACH, without split-bar";
         } else {
             int[] typ2 = Seek.seekNextAlnum(txt, off, spl0);
             mute = parseMute(txt, typ2);
@@ -652,8 +698,12 @@ public class Parser {
             rna = new RnaEach(txt, ctx.toEdge(), tock, ctx.toMain(), type, step, expr, mute);
             logger.trace("[👹Parse:dealRnaWhen] find RNA:EACH at token0={}", tkn0);
         } else {
-            rna = SkipThis; // RNA:EACH
-            logger.trace("[👹Parse:dealRnaWhen] skip bad RNA:EACH {}", note);
+            if (ctx.lax) {
+                rna = SkipThis; // RNA:EACH
+                logger.warn("[👹Parse:dealRnaWhen] skip bad RNA:EACH {}", note);
+            } else {
+                throw new IllegalStateException("bad RNA:EACH [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+            }
         }
         return rna;
     }
@@ -677,8 +727,12 @@ public class Parser {
             dna = new RnaElse(txt, ctx.toEdge(), ctx.toMain(), name);
             logger.trace("[👹Parse:dealRnaElse] find RNA:ELSE at token0={}", tkn0);
         } else {
-            dna = SkipThis; // RNA:ELSE
-            logger.trace("[👹Parse:dealRnaElse] skip bad RNA:ELSE without name");
+            if (ctx.lax) {
+                dna = SkipThis; // RNA:ELSE
+                logger.warn("[👹Parse:dealRnaElse] skip bad RNA:ELSE without name");
+            } else {
+                throw new IllegalStateException("RNA:ELSE [" + ctx.main0 + "," + ctx.main1 + "], without name");
+            }
         }
         return dna;
     }
@@ -698,8 +752,12 @@ public class Parser {
 
         final Exon dna;
         if (names.isEmpty()) {
-            dna = SkipThis; // RNA:DONE
-            logger.trace("[👹Parse:dealRnaDone] skip bad RNA:DONE without name");
+            if (ctx.lax) {
+                dna = SkipThis; // RNA:DONE
+                logger.warn("[👹Parse:dealRnaDone] skip bad RNA:DONE without name");
+            } else {
+                throw new IllegalStateException("RNA:DONE [" + ctx.main0 + "," + ctx.main1 + "], without name");
+            }
         } else {
             trimEdge(ctx); // RNA:DONE
             dna = new RnaDone(txt, ctx.toEdge(), ctx.toMain(), names);
@@ -782,7 +840,7 @@ public class Parser {
 
     @NotNull
     private static String parseType(String txt, int[] typ2) {
-        return typ2[1] <= typ2[0] ? RnaManager.getDefaultEngine().type()[0] : txt.substring(typ2[0], typ2[1]);
+        return typ2[1] <= typ2[0] ? ENGINE$MAP : txt.substring(typ2[0], typ2[1]);
     }
 
     @NotNull
@@ -817,7 +875,7 @@ public class Parser {
             int o1 = pos3[i - 1] + 1;
             int p = txt.indexOf(splt, o1);
             if (p < o1 || p >= main1) {
-                return "Bad-Syntax " + xna + ", need 3 parts";
+                return "need 3 parts in split-bar";
             }
             pos3[i] = p;
         }
@@ -875,7 +933,9 @@ public class Parser {
      */
     protected static class Ctx {
         protected final String txt; // 模板原始文本
+        protected final boolean lax; // 宽松模式
         protected final int end; // 文本的length（不含）
+        protected int dyn; // Dyn count
         protected int done1 = 0; // 已解析完毕的位置（不含）
         protected int edge0 = 0; // 待解析行块开始位置（包含）
         protected int main0 = -1; // 待解析指令开始位置（包含）
@@ -884,17 +944,19 @@ public class Parser {
         protected int edge1 = -1; // 待解析行块结束位置（不含）
         protected HiMeepo meepo = null; // 当前作用的米波
 
-        protected final ArrayDeque<G> gene = new ArrayDeque<>();
+        protected final ArrayDeque<G> tree = new ArrayDeque<>();
 
         protected final HashSet<String> bkbs = new HashSet<>();
         protected final ArrayList<Exon> proc = new ArrayList<>();
         protected final Map<String, Life> life = new HashMap<>();
+        protected final StringBuilder errs = new StringBuilder();
 
-        public Ctx(String txt) {
+        public Ctx(String txt, boolean lax) {
             this.txt = txt;
             this.end = txt.length();
+            this.lax = lax;
 
-            gene.offerLast(new G("ROOT", Const.TXT$EMPTY, new ArrayList<>()));
+            tree.offerLast(new G("ROOT", Const.TXT$EMPTY, new ArrayList<>()));
         }
 
         public Clop toEdge() {
@@ -917,14 +979,18 @@ public class Parser {
         }
 
         public ArrayList<Exon> getGene() {
-            G g = gene.getLast();
+            G g = tree.getLast();
             return g.gene;
         }
 
         public void addGene(Exon exon) {
-            G g = gene.getLast();
+            exon.check(errs);
+            G g = tree.getLast();
             g.gene.add(exon);
-            logger.trace("[👹Parse:addGene] append gene {}, stack={}", exon.getClass().getSimpleName(), gene.size());
+            if (exon instanceof Dyn) {
+                dyn++;
+            }
+            logger.trace("[👹Parse:addGene] append gene {}, stack={}", exon.getClass().getSimpleName(), tree.size());
         }
 
         public void procExon(Exon exon) {
@@ -953,34 +1019,34 @@ public class Parser {
                 Set<String> done = rna.name;
                 String tock = null;
                 while (true) {
-                    G g = gene.getLast();
+                    G g = tree.getLast();
                     String tck = g.tock;
                     if (done.contains(tck)) {
-                        gene.removeLast();
+                        tree.removeLast();
                         if (tock == null || !tock.equalsIgnoreCase(tck)) {
                             addGene(rna.copy(tck));
                             tock = tck;
                         }
-                        logger.trace("[👹Parse:procExon] finish RNA:DONE, tock={}, stack={}", tck, gene.size());
+                        logger.trace("[👹Parse:procExon] finish RNA:DONE, tock={}, stack={}", tck, tree.size());
                     } else {
                         break;
                     }
                 }
-                logger.trace("[👹Parse:procExon] finish all RNA:DONE, stack={}", gene.size());
+                logger.trace("[👹Parse:procExon] finish all RNA:DONE, stack={}", tree.size());
             } else if (exon instanceof Tock) {
                 String clz = exon.getClass().getSimpleName();
                 Tock t = (Tock) exon;
-                G g = gene.getLast();
+                G g = tree.getLast();
                 // 相同tock则替换，否则追加
                 if (g.tock.equalsIgnoreCase(t.tock)) {
-                    gene.removeLast();
+                    tree.removeLast();
                     addGene(exon);
-                    gene.addLast(new G(clz, t.tock, t.gene));
-                    logger.trace("[👹Parse:procExon] adjust {}, tock={}, stack={}", clz, t.tock, gene.size());
+                    tree.addLast(new G(clz, t.tock, t.gene));
+                    logger.trace("[👹Parse:procExon] adjust {}, tock={}, stack={}", clz, t.tock, tree.size());
                 } else {
                     addGene(exon);
-                    gene.addLast(new G(clz, t.tock, t.gene));
-                    logger.trace("[👹Parse:procExon] append {}, tock={}, stack={}", clz, t.tock, gene.size());
+                    tree.addLast(new G(clz, t.tock, t.gene));
+                    logger.trace("[👹Parse:procExon] append {}, tock={}, stack={}", clz, t.tock, tree.size());
                 }
             }
             // 调整gene栈 - 结束
@@ -1035,11 +1101,15 @@ public class Parser {
                 if (off < st0) {
                     addGene(new TxtSimple(txt, off + done1, st0 + done1));
                 }
+                List<Exon> appl;
                 if (n.xna instanceof Bar) {
                     int bar = Dent.left(text, st0);
-                    n.xna.apply(getGene(), pos.shift(done1), txt, bar);
+                    appl = n.xna.apply(pos.shift(done1), txt, bar);
                 } else {
-                    n.xna.apply(getGene(), pos.shift(done1), txt, 0);
+                    appl = n.xna.apply(pos.shift(done1), txt, 0);
+                }
+                for (Exon exon : appl) {
+                    addGene(exon);
                 }
                 off = pos.until;
             }
@@ -1050,17 +1120,24 @@ public class Parser {
         }
 
         public Gene toGene() {
-            if (gene.size() != 1) {
+            if (errs.length() > 0) {
+                if (lax) {
+                    logger.warn(errs.toString());
+                } else {
+                    throw new IllegalStateException(errs.toString());
+                }
+            }
+            if (tree.size() != 1) {
                 StringBuilder sb = new StringBuilder("find UN-DONE RNA's Tock=");
-                for (G g : gene) {
+                for (G g : tree) {
                     sb.append(g.tock);
                     sb.append(",");
                 }
                 throw new IllegalStateException(sb.toString());
             }
 
-            G g = gene.pollLast();
-            return new Gene(g.gene, txt);
+            G g = tree.pollLast();
+            return new Gene(g.gene, txt, dyn > 0);
         }
     }
 }

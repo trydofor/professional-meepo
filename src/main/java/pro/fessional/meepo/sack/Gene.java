@@ -2,7 +2,6 @@ package pro.fessional.meepo.sack;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.kin.Dyn;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.util.Dent;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author trydofor
@@ -24,17 +22,20 @@ public class Gene {
     public final String text;
     public final int size;
     public final long born;
+    public final boolean flat;
     private final List<Exon> exon;
 
-    private final AtomicReference<String> cache;
-    private volatile int leng = -1;
+    private final ThreadLocal<StringBuilder> buff;
+    private volatile String cache = null;
+    private volatile int prot = -1;
 
-    public Gene(List<Exon> xna, String txt) {
+    public Gene(List<Exon> xna, String txt, boolean dyn) {
         this.exon = new ArrayList<>(xna);
         this.text = txt;
+        this.flat = !dyn;
         this.size = txt.length() + magic9;
         this.born = System.currentTimeMillis();
-        this.cache = new AtomicReference<>();
+        this.buff = ThreadLocal.withInitial(() -> new StringBuilder(size));
     }
 
     /**
@@ -45,29 +46,37 @@ public class Gene {
      */
     @NotNull
     public String merge(Map<String, Object> ctx) {
-        String s = cache.get();
-        if (s != null) return s;
+        final String str = cache;
+        if (str != null) return str;
 
-        final int len = Math.max(leng, size);
-        StringBuilder buf = new StringBuilder(len);
-        Acid acid = new Acid(ctx);
+        StringBuilder out = buff.get();
+        merge(ctx, out);
+        String rst = out.toString();
+        out.setLength(0);
 
-        boolean cac = true;
-        for (Exon exon : exon) {
-            if (exon instanceof Dyn) cac = false;
-            exon.merge(acid, buf);
-        }
-
-        String rst = buf.toString();
-        if (cac) {
-            cache.set(rst);
-        } else {
-            int bl = rst.length();
-            if (bl > len) {
-                this.leng = bl + magic9;
-            }
+        if (flat) {
+            cache = rst;
         }
         return rst;
+    }
+
+    /**
+     * 使用context合并
+     *
+     * @param ctx 上下文
+     * @param out 输出
+     */
+    public void merge(Map<String, Object> ctx, Appendable out) {
+        final String str = cache;
+        if (flat && str != null) {
+            Dent.pend(out, str);
+        } else {
+            Acid acid = new Acid(ctx, prot);
+            for (Exon exon : exon) {
+                exon.merge(acid, out);
+            }
+            prot = acid.clean();
+        }
     }
 
     /**

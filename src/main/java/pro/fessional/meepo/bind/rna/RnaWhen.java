@@ -8,6 +8,7 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Eval;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaProtein;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
@@ -40,6 +41,8 @@ public class RnaWhen extends Tock implements Dyn, Ngx {
     @NotNull
     public final String expr;
     public final boolean mute;
+    @NotNull
+    private final RnaProtein prot;
 
     public RnaWhen(String text, Clop edge, String tock, @NotNull Clop main, @NotNull String type, boolean nope, @NotNull String expr, boolean mute) {
         super(text, edge, tock);
@@ -48,21 +51,21 @@ public class RnaWhen extends Tock implements Dyn, Ngx {
         this.nope = nope;
         this.expr = expr;
         this.mute = mute;
+        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public @NotNull String getType() {
-        return type;
+    public void check(StringBuilder err) {
+        prot.check(err, expr, this);
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
+    public void merge(Acid acid, Appendable buff) {
         final Tock th = this;
         Tock tk = acid.execute.compute(tock, (s, t) -> {
             if (t != null) return t;
 
-            RnaEngine eng = acid.getEngine(this);
-            if (eng == null) return null;
+            RnaEngine eng = acid.dirty(prot);
 
             Object obj = eng.eval(type, expr, acid.context, mute);
             boolean af = Eval.asFalse(obj);
@@ -77,7 +80,7 @@ public class RnaWhen extends Tock implements Dyn, Ngx {
         if (tk == th) {
             logger.trace("[👹Merge:tock] deal RNA:WHEN tock={}, type={}, expr={}", tock, type, expr);
             for (Exon exon : gene) {
-                exon.merge(acid, buf);
+                exon.merge(acid, buff);
             }
         } else {
             logger.trace("[👹Merge:tock] skip RNA:WHEN tock={}, type={}, expr={}", tock, type, expr);

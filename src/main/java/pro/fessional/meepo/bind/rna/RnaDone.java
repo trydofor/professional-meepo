@@ -48,7 +48,7 @@ public class RnaDone extends Tock {
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buff) {
+    public void merge(Acid acid, Appendable buff) {
         if (tock.isEmpty()) {
             logger.trace("[👹Merge:tock] skip RNA:DONE tock is empty");
         } else {

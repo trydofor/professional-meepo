@@ -25,8 +25,8 @@ public class TxtDnaSet extends Exon {
     }
 
     @Override
-    public void merge(Acid acid, StringBuilder buf) {
-        buf.append(repl);
+    public void merge(Acid acid, Appendable buff) {
+        Dent.pend(buff, repl);
     }
 
     @Override
