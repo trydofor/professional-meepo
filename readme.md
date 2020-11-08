@@ -46,7 +46,9 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
  * [pebble template](https://pebbletemplates.io/)
  * [template-benchmark](https://github.com/trydofor/template-benchmark)
 
-虽然，米波本身的动态控制能力有限，但使用`执行引擎`（如js和java）可以做很复杂的功能操作。
+米波的初衷不是模板的动态控制能力，但使用`执行引擎`（如js和java）可以做很复杂的功能操作。
+尽管从benchmark上看，其性能远高于`Freemarker`和`Velocity`，是`thymeleaf`的3倍，
+但并不建议使用米波做工程上的view层渲染，它适合做模板中间层，或叫模板翻译器。
 
 ### 2.1.忽略指令行空白，可读性优先
 
@@ -546,8 +548,8 @@ RNA好比车间主任，定义执行指令，在merge时调用`执行引擎`，�
 
  * 一个`执行引擎`可以执行多种`类型`的`功能体`，一种类型简称一个`引擎`。
  * `引擎`的命名，必须为`英数`，区分大小写，如`js`。
- * 命名可以用`!`结尾，如`js!`，表示仅执行，但忽略输出（用空字符串代替）
- * 执行结果为`null`时，使用空字符串代替。
+ * 命名可以用`!`结尾，如`js!`，执行时错误继续进行，返回`null`
+ * 执行结果为`null`时，在模板合并时会使用`字符串空`代替。
 
 RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎，后详述。
 
@@ -585,13 +587,14 @@ var userHome = "/home/trydofor";
 
 语法：`RNA:PUT` `空白`+ `引擎`? `界定` `变量` `界定` `功能体` `界定`
 
-指定`引擎`执行`功能体`，把执行结果存入`环境`，以便其他`RNA`取值。
+指定`引擎`执行`功能体`，把执行结果存入`环境`（参加map引擎），以便其他`RNA`取值。
 
  * `环境`指米波context和部分脚本引擎上下文。
  * `引擎`，参考引擎说明。
  * `界定`同`SET`。
  * `变量`指存入上下文的变量，非母版字面量。
  * `功能体`由具体的执行引擎执行，如spring，则可当做SpEL执行。
+ * `变量`或`功能体`为空时，不进行任何操作。
 
 ``` js
 // DNA:PUT os/who/basename $(pwd)/
@@ -675,17 +678,17 @@ if (it.rem0){
 
 循环体中，存在以下内置属性，用来表示循环的状态，若`归组`名为`it`，则，
 
- * 引用当前元素的`x`属性时，其格式为`it:x`，注意不是`it.x`
  * `it` - 当前循环的元素，避免同名，而产生环境污染
- * `it.count` - 内置变量，当前循环计数，1-base，未循环时为0
- * `it.total` - 内置变量，`归组`内所有元素的数量
+ * 引用当前元素的`x`属性时，其格式为`it.x`
+ * `it._count` - 内置变量，当前循环计数，1-base，未循环时为0
+ * `it._total` - 内置变量，`归组`内所有元素的数量
  * 内置变量在循环结束后不移除，可以在循环外部使用。
 
 因为米波是`专业`的`非专业`模板引擎，所以此`for-each`十分低级，
 
- * 支持有限的对象导航，使用`:`分隔对象，详见`map`引擎。
+ * 支持有限的对象导航，使用`.`分隔对象，详见`map`引擎。
  * 集合内元素仅支持Map<String,?>和JavaBean的Getter取值。
- * 没有作用域隔离，同名`归组`，会造成context内变量覆盖。
+ * 没有作用域隔离，`归组`的名称，会造成context内变量覆盖。
 
 ``` html
 <!-- RNA:EACH map/2/items/it -->
@@ -745,18 +748,23 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
- * 如果mute，直接返回`字符串空`
  * 以`功能体`为`key`，依次查找，找到`非null`即返回
  * 顺序为context,System.property,System.env,Builtin
  * 没有找到`非null`值，直接返回`字符串空`
 
-支持简单的对象导航，以`:`分隔对象，而非`.`，主要是避免以下情况，
+支持简单的`导航类`对象，即key中以`.`分隔对象，会存在以下干扰情况，
 
  * java的System中有大量`.`型变量，如`os.name`，`user.home`
  * 如果用户存有`os`或`user`，使用`.`导航，则会发生混乱
- * 因为有`.`分隔的字符串变量存在，无法正确识别导航对象
 
-以`:`分隔的对象导航，采用以下查找顺序和规则，以key为`out:it:name`为例，
+因为有`.`分隔的字符串变量存在，所以在各实现引擎中对环境变量的使用，遵循以下规则。
+
+存入（put）时，尽量保证读取时，以整key和对象导航方式都可正确读取。
+
+ * 如果可以，以整key存入。
+ * 再以`.`分隔，逐级存入分段的key
+
+读取（get）时，优先使用整key读取，不存在则使用对象导航形式读取。
 
  * 以key直接查找，有`非null`值，则return
  * 如key中存在`:`，以`:`分隔成`out`，`it`和`name`
@@ -786,6 +794,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * `file://`,`/`或`.`时，从file system读取
  * `classpath:`时，从classloader读入，注意没有`//`
  * 其他，以URLConnection读取，超时为3秒
+ * 读入的内容，会以uri为key，缓存到context中
 
 ### 7.4.直接执行(exe)
 
@@ -805,6 +814,8 @@ console.log('<div>result='+count+'/'+total+'</div>')
 `session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
+对于在context读入和写入`导航类`对象，参考map引擎的规则。
+
 ### 7.8.执行java代码(java)
 
 `session`级，通过米波模板动态编译java代码，并以context为参加执行。
@@ -814,7 +825,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * 尾部以`return obj`返回，`;`可以省略。
  * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
  * 编译的java实现了`JavaEval`接口，位于`pro.fessional.meepo.poof.impl.java`
- * 传入`Map<String, Object> ctx`，可读取context
+ * 传入`RngContext ctx`，可读取context
  * 已经import的class有，
     - org.jetbrains.annotations.NotNull;
     - pro.fessional.meepo.poof.impl.JavaEngine;
@@ -837,8 +848,22 @@ console.log('<div>result='+count+'/'+total+'</div>')
 米波解析时，Parse本身基于字符串分析，仅在有`查找`的指令中使用正则，  
 通常建议，解析的过程需要在单线程内进行，多次解析或竞争毫无意义。
 
-合并使用时，如果不存在`Dyn`类指令，是静态字符串拼接，首次拼接，后续缓存。  
+合并使用时，如果不存在`Rng`类指令，是静态字符串拼接，首次拼接，后续缓存。  
 拼接过程中，预分配刚好够的buff，避免扩容。性能高于多次的原生String拼接。
 
-无`Dyn`指令时，线程安全且碎片极少，可以放心使用。当存在`Dyn`指令时，
+无`Rng`指令时，线程安全且碎片极少，可以放心使用。当存在`Rng`指令时，
 性能和线程安全，取决于执行引擎和传入的context。
+
+根据benchmark的测试（for+if+function）结果，meepo的性能远高于`Freemarker`
+
+| Benchmark            | Mode  | Cnt |       Score |    Error | Units |
+|:---------------------|:------|:----|------------:|---------:|:------|
+| Meepo.benchmark      | thrpt | 50  | 24177.507 ± |  493.546 | ops/s |
+| Freemarker.benchmark | thrpt | 50  | 18152.915 ± |  928.830 | ops/s |
+| Mustache.benchmark   | thrpt | 50  | 22565.064 ± |  154.915 | ops/s |
+| Pebble.benchmark     | thrpt | 50  | 34311.017 ± |  248.283 | ops/s |
+| Rocker.benchmark     | thrpt | 50  | 37499.123 ± | 1275.888 | ops/s |
+| Thymeleaf.benchmark  | thrpt | 50  |  5406.186 ± |  177.424 | ops/s |
+| Trimou.benchmark     | thrpt | 50  | 19718.903 ± |  669.759 | ops/s |
+| Velocity.benchmark   | thrpt | 50  | 18956.594 ± |  766.578 | ops/s |
+

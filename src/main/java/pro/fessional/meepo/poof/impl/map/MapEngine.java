@@ -1,8 +1,10 @@
-package pro.fessional.meepo.poof.impl;
+package pro.fessional.meepo.poof.impl.map;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.wow.Eval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaWarmed;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,8 +18,6 @@ import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
 import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW;
 import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_DATE;
 import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_TIME;
-import static pro.fessional.meepo.bind.Const.OBJ$NAVIGATOR;
-import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 依次从context，System.getProperty 和System.getenv 取值
@@ -26,6 +26,8 @@ import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
  * @since 2020-10-15
  */
 public class MapEngine implements RnaEngine {
+
+    private static final Logger logger = LoggerFactory.getLogger(MapEngine.class);
 
     private static final String[] TYPE = {ENGINE$MAP};
 
@@ -46,22 +48,37 @@ public class MapEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        if (mute || expr.isEmpty()) return TXT$EMPTY;
+    public @NotNull RnaWarmed warm(@NotNull String type, @NotNull String expr) {
+        return new RnaWarmed(type, expr, AttrGetter.nav(expr));
+    }
 
-        Object v = Eval.naviGet(ctx, expr, OBJ$NAVIGATOR);
-        if (v != null) return v;
+    @Override
+    public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
 
-        String s = System.getProperty(expr);
-        if (s != null) return s;
+        Object obj = null;
+        try {
+            obj = AttrGetter.get(ctx, expr.expr, (String[]) expr.work);
+            if (obj == null) {
+                obj = System.getProperty(expr.expr);
+            }
 
-        String e = System.getenv(expr);
-        if (e != null) return e;
+            if (obj == null) {
+                obj = System.getenv(expr.expr);
+            }
 
-        Supplier<String> ss = BUILTIN.get(expr);
-        if (ss != null) return ss.get();
+            if (obj == null) {
+                Supplier<String> ss = BUILTIN.get(expr.expr);
+                obj = ss == null ? null : ss.get();
+            }
+        } catch (Throwable t) {
+            if (mute) {
+                logger.warn("mute failed-eval " + expr, t);
+            } else {
+                throw new IllegalStateException(expr.expr, t);
+            }
+        }
 
-        return TXT$EMPTY;
+        return obj;
     }
 
     @Override

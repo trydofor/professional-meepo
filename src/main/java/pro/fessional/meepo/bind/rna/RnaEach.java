@@ -2,15 +2,18 @@ package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.kin.Dyn;
-import pro.fessional.meepo.bind.kin.Ngx;
+import pro.fessional.meepo.bind.kin.Rng;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.poof.RnaProtein;
+import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Deque;
@@ -20,8 +23,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.RandomAccess;
 
-import static pro.fessional.meepo.bind.Const.DOT$EACH_COUNT;
-import static pro.fessional.meepo.bind.Const.DOT$EACH_TOTAL;
+import static pro.fessional.meepo.bind.Const.BLT$EACH_COUNT;
+import static pro.fessional.meepo.bind.Const.BLT$EACH_TOTAL;
+import static pro.fessional.meepo.bind.Const.OBJ$NAVIGATOR;
 
 /**
  * <pre>
@@ -41,10 +45,8 @@ import static pro.fessional.meepo.bind.Const.DOT$EACH_TOTAL;
  * @author trydofor
  * @since 2020-11-01
  */
-public class RnaEach extends Tock implements Dyn, Ngx {
+public class RnaEach extends Tock implements Rng {
 
-    @NotNull
-    public final Clop main;
     @NotNull
     public final String type;
     public final int step;
@@ -52,35 +54,32 @@ public class RnaEach extends Tock implements Dyn, Ngx {
     public final String expr;
     public final boolean mute;
 
-    @NotNull
-    private final RnaProtein prot;
+    private RnaWarmed warmed;
 
-    public RnaEach(String text, Clop edge, String tock, @NotNull Clop main, @NotNull String type, int step, @NotNull String expr, boolean mute) {
+    public RnaEach(String text, Clop edge, String tock, @NotNull String type, int step, @NotNull String expr, boolean mute) {
         super(text, edge, tock);
-        this.main = main;
         this.type = type;
         this.step = step;
         this.expr = expr;
         this.mute = mute;
-        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public void check(StringBuilder err) {
-        prot.check(err, expr, this);
+    public void check(StringBuilder err, RngChecker rng) {
+        warmed = rng.check(err, type, expr);
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
-        RnaEngine eng = acid.dirty(prot);
+    public void merge(Acid acid, Writer buff) {
+        RnaEngine eng = acid.getEngine(type);
 
         Map<String, Object> ctx = acid.context;
-        Object obj = eng.eval(type, expr, ctx, mute);
+        Object obj = eng.eval(ctx, warmed, mute);
 
         final int size;
         if (obj instanceof Collection) {
             size = ((Collection<?>) obj).size();
-        } else if (obj.getClass().isArray()) {
+        } else if (obj != null && obj.getClass().isArray()) {
             size = Array.getLength(obj);
         } else {
             size = 0;
@@ -92,16 +91,17 @@ public class RnaEach extends Tock implements Dyn, Ngx {
             logger.trace("[👹Merge:tock] deal RNA:EACH tock={}, size={}, step={}, type={}, expr={}", tock, size, step, type, expr);
             acid.execute.put(tock, this);
 
-            final String keyTotal = tock + DOT$EACH_TOTAL;
-            final String keyCount = tock + DOT$EACH_COUNT;
+            final String keyTotal = tock + OBJ$NAVIGATOR + BLT$EACH_TOTAL;
+            final String keyCount = tock + OBJ$NAVIGATOR + BLT$EACH_COUNT;
 
             ctx.put(keyTotal, size);
             ctx.put(keyCount, 0);
+
             loop(acid, buff, obj, size, tock, keyCount);
         }
     }
 
-    private void loop(Acid acid, Appendable buf, Object obj, int size, String keyRefer, String keyCount) {
+    private void loop(Acid acid, Writer buf, Object obj, int size, String keyRefer, String keyCount) {
         final Map<String, Object> ctx = acid.context;
         if (obj instanceof List && obj instanceof RandomAccess) {
             int count = 1;
@@ -201,19 +201,29 @@ public class RnaEach extends Tock implements Dyn, Ngx {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("RnaEach{");
-        buff.append("tock='");
-        Dent.line(buff, tock);
-        buff.append("', type='");
-        Dent.line(buff, type);
-        buff.append("', step=");
-        buff.append(step);
-        buff.append(", expr='");
-        Dent.line(buff, expr);
-        buff.append("', mute=");
-        buff.append(mute);
-        buff.append("}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("RnaEach{");
+            buff.append("tock='");
+            Dent.line(buff, tock);
+            buff.append("', type='");
+            Dent.line(buff, type);
+            buff.append("', step=");
+            buff.write(String.valueOf(step));
+            buff.append(", expr='");
+            Dent.line(buff, expr);
+            buff.append("', mute=");
+            buff.write(String.valueOf(mute));
+            buff.append("}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

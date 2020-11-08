@@ -2,6 +2,9 @@ package pro.fessional.meepo.bind.wow;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -56,10 +59,20 @@ public class Clop implements Comparable<Clop> {
 
     @Override
     public String toString() {
-        return "Clop{" +
-                "start=" + start +
-                ", until=" + until +
-                ", length=" + length +
-                '}';
+        StringWriter buff = new StringWriter();
+        toString(buff);
+        return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("Clop{");
+            buff.append("start=").write(String.valueOf(start));
+            buff.append(", until=").write(String.valueOf(until));
+            buff.append(", length=").write(String.valueOf(length));
+            buff.write('}');
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -1,12 +1,13 @@
 package pro.fessional.meepo.tmpl;
 
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 
 /**
  * @author trydofor
  * @since 2020-10-28
  */
-public class ReplTest {
+public class ReplTest extends TraceTest {
 
     @Test
     public void replaceAll() {

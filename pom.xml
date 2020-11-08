@@ -14,7 +14,8 @@
         <nonull.version>19.0.0</nonull.version>
         <slf4j.version>1.7.30</slf4j.version>
         <pebble.version>3.1.4</pebble.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13</junit.version>
+        <jmh.version>1.26</jmh.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,19 @@
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
             <version>${pebble.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- benchmarking dependencies -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>${jmh.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>${jmh.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

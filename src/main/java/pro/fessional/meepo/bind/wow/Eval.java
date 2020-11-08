@@ -1,11 +1,13 @@
 package pro.fessional.meepo.bind.wow;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author trydofor
@@ -45,69 +47,71 @@ public class Eval {
         return f;
     }
 
-    private static final ConcurrentHashMap<String, Object> methods = new ConcurrentHashMap<>();
-
-    public static Object naviGet(Object ctx, String key, char nav) {
-        if (ctx == null || key == null) return null;
-
-        int p0 = key.indexOf(nav);
-        final String ok;
-        if (p0 < 0 || p0 + 1 == key.length()) {
-            ok = key;
-            key = null;
-        } else {
-            ok = key.substring(0, p0);
-            key = key.substring(p0 + 1);
-        }
-
-        final Object rt;
-        if (ctx instanceof Map) {
-            Map<?, ?> map = (Map<?, ?>) ctx;
-            rt = map.get(ok);
-        } else {
-            final Class<?> clz = ctx.getClass();
-            Object ref = methods.computeIfAbsent(clz.getName() + nav + ok, k -> {
-                for (Method md : clz.getMethods()) {
-                    if (md.getParameterCount() != 0) continue;
-                    String nm = md.getName();
-                    if (nm.equals(ok)) {
-                        return md;
-                    } else if (nm.startsWith("get")
-                            && nm.charAt(3) == Character.toUpperCase(ok.charAt(0))
-                            && nm.regionMatches(4, ok, 1, ok.length() - 1)) {
-                        return md;
-                    } else if (nm.startsWith("is")
-                            && nm.charAt(2) == Character.toUpperCase(ok.charAt(0))
-                            && nm.regionMatches(3, ok, 1, ok.length() - 1)) {
-                        return md;
-                    }
-                }
-                for (Field fd : clz.getFields()) {
-                    if (fd.getName().equals(ok)) {
-                        return fd;
-                    }
-                }
-                return null;
-            });
-
-            try {
-                if (ref instanceof Method) {
-                    rt = ((Method) ref).invoke(ctx);
-                } else if (ref instanceof Field) {
-                    rt = ((Field) ref).get(ctx);
+    /**
+     * 按空白解析命令行，支持引号块和转义 "one\" arg"
+     *
+     * @param line 参数行
+     * @return 解析后命令行
+     */
+    @NotNull
+    public static List<String> parseArgs(String line) {
+        if (line == null || line.isEmpty()) return Collections.emptyList();
+        List<String> args = new ArrayList<>();
+        int len = line.length();
+        StringBuilder buf = new StringBuilder(len);
+        char qto = 0;
+        boolean esc = false;
+        for (int i = 0; i < len; i++) {
+            char c = line.charAt(i);
+            if (c == '\\') {
+                if (esc) {
+                    buf.append(c);
+                    esc = false;
                 } else {
-                    rt = null;
+                    esc = true;
                 }
-            } catch (Exception e) {
-                throw new IllegalStateException("failed to reflect ok=" + ok, e);
+            } else if (c == '"' || c == '\'') {
+                if (esc) {
+                    buf.append(c);
+                    esc = false;
+                } else {
+                    if (qto == 0) {
+                        qto = c;
+                    } else {
+                        if (qto == c) {
+                            args.add(buf.toString());
+                            buf.setLength(0);
+                            qto = 0;
+                        } else {
+                            buf.append(c);
+                        }
+                    }
+                }
+            } else if (c == ' ' || c == '\t') {
+                if (qto > 0) {
+                    buf.append(c);
+                } else {
+                    if (buf.length() > 0) {
+                        args.add(buf.toString());
+                        buf.setLength(0);
+                    }
+                }
+            } else {
+                if (esc) {
+                    buf.append('\\');
+                    esc = false;
+                }
+                buf.append(c);
             }
         }
 
-
-        if (key == null) {
-            return rt;
-        } else {
-            return naviGet(rt, key, nav);
+        if (buf.length() > 0) {
+            if (esc) {
+                buf.append('\\');
+            }
+            args.add(buf.toString());
         }
+
+        return args;
     }
 }

@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaSet;
@@ -20,6 +21,8 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 
+import java.io.CharArrayWriter;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +35,7 @@ import static pro.fessional.meepo.bind.Const.TKN$RNA_;
  * @author trydofor
  * @since 2020-10-18
  */
-public class ParserTest {
+public class ParserTest extends TraceTest {
 
     private final Logger logger = LoggerFactory.getLogger(ParserTest.class);
 
@@ -54,6 +57,10 @@ public class ParserTest {
     private final HiMeepo level5 = new HiMeepo("/*HI-MEEPO*/", new Clop(0, 11), new Clop(2, 9), "/*", "*/", false);
     private final HiMeepo single = new HiMeepo("//HI-MEEPO", new Clop(0, 9), new Clop(2, 9), "//", "\n", false);
 
+    private Acid newAcid(Parser.Ctx ctx) {
+        return new Acid(new HashMap<>(), ctx.rngs.getCheckedEngine());
+    }
+
     private void checkHiMeepo(String txt, String pre, String suf, String edge, String main) {
         TestCtx ctx = new TestCtx(txt);
         Parser.markHiMeepo(ctx);
@@ -61,21 +68,20 @@ public class ParserTest {
         List<Exon> gene = ctx.getGene();
         Exon exon = gene.get(gene.size() - 1);
 
+        CharArrayWriter buf = new CharArrayWriter();
         if (pre == null) {
             assertNull(meepo);
             Assert.assertTrue(exon instanceof TxtSimple);
-            Assert.assertEquals(txt, exon.text);
+            exon.build(buf);
+            Assert.assertEquals(txt, buf.toString());
         } else {
-            StringBuilder buf = new StringBuilder();
             Assert.assertNotNull(meepo);
             Assert.assertEquals(pre, meepo.head);
             Assert.assertEquals(suf, meepo.tail);
             Assert.assertEquals(edge, txt.substring(meepo.edge.start, meepo.edge.until));
-            Assert.assertEquals(main, txt.substring(meepo.main.start, meepo.main.until));
-
-            exon.merge(new Acid(), buf);
+            exon.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(edge, buf.toString());
         }
@@ -114,10 +120,10 @@ public class ParserTest {
         Exon exon = Parser.dealDnaRaw(ctx);
         Assert.assertNotNull(exon);
 
-        StringBuilder buf = new StringBuilder();
-        exon.merge(new Acid(), buf);
+        CharArrayWriter buf = new CharArrayWriter();
+        exon.merge(newAcid(ctx), buf);
         assertEquals(merge, buf.toString());
-        buf.setLength(0);
+        buf.reset();
         exon.build(buf);
         assertEquals(build, buf.toString());
     }
@@ -154,11 +160,11 @@ public class ParserTest {
         if (name == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             assertEquals(name, ((Tick) exon).life.name);
-            exon.merge(new Acid(), buf);
+            exon.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -195,16 +201,16 @@ public class ParserTest {
         if (name == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             DnaEnd dna = (DnaEnd) exon;
             String[] nms = name.split("[, ]+");
             assertEquals(nms.length, dna.name.size());
             for (String nm : nms) {
                 assertTrue(dna.name.contains(nm));
             }
-            dna.merge(new Acid(), buf);
+            dna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -242,15 +248,15 @@ public class ParserTest {
         if (life == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             DnaSet dna = (DnaSet) exon;
             Assert.assertEquals(find, dna.find.pattern());
             Assert.assertEquals(repl, dna.repl);
             Assert.assertEquals(life, dna.life);
 
-            dna.merge(new Acid(), buf);
+            dna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -297,16 +303,16 @@ public class ParserTest {
         if (type == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaRun rna = (RnaRun) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(find, rna.find.pattern());
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(life, rna.life);
             Assert.assertEquals(quiet, rna.mute);
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -359,17 +365,17 @@ public class ParserTest {
         if (life == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaUse rna = (RnaUse) exon;
             Assert.assertEquals(find, rna.find.pattern());
             Assert.assertEquals(para, rna.para);
             Assert.assertEquals(life, rna.life);
 
-            Acid ctx1 = new Acid();
+            Acid ctx1 = newAcid(ctx);
             ctx1.context.put("who", "meepo");
             rna.merge(ctx1, buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -411,20 +417,21 @@ public class ParserTest {
 
         Exon exon = Parser.dealRnaPut(ctx);
         Assert.assertNotNull(exon);
+        exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaPut rna = (RnaPut) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(para, rna.para);
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(mute, rna.mute);
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -469,21 +476,22 @@ public class ParserTest {
 
         Exon exon = Parser.dealRnaWhen(ctx);
         Assert.assertNotNull(exon);
+        exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaWhen rna = (RnaWhen) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(nope, rna.nope);
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(tock, rna.tock);
             Assert.assertEquals(quiet, rna.mute);
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -513,21 +521,22 @@ public class ParserTest {
 
         Exon exon = Parser.dealRnaEach(ctx);
         Assert.assertNotNull(exon);
+        exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaEach rna = (RnaEach) exon;
             Assert.assertEquals(type, rna.type);
             Assert.assertEquals(step, rna.step);
             Assert.assertEquals(expr, rna.expr);
             Assert.assertEquals(tock, rna.tock);
             Assert.assertEquals(quiet, rna.mute);
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -561,12 +570,12 @@ public class ParserTest {
         if (tock == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaElse rna = (RnaElse) exon;
             Assert.assertEquals(tock, rna.tock);
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }
@@ -596,16 +605,16 @@ public class ParserTest {
         if (name == null) {
             Assert.assertEquals(0, exon.edge.until);
         } else {
-            StringBuilder buf = new StringBuilder();
+            CharArrayWriter buf = new CharArrayWriter();
             RnaDone rna = (RnaDone) exon;
             String[] nms = name.split("[, ]+");
             assertEquals(nms.length, rna.name.size());
             for (String nm : nms) {
                 assertTrue(rna.name.contains(nm));
             }
-            rna.merge(new Acid(), buf);
+            rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
-            buf.setLength(0);
+            buf.reset();
             exon.build(buf);
             assertEquals(build, buf.toString());
         }

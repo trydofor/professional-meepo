@@ -36,13 +36,13 @@ public class Java {
         }
     }
 
-    public static <T> Class<T> compile(String fullName, String javaCode) {
+    public static <T> Class<T> compile(String javaFile, String javaCode) {
         try {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
             DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
-            String fullPath = fullName.replace('.', '/');
+            String fullPath = javaFile.replace('.', '/');
             final JavaByte byteObject = new JavaByte(fullPath);
 
             JavaFileManager fileManager = new ForwardingJavaFileManager<StandardJavaFileManager>
@@ -76,10 +76,10 @@ public class Java {
             };
 
             @SuppressWarnings("unchecked")
-            Class<T> test = (Class<T>) classLoader.loadClass(fullName);
+            Class<T> test = (Class<T>) classLoader.loadClass(javaFile);
             return test;
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+        } catch (Throwable e) {
+            throw new IllegalStateException("\njava-file=" + javaFile + "\njava-code=\n" + javaCode, e);
         }
     }
 

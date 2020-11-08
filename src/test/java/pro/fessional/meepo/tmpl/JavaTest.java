@@ -2,7 +2,8 @@ package pro.fessional.meepo.tmpl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.fessional.meepo.poof.impl.JavaEngine;
+import pro.fessional.meepo.TraceTest;
+import pro.fessional.meepo.poof.impl.java.JavaEngine;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 import pro.fessional.meepo.util.Read;
@@ -14,7 +15,7 @@ import java.util.HashMap;
  * @author trydofor
  * @since 2020-10-28
  */
-public class JavaTest {
+public class JavaTest extends TraceTest {
     @Test
     public void java() {
         TmplHelp.assertTmpl("/template/java/compile-java-o.htm", "/template/java/compile-java-i.htm");

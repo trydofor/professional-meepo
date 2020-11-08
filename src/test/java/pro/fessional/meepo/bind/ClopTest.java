@@ -2,13 +2,14 @@ package pro.fessional.meepo.bind;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
 
 /**
  * @author trydofor
  * @since 2020-10-19
  */
-public class ClopTest {
+public class ClopTest extends TraceTest {
 
     @Test
     public void cross() {

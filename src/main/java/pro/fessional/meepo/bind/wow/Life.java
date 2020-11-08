@@ -3,6 +3,9 @@ package pro.fessional.meepo.bind.wow;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Const;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -131,19 +134,26 @@ public class Life {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Life{")
-          .append("count=").append(count)
-          .append(", index=").append(index)
-          .append(", name='").append(name)
-          .append("', book=[");
-        for (int[] ints : book) {
-            sb.append(",");
-            sb.append(Arrays.toString(ints));
-        }
-        sb.append("]}");
+        StringWriter buff = new StringWriter();
+        toString(buff);
+        return buff.toString();
+    }
 
-        return sb.toString();
+    public void toString(Writer buff) {
+        try {
+            buff.append("Life{")
+                .append("count=").write(String.valueOf(count));
+            buff.append(", index=").write(String.valueOf(index));
+            buff.append(", name='").write(name);
+            buff.append("', book=[");
+            for (int[] ints : book) {
+                buff.append(",");
+                buff.append(Arrays.toString(ints));
+            }
+            buff.append("]}");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -155,9 +165,10 @@ public class Life {
     public static Life parse(String str) {
         int len = str.length();
         if (len == 0) return nobodyOne();
+
         str = str.trim();
         char c = str.charAt(0);
-        if (c == '*') return Any;
+        if (c == '*') return nobodyAny();
         if (c < '0' || c > '9') return new Life(str, null);
 
         String[] part = str.split(",");
@@ -212,7 +223,7 @@ public class Life {
     }
 
     public static Life nobodyAny() {
-        return Any;
+        return new Life(null, Collections.emptyList());
     }
 
     public static Life namedAny(String name) {
@@ -220,5 +231,4 @@ public class Life {
     }
 
     private static final List<int[]> One = Collections.singletonList(new int[]{1});
-    private static final Life Any = new Life(null, Collections.emptyList());
 }

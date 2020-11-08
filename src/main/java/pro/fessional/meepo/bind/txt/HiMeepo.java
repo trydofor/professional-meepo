@@ -5,6 +5,9 @@ import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -28,8 +31,6 @@ import java.util.Objects;
 public class HiMeepo extends Exon {
 
     @NotNull
-    public final Clop main;
-    @NotNull
     public final String head;
     @NotNull
     public final String tail;
@@ -48,7 +49,6 @@ public class HiMeepo extends Exon {
 
     public HiMeepo(@NotNull String text, Clop edge, @NotNull Clop main, @NotNull String head, @NotNull String tail, boolean trim) {
         super(text, edge);
-        this.main = main;
         this.head = head;
         this.tail = tail;
         this.trim = trim;
@@ -83,19 +83,29 @@ public class HiMeepo extends Exon {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("HiMeepo{");
-        buff.append("head='");
-        Dent.line(buff, head);
-        buff.append("', tail='");
-        Dent.line(buff, tail);
-        buff.append("', echo=");
-        buff.append(echo);
-        buff.append(", trim=");
-        buff.append(trim);
-        buff.append(", crlf=");
-        buff.append(crlf);
-        buff.append('}');
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("HiMeepo{");
+            buff.append("head='");
+            Dent.line(buff, head);
+            buff.append("', tail='");
+            Dent.line(buff, tail);
+            buff.append("', echo=");
+            buff.append(String.valueOf(echo));
+            buff.append(", trim=");
+            buff.append(String.valueOf(trim));
+            buff.append(", crlf=");
+            buff.append(String.valueOf(crlf));
+            buff.append('}');
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -3,6 +3,7 @@ package pro.fessional.meepo.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.CharArrayWriter;
 import java.util.Arrays;
 
 /**
@@ -25,41 +26,46 @@ public class DentTest {
 
     @Test
     public void left2() {
-        StringBuilder buf = new StringBuilder();
+        CharArrayWriter buf = new CharArrayWriter();
         Dent.left(buf, 0);
-        Assert.assertEquals(0, buf.length());
-        buf.setLength(0);
+        Assert.assertEquals(0, buf.size());
+
+        buf.reset();
         Dent.left(buf, -1);
-        Assert.assertEquals(0, buf.length());
-        buf.setLength(0);
+        Assert.assertEquals(0, buf.size());
+
+        buf.reset();
         Dent.left(buf, 64);
-        Assert.assertEquals(64, buf.length());
-        buf.setLength(0);
+        Assert.assertEquals(64, buf.size());
+
+        buf.reset();
         Dent.left(buf, 100);
-        Assert.assertEquals(100, buf.length());
-        buf.setLength(0);
+        Assert.assertEquals(100, buf.size());
+
+        buf.reset();
         Dent.left(buf, 200);
-        Assert.assertEquals(200, buf.length());
+        Assert.assertEquals(200, buf.size());
     }
 
     @Test
     public void left3() {
-        StringBuilder buf = new StringBuilder();
+        CharArrayWriter buf = new CharArrayWriter();
         Dent.left(buf, 0, new int[]{1, 2, 3});
         Assert.assertEquals("123", buf.toString());
 
-        buf.setLength(0);
+        buf.reset();
         Dent.left(buf, 1, new int[]{1, 2, 3});
         Assert.assertEquals("1 2 3", buf.toString());
 
-        buf.setLength(0);
+        buf.reset();
         Dent.left(buf, 1, new String[]{"1\n", "2\n", "3\n"});
         Assert.assertEquals("1\n 2\n 3\n", buf.toString());
 
-        buf.setLength(0);
+        buf.reset();
         Dent.left(buf, 1, Arrays.asList("1\n", "2\n", "3\n"));
         Assert.assertEquals("1\n 2\n 3\n", buf.toString());
-        buf.setLength(0);
+
+        buf.reset();
         Dent.left(buf, 1, "123");
         Assert.assertEquals("123", buf.toString());
     }

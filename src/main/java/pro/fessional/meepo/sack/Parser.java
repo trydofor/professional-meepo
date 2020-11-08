@@ -10,7 +10,6 @@ import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
 import pro.fessional.meepo.bind.dna.DnaSet;
 import pro.fessional.meepo.bind.kin.Bar;
-import pro.fessional.meepo.bind.kin.Dyn;
 import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.rna.RnaDone;
 import pro.fessional.meepo.bind.rna.RnaEach;
@@ -25,6 +24,7 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.bind.wow.Tock;
+import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.util.Dent;
 import pro.fessional.meepo.util.Seek;
 
@@ -340,7 +340,7 @@ public class Parser {
 
         int off = tkn0 + TKN$DNA_RAW.length();
         int raw0 = Seek.seekNextGrace(txt, off, ctx.main1);
-        DnaRaw dna = new DnaRaw(txt, ctx.toEdge(), ctx.toMain(), Math.max(raw0, off));
+        DnaRaw dna = new DnaRaw(txt, ctx.toEdge(), Math.max(raw0, off), ctx.main1);
         logger.trace("[👹Parse:dealDnaRaw] find DNA:RAW at token0={}", tkn0);
         return dna;
     }
@@ -361,7 +361,7 @@ public class Parser {
         if (pos[1] > pos[0]) {
             trimEdge(ctx); // DNA:BKB
             String name = txt.substring(pos[0], pos[1]);
-            dna = new DnaBkb(txt, ctx.toEdge(), ctx.toMain(), name);
+            dna = new DnaBkb(txt, ctx.toEdge(), name);
             logger.trace("[👹Parse:dealDnaBkb] find DNA:BKB at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -397,7 +397,7 @@ public class Parser {
             }
         } else {
             trimEdge(ctx); // DNA:END
-            dna = new DnaEnd(txt, ctx.toEdge(), ctx.toMain(), names);
+            dna = new DnaEnd(txt, ctx.toEdge(), names);
             logger.trace("[👹Parse:dealDnaEnd] find DNA:END at token0={}", tkn0);
         }
         return dna;
@@ -432,7 +432,7 @@ public class Parser {
             String repl = txt.substring(pos3[1] + 1, pos3[2]);
 
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            dna = new DnaSet(txt, ctx.toEdge(), life, ctx.toMain(), find, repl);
+            dna = new DnaSet(txt, ctx.toEdge(), life, find, repl);
             logger.trace("[👹Parse:dealDnaSet] find DNA:SET at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -478,7 +478,7 @@ public class Parser {
             Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]), RegxFlag);
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            rna = new RnaRun(txt, ctx.toEdge(), life, ctx.toMain(), type, find, expr, mute);
+            rna = new RnaRun(txt, ctx.toEdge(), life, type, find, expr, mute);
             logger.trace("[👹Parse:dealRnaRun] find RNA:RUN at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -519,7 +519,7 @@ public class Parser {
             Pattern find = Pattern.compile(txt.substring(pos3[0] + 1, pos3[1]), RegxFlag);
             String para = txt.substring(pos3[1] + 1, pos3[2]);
             Life life = parseLife(txt, pos3[2], ctx.main1);
-            rna = new RnaUse(txt, ctx.toEdge(), life, ctx.toMain(), find, para);
+            rna = new RnaUse(txt, ctx.toEdge(), life, find, para);
             logger.trace("[👹Parse:dealRnaUse] find RNA:USE at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -564,7 +564,7 @@ public class Parser {
             trimEdge(ctx); // RNA:PUT
             String para = txt.substring(pos3[0] + 1, pos3[1]);
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
-            rna = new RnaPut(txt, ctx.toEdge(), ctx.toMain(), type, para, expr, mute);
+            rna = new RnaPut(txt, ctx.toEdge(), type, para, expr, mute);
             logger.trace("[👹Parse:dealRnaPut] find RNA:PUT at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -630,7 +630,7 @@ public class Parser {
         if (note == null) {
             trimEdge(ctx); // RNA:WHEN
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
-            rna = new RnaWhen(txt, ctx.toEdge(), tock, ctx.toMain(), type, nope, expr, mute);
+            rna = new RnaWhen(txt, ctx.toEdge(), tock, type, nope, expr, mute);
             logger.trace("[👹Parse:dealRnaWhen] find RNA:WHEN at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -695,7 +695,7 @@ public class Parser {
         if (note == null) {
             trimEdge(ctx); // RNA:EACH
             String expr = txt.substring(pos3[1] + 1, pos3[2]);
-            rna = new RnaEach(txt, ctx.toEdge(), tock, ctx.toMain(), type, step, expr, mute);
+            rna = new RnaEach(txt, ctx.toEdge(), tock, type, step, expr, mute);
             logger.trace("[👹Parse:dealRnaWhen] find RNA:EACH at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -724,7 +724,7 @@ public class Parser {
         if (pos[1] > pos[0]) {
             trimEdge(ctx); // RNA:ELSE
             String name = txt.substring(pos[0], pos[1]);
-            dna = new RnaElse(txt, ctx.toEdge(), ctx.toMain(), name);
+            dna = new RnaElse(txt, ctx.toEdge(), name);
             logger.trace("[👹Parse:dealRnaElse] find RNA:ELSE at token0={}", tkn0);
         } else {
             if (ctx.lax) {
@@ -760,7 +760,7 @@ public class Parser {
             }
         } else {
             trimEdge(ctx); // RNA:DONE
-            dna = new RnaDone(txt, ctx.toEdge(), ctx.toMain(), names);
+            dna = new RnaDone(txt, ctx.toEdge(), names);
             logger.trace("[👹Parse:dealRnaDone] find RNA:DONE at token0={}", tkn0);
         }
         return dna;
@@ -935,7 +935,6 @@ public class Parser {
         protected final String txt; // 模板原始文本
         protected final boolean lax; // 宽松模式
         protected final int end; // 文本的length（不含）
-        protected int dyn; // Dyn count
         protected int done1 = 0; // 已解析完毕的位置（不含）
         protected int edge0 = 0; // 待解析行块开始位置（包含）
         protected int main0 = -1; // 待解析指令开始位置（包含）
@@ -950,6 +949,7 @@ public class Parser {
         protected final ArrayList<Exon> proc = new ArrayList<>();
         protected final Map<String, Life> life = new HashMap<>();
         protected final StringBuilder errs = new StringBuilder();
+        protected final RngChecker rngs = new RngChecker();
 
         public Ctx(String txt, boolean lax) {
             this.txt = txt;
@@ -961,10 +961,6 @@ public class Parser {
 
         public Clop toEdge() {
             return new Clop(edge0, edge1);
-        }
-
-        public Clop toMain() {
-            return new Clop(main0, main1);
         }
 
         public boolean notBkb() {
@@ -984,12 +980,9 @@ public class Parser {
         }
 
         public void addGene(Exon exon) {
-            exon.check(errs);
+            exon.check(errs, rngs);
             G g = tree.getLast();
             g.gene.add(exon);
-            if (exon instanceof Dyn) {
-                dyn++;
-            }
             logger.trace("[👹Parse:addGene] append gene {}, stack={}", exon.getClass().getSimpleName(), tree.size());
         }
 
@@ -1137,7 +1130,7 @@ public class Parser {
             }
 
             G g = tree.pollLast();
-            return new Gene(g.gene, txt, dyn > 0);
+            return new Gene(g.gene, rngs.getCheckedEngine());
         }
     }
 }

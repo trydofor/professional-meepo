@@ -1,14 +1,15 @@
 package pro.fessional.meepo.poof.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaWarmed;
 import pro.fessional.meepo.util.Read;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$URI;
-import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 以UTF8输出URI内容
@@ -18,9 +19,9 @@ import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
  */
 public class UriEngine implements RnaEngine {
 
-    private static final String[] TYPE = {ENGINE$URI};
+    private static final Logger logger = LoggerFactory.getLogger(UriEngine.class);
 
-    private final Map<String, String> cache = new HashMap<>();
+    private static final String[] TYPE = {ENGINE$URI};
 
     @Override
     public @NotNull String[] type() {
@@ -28,9 +29,19 @@ public class UriEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        String str = cache.computeIfAbsent(expr, Read::read);
-        return mute ? TXT$EMPTY : str;
+    public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
+        Object obj = null;
+        try {
+            obj = ctx.computeIfAbsent(expr.expr, Read::read);
+        } catch (Throwable t) {
+            if (mute) {
+                logger.warn("mute failed-eval " + expr, t);
+            } else {
+                Throwable c = t.getCause();
+                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+            }
+        }
+        return obj;
     }
 
     @Override

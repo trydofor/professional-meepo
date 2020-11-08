@@ -3,6 +3,7 @@ package pro.fessional.meepo.poof.impl.java;
 import org.junit.Assert;
 import org.junit.Test;
 import pro.fessional.meepo.Meepo;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Java;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.HashMap;
  * @author trydofor
  * @since 2020-11-04
  */
-public class JavaTest {
+public class JavaEvalTest extends TraceTest {
 
     @Test
     public void create() {
@@ -23,13 +24,13 @@ public class JavaTest {
     @Test
     public void compile() {
         HashMap<String, Object> ctx = new HashMap<>();
-        String name = "Java01";
+        String name = "JavaCompile1";
         ctx.put("import", "");
         ctx.put("class", name);
         ctx.put("method", "return true");
         ctx.put("colon", ";");
-        String uri = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
-        String code = Meepo.merge(ctx, uri, Meepo.CACHE_ALWAYS);
+        String tmpl = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
+        String code = Meepo.merge(ctx, tmpl, Meepo.CACHE_ALWAYS);
 
         String fullName = "pro.fessional.meepo.poof.impl.java." + name;
         Class<Object> clz = Java.compile(fullName, code);

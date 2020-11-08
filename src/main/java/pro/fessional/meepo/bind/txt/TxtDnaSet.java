@@ -6,7 +6,10 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Arrays;
 
 /**
  * 静态替换
@@ -17,16 +20,16 @@ import java.util.Objects;
 public class TxtDnaSet extends Exon {
 
     @NotNull
-    public final String repl;
+    private final char[] repl9;
 
     public TxtDnaSet(@NotNull String text, Clop edge, @NotNull String repl) {
         super(text, edge);
-        this.repl = repl;
+        this.repl9 = repl.toCharArray();
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
-        Dent.pend(buff, repl);
+    public void merge(Acid acid, Writer buff) {
+        Dent.pend(buff, repl9);
     }
 
     @Override
@@ -34,21 +37,31 @@ public class TxtDnaSet extends Exon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TxtDnaSet txtDnaSet = (TxtDnaSet) o;
-        return repl.equals(txtDnaSet.repl);
+        return Arrays.equals(repl9, txtDnaSet.repl9);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(repl);
+        return Arrays.hashCode(repl9);
     }
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("TxtDnaSet{");
-        buff.append("repl='");
-        Dent.line(buff, repl);
-        buff.append("'}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("TxtDnaSet{");
+            buff.append("repl='");
+            Dent.line(buff, repl9);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

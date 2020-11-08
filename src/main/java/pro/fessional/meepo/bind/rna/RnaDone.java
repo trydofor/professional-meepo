@@ -7,6 +7,9 @@ import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,13 +27,14 @@ import java.util.Set;
 public class RnaDone extends Tock {
 
     @NotNull
-    public final Clop main;
-    @NotNull
     public final Set<String> name;
 
-    public RnaDone(String text, Clop edge, @NotNull String tock, @NotNull Clop main, Collection<String> name) {
-        super(text, edge, tock);
-        this.main = main;
+    public RnaDone(String text, Clop edge, Collection<String> name) {
+        this(Dent.chars(text, edge), edge, Const.TXT$EMPTY, name);
+    }
+
+    protected RnaDone(char[] text9, Clop edge, @NotNull String tock, Collection<String> name) {
+        super(text9, edge, tock);
         if (name instanceof Set) {
             this.name = Collections.unmodifiableSet((Set<String>) name);
         } else {
@@ -39,16 +43,12 @@ public class RnaDone extends Tock {
         }
     }
 
-    public RnaDone(String text, Clop edge, @NotNull Clop main, Collection<String> name) {
-        this(text, edge, Const.TXT$EMPTY, main, name);
-    }
-
     public RnaDone copy(String tock) {
-        return new RnaDone(text, edge, tock, main, name);
+        return new RnaDone(text9, edge, tock, name);
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
+    public void merge(Acid acid, Writer buff) {
         if (tock.isEmpty()) {
             logger.trace("[👹Merge:tock] skip RNA:DONE tock is empty");
         } else {
@@ -73,13 +73,23 @@ public class RnaDone extends Tock {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("RnaDone{");
-        buff.append("tock='");
-        Dent.line(buff, tock);
-        buff.append("', name=[");
-        Dent.line(buff, String.join(",", name));
-        buff.append("]}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("RnaDone{");
+            buff.append("tock='");
+            Dent.line(buff, tock9);
+            buff.append("', name=[");
+            Dent.line(buff, String.join(",", name));
+            buff.append("]}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

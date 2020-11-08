@@ -10,6 +10,9 @@ import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -36,8 +39,6 @@ import java.util.regex.Pattern;
 public class RnaRun extends Tick implements Bar, Prc {
 
     @NotNull
-    public final Clop main;
-    @NotNull
     public final String type;
     @NotNull
     public final Pattern find;
@@ -45,9 +46,8 @@ public class RnaRun extends Tick implements Bar, Prc {
     public final String expr;
     public final boolean mute;
 
-    public RnaRun(String text, Clop edge, @NotNull Life life, @NotNull Clop main, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
+    public RnaRun(String text, Clop edge, @NotNull Life life, @NotNull String type, @NotNull Pattern find, @NotNull String expr, boolean mute) {
         super(text, edge, life);
-        this.main = main;
         this.type = type;
         this.find = find;
         this.expr = expr;
@@ -83,18 +83,29 @@ public class RnaRun extends Tick implements Bar, Prc {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("RnaRun{");
-        buff.append("type='");
-        Dent.line(buff, type);
-        buff.append("', find='");
-        Dent.line(buff, find.pattern());
-        buff.append("', expr='");
-        Dent.line(buff, expr);
-        buff.append("', mute=");
-        buff.append(mute);
-        buff.append("}");
-        buff.append("; ").append(edge);
-        buff.append("; ").append(life);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("RnaRun{");
+            buff.append("type='");
+            Dent.line(buff, type);
+            buff.append("', find='");
+            Dent.line(buff, find.pattern());
+            buff.append("', expr='");
+            Dent.line(buff, expr);
+            buff.append("', mute=");
+            buff.append(String.valueOf(mute));
+            buff.append("}");
+            buff.append("; ");
+            edge.toString(buff);
+            buff.append("; ");
+            life.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

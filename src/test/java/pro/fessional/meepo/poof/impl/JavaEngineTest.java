@@ -2,6 +2,9 @@ package pro.fessional.meepo.poof.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
+import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.poof.impl.java.JavaEngine;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +16,7 @@ import java.util.HashMap;
  * @author trydofor
  * @since 2020-10-31
  */
-public class JavaEngineTest {
+public class JavaEngineTest extends TraceTest {
 
     @Test
     public void eval() {
@@ -22,8 +25,9 @@ public class JavaEngineTest {
         LocalDateTime now = LocalDateTime.now();
         ctx.put("NOW", now);
         String body = "import java.time.LocalDateTime;LocalDateTime.now();return ctx.get(\"NOW\")";
-        Object o1 = engine.eval("java", body, ctx, false);
-        Object o2 = engine.eval("java", body, ctx, false);
+        RnaWarmed warmed = engine.warm("java", body);
+        Object o1 = engine.eval(ctx, warmed, false);
+        Object o2 = engine.eval(ctx, warmed, false);
         Assert.assertSame(now, o1);
         Assert.assertSame(now, o2);
 

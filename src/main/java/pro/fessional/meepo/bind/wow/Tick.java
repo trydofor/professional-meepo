@@ -22,6 +22,11 @@ public class Tick extends Exon {
     @NotNull
     public final Life life;
 
+    protected Tick(@NotNull char[] text, @NotNull Clop edge, @NotNull Life life) {
+        super(text, edge);
+        this.life = life;
+    }
+
     public Tick(@NotNull String text, @NotNull Clop edge, @NotNull Life life) {
         super(text, edge);
         this.life = life;

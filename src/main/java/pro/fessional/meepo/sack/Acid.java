@@ -3,12 +3,14 @@ package pro.fessional.meepo.sack;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.poof.RnaProtein;
+import pro.fessional.meepo.poof.RnaManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * 单线程下执行
@@ -23,29 +25,20 @@ public class Acid {
     @NotNull
     public final Map<String, Object> context;
     @NotNull
-    public final List<RnaProtein> protein;
+    private final Map<String, RnaEngine> engines;
 
-    public Acid() {
-        this(new HashMap<>(), 0);
-    }
-
-    public Acid(Map<String, Object> context, int rna) {
+    public Acid(Map<String, Object> ctx, Set<String> rng) {
         this.execute = new HashMap<>();
-        this.protein = new ArrayList<>(Math.max(rna, 16));
-        this.context = context == null ? new HashMap<>() : context;
+        this.context = ctx == null ? new HashMap<>() : ctx;
+        this.engines = rng.stream().collect(toMap(Function.identity(), RnaManager::newEngine));
     }
 
-    public RnaEngine dirty(RnaProtein engine) {
-        return engine.dirty();
+    public RnaEngine getEngine(String type) {
+        return engines.computeIfAbsent(type, RnaManager::newEngine);
     }
 
-    public int clean() {
+    public void clear() {
         execute.clear();
-        int size = protein.size();
-        for (RnaProtein rna : protein) {
-            rna.clean();
-        }
-        return size;
+        engines.clear();
     }
-
 }

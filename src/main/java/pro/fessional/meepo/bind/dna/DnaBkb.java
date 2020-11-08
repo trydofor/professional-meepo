@@ -1,12 +1,14 @@
 package pro.fessional.meepo.bind.dna;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -27,14 +29,13 @@ import java.util.Objects;
 public class DnaBkb extends Tick {
 
     @NotNull
-    public final Clop main;
-    @NotNull
     public final String name;
+    private final char[] name9;
 
-    public DnaBkb(String text, Clop edge, @NotNull Clop main, String name) {
+    public DnaBkb(String text, Clop edge, @NotNull String name) {
         super(text, edge, Life.namedAny(name));
-        this.main = main;
-        this.name = name == null ? Const.TXT$EMPTY : name;
+        this.name = name;
+        this.name9 = name.toCharArray();
     }
 
     @Override
@@ -52,13 +53,23 @@ public class DnaBkb extends Tick {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("DnaBkb{");
-        buff.append("name='");
-        Dent.line(buff, name);
-        buff.append("'}");
-        buff.append("; ").append(edge);
-        buff.append("; ").append(life);
-        buff.append("; ").append(life);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("DnaBkb{");
+            buff.append("name='");
+            Dent.line(buff, name9);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+            buff.append("; ");
+            life.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

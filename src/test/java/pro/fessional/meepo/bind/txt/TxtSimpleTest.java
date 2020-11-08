@@ -2,12 +2,13 @@ package pro.fessional.meepo.bind.txt;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 
 /**
  * @author trydofor
  * @since 2020-10-22
  */
-public class TxtSimpleTest {
+public class TxtSimpleTest extends TraceTest {
     TxtSimple d1 = new TxtSimple("0123456789", 1, 10);
     TxtSimple d2 = new TxtSimple("123456789", 0, 9);
 

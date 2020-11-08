@@ -1,11 +1,11 @@
 <!-- HI-MEEPO -->
 <ul>
-    <!-- RNA:USE /code/it:code/* -->
+    <!-- RNA:USE /code/it.code/* -->
     <!-- RNA:EACH map/1/items/it -->
-    <!--    RNA:USE /name/it:name/* -->
-    <!--    RNA:WHEN /yes/it:rem0/bg -->
+    <!--    RNA:USE /name/it.name/* -->
+    <!--    RNA:WHEN /yes/it.rem0/bg -->
     <li value="code">rem0-name</li>
-    <!--    RNA:WHEN /not/it:rem1/bg -->
+    <!--    RNA:WHEN /not/it.rem1/bg -->
     <li value="code">rem2-name</li>
     <!--    RNA:ELSE bg -->
     <li value="code">rem1-name</li>
@@ -14,6 +14,6 @@
     <li>no item</li>
     <!-- RNA:DONE it -->
 </ul>
-<!-- RNA:USE /total/it.total/ -->
-<!-- RNA:USE /count/it.count/ -->
+<!-- RNA:USE /total/it._total/ -->
+<!-- RNA:USE /count/it._count/ -->
 <div>result=count/total</div>

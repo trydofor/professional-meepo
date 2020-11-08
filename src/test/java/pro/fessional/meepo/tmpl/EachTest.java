@@ -1,6 +1,7 @@
 package pro.fessional.meepo.tmpl;
 
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author trydofor
  * @since 2020-10-28
  */
-public class EachTest {
+public class EachTest extends TraceTest {
 
     private final Map<String, Object> ctx = new HashMap<String, Object>()
     {{

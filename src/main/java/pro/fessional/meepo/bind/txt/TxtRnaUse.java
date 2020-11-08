@@ -2,14 +2,17 @@ package pro.fessional.meepo.bind.txt;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.kin.Dyn;
-import pro.fessional.meepo.bind.kin.Ngx;
+import pro.fessional.meepo.bind.kin.Rng;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.poof.RnaProtein;
+import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
@@ -20,25 +23,31 @@ import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
  * @author trydofor
  * @since 2020-10-16
  */
-public class TxtRnaUse extends Exon implements Dyn, Ngx {
+public class TxtRnaUse extends Exon implements Rng {
     @NotNull
-    public final String para;
+    public final String expr;
     public final int left;
-    @NotNull
-    private final RnaProtein prot;
+    public final String type;
 
-    public TxtRnaUse(@NotNull String text, Clop edge, @NotNull String para, int left) {
+    private RnaWarmed warmed;
+
+    public TxtRnaUse(@NotNull String text, Clop edge, @NotNull String expr, int left) {
         super(text, edge);
-        this.para = para;
+        this.expr = expr;
         this.left = left;
-        this.prot = RnaProtein.of(ENGINE$MAP);
+        this.type = ENGINE$MAP;
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
-        RnaEngine eng = acid.dirty(prot);
+    public void check(StringBuilder err, RngChecker rng) {
+        warmed = rng.check(err, type, expr);
+    }
 
-        Object o = eng.eval(ENGINE$MAP, para, acid.context, false);
+    @Override
+    public void merge(Acid acid, Writer buff) {
+        RnaEngine eng = acid.getEngine(type);
+
+        Object o = eng.eval(acid.context, warmed, true);
         Dent.left(buff, left, o);
     }
 
@@ -47,21 +56,31 @@ public class TxtRnaUse extends Exon implements Dyn, Ngx {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TxtRnaUse txtRnaUse = (TxtRnaUse) o;
-        return para.equals(txtRnaUse.para);
+        return expr.equals(txtRnaUse.expr);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(para);
+        return Objects.hash(expr);
     }
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("TxtRnaUse{");
-        buff.append("para='");
-        Dent.line(buff, para);
-        buff.append("'}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("TxtRnaUse{");
+            buff.append("para='");
+            Dent.line(buff, expr);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -2,13 +2,14 @@ package pro.fessional.meepo.bind.txt;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
 
 /**
  * @author trydofor
  * @since 2020-10-22
  */
-public class HiMeepoTest {
+public class HiMeepoTest extends TraceTest {
 
     HiMeepo d1 = new HiMeepo("/* H!MEEPO */", new Clop(0, 13), new Clop(3, 10), "/*", "*/", true);
     HiMeepo d2 = new HiMeepo("/* H!MEEPO  */ ", new Clop(0, 14), new Clop(3, 10), "/*", "*/", true);

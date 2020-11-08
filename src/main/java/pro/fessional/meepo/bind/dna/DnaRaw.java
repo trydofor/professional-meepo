@@ -1,12 +1,14 @@
 package pro.fessional.meepo.bind.dna;
 
-import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Arrays;
 
 /**
  * <pre>
@@ -24,19 +26,16 @@ import java.util.Objects;
  */
 public class DnaRaw extends Exon {
 
-    @NotNull
-    public final Clop main;
-    public final int raw0;
+    private final char[] body9;
 
-    public DnaRaw(String text, Clop edge, @NotNull Clop main, int raw0) {
+    public DnaRaw(String text, Clop edge, int raw0, int raw1) {
         super(text, edge);
-        this.main = main;
-        this.raw0 = raw0;
+        this.body9 = Dent.chars(text, raw0, raw1);
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
-        Dent.pend(buff, text, raw0, main.until);
+    public void merge(Acid acid, Writer buff) {
+        Dent.pend(buff, body9);
     }
 
     @Override
@@ -44,22 +43,31 @@ public class DnaRaw extends Exon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DnaRaw dnaRaw = (DnaRaw) o;
-        return Objects.equals(text.substring(raw0, main.until),
-                dnaRaw.text.substring(dnaRaw.raw0, dnaRaw.main.until));
+        return Arrays.equals(body9, dnaRaw.body9);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text.substring(raw0, main.until));
+        return Arrays.hashCode(body9);
     }
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("DnaRaw{");
-        buff.append("text='");
-        Dent.line(buff, text, raw0, main.until);
-        buff.append("'}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("DnaRaw{");
+            buff.append("text='");
+            Dent.line(buff, body9);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -1,13 +1,15 @@
 package pro.fessional.meepo.bind.rna;
 
-import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.kin.Dyn;
+import pro.fessional.meepo.bind.kin.Rng;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -18,18 +20,14 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-11-01
  */
-public class RnaElse extends Tock implements Dyn {
+public class RnaElse extends Tock implements Rng {
 
-    @NotNull
-    public final Clop main;
-
-    public RnaElse(String text, Clop edge, @NotNull Clop main, String tock) {
+    public RnaElse(String text, Clop edge, String tock) {
         super(text, edge, tock);
-        this.main = main;
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
+    public void merge(Acid acid, Writer buff) {
         Tock tk = acid.execute.computeIfAbsent(tock, s -> this);
         if (tk == this) {
             logger.trace("[👹Merge:tock] deal RNA:ELSE tock={}", tock);
@@ -56,11 +54,21 @@ public class RnaElse extends Tock implements Dyn {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("RnaElse{");
-        buff.append("tock='");
-        Dent.line(buff, tock);
-        buff.append("'}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("RnaElse{");
+            buff.append("tock='");
+            Dent.line(buff, tock);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

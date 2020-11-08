@@ -2,16 +2,19 @@ package pro.fessional.meepo.bind.rna;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
-import pro.fessional.meepo.bind.kin.Dyn;
-import pro.fessional.meepo.bind.kin.Ngx;
+import pro.fessional.meepo.bind.kin.Rng;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Eval;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.poof.RnaProtein;
+import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Objects;
 
 /**
@@ -31,43 +34,38 @@ import java.util.Objects;
  * @author trydofor
  * @since 2020-11-01
  */
-public class RnaWhen extends Tock implements Dyn, Ngx {
+public class RnaWhen extends Tock implements Rng {
 
-    @NotNull
-    public final Clop main;
     @NotNull
     public final String type;
     public final boolean nope; // not
     @NotNull
     public final String expr;
     public final boolean mute;
-    @NotNull
-    private final RnaProtein prot;
 
-    public RnaWhen(String text, Clop edge, String tock, @NotNull Clop main, @NotNull String type, boolean nope, @NotNull String expr, boolean mute) {
+    private RnaWarmed warmed;
+
+    public RnaWhen(String text, Clop edge, String tock, @NotNull String type, boolean nope, @NotNull String expr, boolean mute) {
         super(text, edge, tock);
-        this.main = main;
         this.type = type;
         this.nope = nope;
         this.expr = expr;
         this.mute = mute;
-        this.prot = RnaProtein.of(type);
     }
 
     @Override
-    public void check(StringBuilder err) {
-        prot.check(err, expr, this);
+    public void check(StringBuilder err, RngChecker rng) {
+        warmed = rng.check(err, type, expr);
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
+    public void merge(Acid acid, Writer buff) {
         final Tock th = this;
         Tock tk = acid.execute.compute(tock, (s, t) -> {
             if (t != null) return t;
 
-            RnaEngine eng = acid.dirty(prot);
-
-            Object obj = eng.eval(type, expr, acid.context, mute);
+            RnaEngine eng = acid.getEngine(type);
+            Object obj = eng.eval(acid.context, warmed, mute);
             boolean af = Eval.asFalse(obj);
 
             if (nope == af) {
@@ -106,19 +104,28 @@ public class RnaWhen extends Tock implements Dyn, Ngx {
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("RnaWhen{");
-        buff.append("tock='");
-        Dent.line(buff, tock);
-        buff.append("', type='");
-        Dent.line(buff, type);
-        buff.append("', nope=");
-        buff.append(nope);
-        buff.append(", expr='");
-        Dent.line(buff, expr);
-        buff.append("', mute=");
-        buff.append(mute);
-        buff.append('}');
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("RnaWhen{");
+            buff.append("tock='");
+            Dent.line(buff, tock);
+            buff.append("', type='");
+            Dent.line(buff, type);
+            buff.append("', nope=");
+            buff.append(String.valueOf(nope));
+            buff.append(", expr='");
+            Dent.line(buff, expr);
+            buff.append("', mute=");
+            buff.append(String.valueOf(mute));
+            buff.append("}");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

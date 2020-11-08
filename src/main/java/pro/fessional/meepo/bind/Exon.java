@@ -3,9 +3,11 @@ package pro.fessional.meepo.bind;
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import java.util.List;
  * ` <% DNA:RAW 空白处都是一个空格 %> \n`
  * edge=`<% DNA:RAW 空白处都是一个空格 %>`
  * main=`DNA:RAW 空白处都是一个空格`
+ * xxxx9 为xxxx的char[]形式，一般为内部使用
  * </pre>
  *
  * @author trydofor
@@ -22,20 +25,24 @@ import java.util.List;
 public class Exon {
 
     /**
-     * 边缘区
+     * 原始模板的边缘区
      */
     @NotNull
     public final Clop edge;
 
     /**
-     * 原始文本
+     * 边缘内字符串缓存
      */
     @NotNull
-    public final String text;
+    protected final char[] text9;
+
+    protected Exon(@NotNull char[] text9, @NotNull Clop edge) {
+        this.edge = edge;
+        this.text9 = text9;
+    }
 
     public Exon(@NotNull String text, @NotNull Clop edge) {
-        this.edge = edge;
-        this.text = text;
+        this(Dent.chars(text, edge), edge);
     }
 
     /**
@@ -67,8 +74,8 @@ public class Exon {
      *
      * @param buff buff
      */
-    public void build(Appendable buff) {
-        Dent.pend(buff, text, edge.start, edge.until);
+    public void build(Writer buff) {
+        Dent.pend(buff, text9);
     }
 
     /**
@@ -77,15 +84,16 @@ public class Exon {
      * @param acid 执行环境
      * @param buff 输出buff
      */
-    public void merge(Acid acid, Appendable buff) {
+    public void merge(Acid acid, Writer buff) {
     }
 
     /**
      * parse时，在加入gene时，对自身检查，预处理（引擎预热）
      *
      * @param err 错误信息队列
+     * @param rng rnaEngine缓存
      */
-    public void check(StringBuilder err) {
+    public void check(StringBuilder err, RngChecker rng) {
     }
 
     public static class N implements Comparable<N> {

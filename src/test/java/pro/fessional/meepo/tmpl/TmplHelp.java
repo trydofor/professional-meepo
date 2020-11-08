@@ -32,9 +32,8 @@ public class TmplHelp {
         String merge = gene.merge(ctx);
         String build = gene.build();
         Assert.assertEquals("merge mismatch", strOut, merge);
-        Assert.assertSame("origin mismatch", gene.text, strIn);
         Assert.assertNotSame(strIn, build);
-        Assert.assertEquals("build mismatch",strIn, build);
+        Assert.assertEquals("build mismatch", strIn, build);
     }
 
     public static void printGene(String clzPath) {

@@ -1,8 +1,6 @@
 package pro.fessional.meepo.util;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.bind.Const;
-import pro.fessional.meepo.poof.impl.UriEngine;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -34,7 +32,7 @@ public class Read {
         InputStream is;
         try {
             if (uri.regionMatches(true, 0, CLAS, 0, CLAS.length())) {
-                is = UriEngine.class.getResourceAsStream(uri.substring(CLAS.length()));
+                is = Read.class.getResourceAsStream(uri.substring(CLAS.length()));
             } else if (uri.regionMatches(true, 0, FILE, 0, FILE.length())) {
                 is = new FileInputStream(uri.substring(FILE.length()));
             } else {
@@ -70,7 +68,6 @@ public class Read {
      */
     @NotNull
     public static String read(InputStream is, Charset cs) {
-        if (is == null) return Const.TXT$EMPTY;
         if (cs == null) cs = UTF_8;
 
         StringBuilder sb = new StringBuilder();

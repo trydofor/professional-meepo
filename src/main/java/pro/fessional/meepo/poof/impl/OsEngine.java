@@ -1,13 +1,15 @@
 package pro.fessional.meepo.poof.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.bind.wow.Eval;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaWarmed;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,8 @@ import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
  */
 public class OsEngine implements RnaEngine {
 
+    private static final Logger logger = LoggerFactory.getLogger(OsEngine.class);
+
     private static final String[] TYPE = {ENGINE$CMD, ENGINE$SH, ENGINE$EXE};
 
     @Override
@@ -33,7 +37,22 @@ public class OsEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
+    public @NotNull RnaWarmed warm(@NotNull String type, @NotNull String expr) {
+        RnaWarmed warmed;
+        if (ENGINE$CMD.equalsIgnoreCase(type) || ENGINE$SH.equalsIgnoreCase(type)) {
+            warmed = new RnaWarmed(type, expr);
+        } else {
+            warmed = new RnaWarmed(type, expr, Eval.parseArgs(expr));
+            if (!ENGINE$EXE.equalsIgnoreCase(type)) {
+                warmed.info = "\nunsupported type=" +
+                        type + ", expr=" + expr;
+            }
+        }
+        return warmed;
+    }
+
+    @Override
+    public @NotNull Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
 
         ProcessBuilder builder = new ProcessBuilder();
         Map<String, String> env = builder.environment();
@@ -44,113 +63,50 @@ public class OsEngine implements RnaEngine {
             }
         }
 
-        if (ENGINE$CMD.equals(type)) {
-            builder.command("cmd", "/c", expr);
-        } else if (ENGINE$SH.equals(type)) {
-            builder.command("bash", "-c", expr);
+        if (ENGINE$CMD.equalsIgnoreCase(expr.type)) {
+            builder.command("cmd", "/c", expr.expr);
+        } else if (ENGINE$SH.equalsIgnoreCase(expr.type)) {
+            builder.command("bash", "-c", expr.expr);
         } else {
-            builder.command(arg(expr));
+            @SuppressWarnings("unchecked")
+            List<String> args = (List<String>) expr.work;
+            builder.command(args);
         }
 
         Process p = null;
+        String out = TXT$EMPTY;
         try {
             p = builder.start();
 
-            String stdOut = TXT$EMPTY;
-            if (!mute) {
-                final InputStream out = p.getInputStream();
-                BufferedReader ord = new BufferedReader(new InputStreamReader(out, UTF_8));
+            final InputStream is = p.getInputStream();
+            BufferedReader ord = new BufferedReader(new InputStreamReader(is, UTF_8));
 
-                StringBuilder buf = new StringBuilder();
-                String ln;
-                String crlf = System.lineSeparator();
-                while ((ln = ord.readLine()) != null) {
-                    buf.append(crlf).append(ln);
-                }
-                if (buf.length() > 0) {
-                    stdOut = buf.substring(crlf.length());
-                }
+            StringBuilder buf = new StringBuilder();
+            String ln;
+            String crlf = System.lineSeparator();
+            while ((ln = ord.readLine()) != null) {
+                buf.append(crlf).append(ln);
+            }
+            if (buf.length() > 0) {
+                out = buf.substring(crlf.length());
             }
 
             p.waitFor();
-            return stdOut;
-        } catch (Exception e) {
-            throw new IllegalStateException(expr, e);
+        } catch (Throwable t) {
+            if (mute) {
+                logger.warn("mute failed-eval " + expr, t);
+            } else {
+                Throwable c = t.getCause();
+                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+            }
         } finally {
             if (p != null) p.destroy();
         }
+        return out;
     }
 
     @Override
     public @NotNull RnaEngine fork() {
         return this;
-    }
-
-
-    /**
-     * 按空白解析命令行，支持引号块和转义 "one\" arg"
-     *
-     * @param line 参数行
-     * @return 解析后命令行
-     */
-    public static List<String> arg(String line) {
-        if (line == null || line.isEmpty()) return Collections.emptyList();
-        List<String> args = new ArrayList<>();
-        int len = line.length();
-        StringBuilder buf = new StringBuilder(len);
-        char qto = 0;
-        boolean esc = false;
-        for (int i = 0; i < len; i++) {
-            char c = line.charAt(i);
-            if (c == '\\') {
-                if (esc) {
-                    buf.append(c);
-                    esc = false;
-                } else {
-                    esc = true;
-                }
-            } else if (c == '"' || c == '\'') {
-                if (esc) {
-                    buf.append(c);
-                    esc = false;
-                } else {
-                    if (qto == 0) {
-                        qto = c;
-                    } else {
-                        if (qto == c) {
-                            args.add(buf.toString());
-                            buf.setLength(0);
-                            qto = 0;
-                        } else {
-                            buf.append(c);
-                        }
-                    }
-                }
-            } else if (c == ' ' || c == '\t') {
-                if (qto > 0) {
-                    buf.append(c);
-                } else {
-                    if (buf.length() > 0) {
-                        args.add(buf.toString());
-                        buf.setLength(0);
-                    }
-                }
-            } else {
-                if (esc) {
-                    buf.append('\\');
-                    esc = false;
-                }
-                buf.append(c);
-            }
-        }
-
-        if (buf.length() > 0) {
-            if (esc) {
-                buf.append('\\');
-            }
-            args.add(buf.toString());
-        }
-
-        return args;
     }
 }

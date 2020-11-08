@@ -4,9 +4,10 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.bind.Exon;
+import pro.fessional.meepo.util.Dent;
 
+import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * 流程控制器
@@ -21,38 +22,25 @@ public class Tock extends Exon {
     @NotNull
     public final String tock;
     public final ArrayList<Exon> gene;
+    @NotNull
+    protected final char[] tock9;
 
     public Tock(@NotNull String text, @NotNull Clop edge, @NotNull String tock) {
-        super(text, edge);
+        this(Dent.chars(text, edge), edge, tock);
+    }
+
+    protected Tock(@NotNull char[] text9, @NotNull Clop edge, @NotNull String tock) {
+        super(text9, edge);
         this.tock = tock;
         this.gene = new ArrayList<>();
+        this.tock9 = tock.toCharArray();
     }
 
     @Override
-    public void build(Appendable buff) {
+    public void build(Writer buff) {
         super.build(buff);
         for (Exon exon : gene) {
             exon.build(buff);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tock tock1 = (Tock) o;
-        return tock.equals(tock1.tock);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tock);
-    }
-
-    @Override
-    public String toString() {
-        return "Tock{" +
-                "tock='" + tock + '\'' +
-                '}';
     }
 }

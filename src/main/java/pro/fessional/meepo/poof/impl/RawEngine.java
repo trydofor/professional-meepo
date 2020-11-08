@@ -2,11 +2,11 @@ package pro.fessional.meepo.poof.impl;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaWarmed;
 
 import java.util.Map;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$RAW;
-import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * 依次从context，System.getProperty 和System.getenv 取值
@@ -24,8 +24,8 @@ public class RawEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        return mute ? TXT$EMPTY : expr;
+    public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
+        return expr.expr;
     }
 
     @Override

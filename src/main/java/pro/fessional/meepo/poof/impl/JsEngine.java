@@ -1,15 +1,16 @@
 package pro.fessional.meepo.poof.impl;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.poof.RnaEngine;
+import pro.fessional.meepo.poof.RnaWarmed;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Map;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$JS;
-import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
  * ScriptEngineManager.getEngineByName("JavaScript");
@@ -20,6 +21,7 @@ import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
  */
 public class JsEngine implements RnaEngine {
 
+    private static final Logger logger = LoggerFactory.getLogger(JsEngine.class);
     public static final String CTX_NAME = "ctx";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private final ScriptEngine engine = MANAGER.getEngineByName("JavaScript");
@@ -32,14 +34,20 @@ public class JsEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
+    public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
+        Object obj = null;
         try {
             engine.put(CTX_NAME, ctx);
-            Object v = engine.eval(expr);
-            return v == null || mute ? TXT$EMPTY : v;
-        } catch (ScriptException e) {
-            throw new IllegalStateException(expr, e);
+            obj = engine.eval(expr.expr);
+        } catch (Throwable t) {
+            if (mute) {
+                logger.warn("mute failed-eval " + expr, t);
+            } else {
+                Throwable c = t.getCause();
+                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+            }
         }
+        return obj;
     }
 
     @Override

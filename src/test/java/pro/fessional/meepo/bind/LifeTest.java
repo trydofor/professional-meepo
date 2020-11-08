@@ -2,13 +2,14 @@ package pro.fessional.meepo.bind;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Life;
 
 /**
  * @author trydofor
  * @since 2020-10-16
  */
-public class LifeTest {
+public class LifeTest extends TraceTest {
 
     @Test
     public void testPoint() {

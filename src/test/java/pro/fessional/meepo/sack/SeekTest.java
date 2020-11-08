@@ -2,13 +2,14 @@ package pro.fessional.meepo.sack;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Seek;
 
 /**
  * @author trydofor
  * @since 2020-10-17
  */
-public class SeekTest {
+public class SeekTest extends TraceTest {
 
     @Test
     public void seekToken() {

@@ -3,12 +3,12 @@ package pro.fessional.meepo.poof;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fessional.meepo.poof.impl.JavaEngine;
 import pro.fessional.meepo.poof.impl.JsEngine;
-import pro.fessional.meepo.poof.impl.MapEngine;
 import pro.fessional.meepo.poof.impl.OsEngine;
 import pro.fessional.meepo.poof.impl.RawEngine;
 import pro.fessional.meepo.poof.impl.UriEngine;
+import pro.fessional.meepo.poof.impl.java.JavaEngine;
+import pro.fessional.meepo.poof.impl.map.MapEngine;
 
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -6,6 +6,11 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Arrays;
+
 /**
  * <pre>
  * ` plain text \n`
@@ -23,8 +28,8 @@ public class TxtSimple extends Exon {
     }
 
     @Override
-    public void merge(Acid acid, Appendable buff) {
-        Dent.pend(buff, text, edge.start, edge.until);
+    public void merge(Acid acid, Writer buff) {
+        Dent.pend(buff, text9);
     }
 
     @Override
@@ -32,21 +37,31 @@ public class TxtSimple extends Exon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TxtSimple txt = (TxtSimple) o;
-        return text.regionMatches(edge.start, txt.text, txt.edge.start, edge.length);
+        return Arrays.equals(text9, txt.text9);
     }
 
     @Override
     public int hashCode() {
-        return text.substring(edge.start, edge.until).hashCode();
+        return Arrays.hashCode(text9);
     }
 
     @Override
     public String toString() {
-        StringBuilder buff = new StringBuilder("TxtSimple{");
-        buff.append("text='");
-        Dent.line(buff, text, edge.start, edge.until);
-        buff.append("'}");
-        buff.append("; ").append(edge);
+        StringWriter buff = new StringWriter();
+        toString(buff);
         return buff.toString();
+    }
+
+    public void toString(Writer buff) {
+        try {
+            buff.append("TxtSimple{");
+            buff.append("text='");
+            Dent.line(buff, text9);
+            buff.append("'}");
+            buff.append("; ");
+            edge.toString(buff);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

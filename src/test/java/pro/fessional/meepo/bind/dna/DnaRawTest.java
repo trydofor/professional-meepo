@@ -2,16 +2,17 @@ package pro.fessional.meepo.bind.dna;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
 
 /**
  * @author trydofor
  * @since 2020-10-22
  */
-public class DnaRawTest {
+public class DnaRawTest extends TraceTest {
 
-    DnaRaw d1 = new DnaRaw("// DNA:RAW SUPER(1010100", new Clop(0, 24), new Clop(3, 24), 11);
-    DnaRaw d2 = new DnaRaw(" // DNA:RAW SUPER(1010100", new Clop(1, 25), new Clop(4, 25), 12);
+    DnaRaw d1 = new DnaRaw("// DNA:RAW SUPER(1010100", new Clop(0, 24), 11, 24);
+    DnaRaw d2 = new DnaRaw(" // DNA:RAW SUPER(1010100", new Clop(1, 25), 12, 25);
 
     @Test
     public void testEquals() {

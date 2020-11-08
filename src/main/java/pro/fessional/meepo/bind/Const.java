@@ -7,6 +7,10 @@ package pro.fessional.meepo.bind;
 public interface Const {
 
     String TXT$EMPTY = "";
+    char[] ARR$EMPTY_CHARS = new char[0];
+    Object[] ARR$EMPTY_OBJECT = new Object[0];
+    String[] ARR$EMPTY_STRING = new String[0];
+
 
     // 解析
     String TKN$HIMEEPO = "HI-MEEPO";
@@ -46,9 +50,9 @@ public interface Const {
     String KEY$ENVS_NOW_TIME = "now.time";
 
     // 对象
-    char OBJ$NAVIGATOR = ':';
+    char OBJ$NAVIGATOR = '.';
 
     // each
-    String DOT$EACH_COUNT = ".count";
-    String DOT$EACH_TOTAL = ".total";
+    String BLT$EACH_COUNT = "_count";
+    String BLT$EACH_TOTAL = "_total";
 }

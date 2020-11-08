@@ -1,11 +1,11 @@
-package pro.fessional.meepo.poof.impl;
+package pro.fessional.meepo.poof.impl.java;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.Meepo;
 import pro.fessional.meepo.poof.RnaEngine;
-import pro.fessional.meepo.poof.impl.java.JavaEval;
+import pro.fessional.meepo.poof.RnaWarmed;
 import pro.fessional.meepo.util.Java;
 
 import java.util.HashMap;
@@ -28,8 +28,7 @@ public class JavaEngine implements RnaEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaEngine.class);
     private static final String[] TYPE = {ENGINE$JAVA};
-    private static final AtomicInteger counter = new AtomicInteger(0);
-    private static final ConcurrentHashMap<String, JavaEval> exprJava = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, JavaEval> ExprEval = new ConcurrentHashMap<>();
 
     @Override
     public @NotNull String[] type() {
@@ -37,15 +36,20 @@ public class JavaEngine implements RnaEngine {
     }
 
     @Override
-    public @NotNull Object eval(@NotNull String type, @NotNull String expr, @NotNull Map<String, Object> ctx, boolean mute) {
-        JavaEval java = exprJava.computeIfAbsent(expr, this::compile);
-        Object rst;
+    public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
+        Object obj = null;
         try {
-            rst = java.eval(ctx);
-        } catch (Exception e) {
-            throw new IllegalStateException(expr, e);
+            JavaEval java = expr.getTypedWork();
+            obj = java.eval(ctx);
+        } catch (Throwable t) {
+            if (mute) {
+                logger.warn("mute failed-eval " + expr, t);
+            } else {
+                Throwable c = t.getCause();
+                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+            }
         }
-        return mute ? TXT$EMPTY : rst;
+        return obj;
     }
 
     @Override
@@ -54,14 +58,15 @@ public class JavaEngine implements RnaEngine {
     }
 
     @Override
-    public String warm(@NotNull String type, @NotNull String expr) {
-        exprJava.computeIfAbsent(expr, this::compile);
-        return null;
+    public @NotNull RnaWarmed warm(@NotNull String type, @NotNull String expr) {
+        JavaEval eval = ExprEval.computeIfAbsent(expr, this::compile);
+        return new RnaWarmed(type, expr, eval);
     }
 
     private static final Pattern PtnImps = Pattern.compile("\\s*import\\s+[^;]+;\\s*", Pattern.MULTILINE);
+    private static final AtomicInteger Counter = new AtomicInteger(0);
 
-    public JavaEval compile(String expr) {
+    private JavaEval compile(String expr) {
         final long s = System.currentTimeMillis();
         Matcher m = PtnImps.matcher(expr);
         String imps, body, colon;
@@ -94,14 +99,14 @@ public class JavaEngine implements RnaEngine {
             }
         }
 
+        final String name = "Java" + Counter.incrementAndGet();
         HashMap<String, Object> ctx = new HashMap<>();
-        String name = "Java" + counter.incrementAndGet();
         ctx.put("import", imps);
         ctx.put("class", name);
         ctx.put("method", body);
         ctx.put("colon", colon);
-        String uri = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
-        String code = Meepo.merge(ctx, uri, Meepo.CACHE_ALWAYS);
+        String tmpl = "classpath:/pro/fessional/meepo/poof/impl/java/JavaName.java";
+        String code = Meepo.merge(ctx, tmpl, Meepo.CACHE_ALWAYS);
         try {
             Class<JavaEval> clz = Java.compile("pro.fessional.meepo.poof.impl.java." + name, code);
             JavaEval java = Java.create(clz);
