@@ -29,7 +29,7 @@ public class TxtDnaSet extends Exon {
 
     @Override
     public void merge(Acid acid, Writer buff) {
-        Dent.pend(buff, repl9);
+        Dent.write(buff, repl9);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TxtDnaSet extends Exon {
         try {
             buff.append("TxtDnaSet{");
             buff.append("repl='");
-            Dent.line(buff, repl9);
+            Dent.lineIt(buff, repl9);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

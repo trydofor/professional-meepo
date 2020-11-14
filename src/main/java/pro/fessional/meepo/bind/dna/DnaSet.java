@@ -87,9 +87,9 @@ public class DnaSet extends Tick implements Prc {
         try {
             buff.append("DnaSet{");
             buff.append("find='");
-            Dent.line(buff, find.pattern());
+            Dent.lineIt(buff, find.pattern());
             buff.append("', repl='");
-            Dent.line(buff, repl);
+            Dent.lineIt(buff, repl);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

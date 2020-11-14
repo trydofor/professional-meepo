@@ -3,8 +3,10 @@ package pro.fessional.meepo.util;
 import pro.fessional.meepo.bind.wow.Clop;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class Dent {
         return chs;
     }
 
-    public static void pend(Writer out, char[] str) {
+    public static void write(Writer out, char[] str) {
         try {
             out.write(str);
         } catch (IOException e) {
@@ -37,7 +39,7 @@ public class Dent {
         }
     }
 
-    public static void dent(Writer out, int level) {
+    public static void treeIt(Writer out, int level) {
         char[] chr = PADDING.computeIfAbsent(level, s -> {
             boolean ng = false;
             if (s < 0) {
@@ -57,104 +59,149 @@ public class Dent {
             return cs;
         });
 
-        pend(out, chr);
+        write(out, chr);
     }
 
-    public static void line(Writer buff, char[] str) {
+    public static void lineIt(Writer out, char[] str) {
         try {
             if (str == null) return;
             for (char c : str) {
-                line(buff, c);
+                lineIt(out, c);
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static void line(Writer buff, CharSequence str, Clop edg) {
-        line(buff, str, edg.start, edg.until);
+    public static void lineIt(Writer out, CharSequence str, Clop edg) {
+        lineIt(out, str, edg.start, edg.until);
     }
 
-    public static void line(Writer buff, CharSequence str, int off, int end) {
+    public static void lineIt(Writer out, CharSequence str, int off, int end) {
         try {
             if (str == null) return;
             for (int i = off; i < end; i++) {
-                line(buff, str.charAt(i));
+                lineIt(out, str.charAt(i));
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static void line(Writer buff, char c) throws IOException {
+    private static void lineIt(Writer out, char c) throws IOException {
         if (c == '\\') {
-            buff.append("\\\\");
+            out.append("\\\\");
         } else if (c == '\r') {
-            buff.append("\\r");
+            out.append("\\r");
         } else if (c == '\n') {
-            buff.append("\\n");
+            out.append("\\n");
         } else if (c == '\t') {
-            buff.append("\\t");
+            out.append("\\t");
         } else {
-            buff.append(c);
+            out.append(c);
         }
     }
 
-    public static void line(Writer buff, CharSequence str) {
+    public static void lineIt(Writer out, CharSequence str) {
         if (str == null) return;
-        line(buff, str, 0, str.length());
+        lineIt(out, str, 0, str.length());
     }
 
-    public static int left(String text, int end) {
-        if (end <= 0) return 0;
-        int eg = Seek.seekPrevEdge(text, end);
-        return eg >= 0 ? end - eg : 0;
-    }
+    private static final char[] LEFT = "                                                                ".toCharArray();
 
-    public static void left(Writer buf, int lft) {
+    public static void indent(Writer out, int lft) {
         try {
-            for (int i = 0; i < lft; i++) {
-                buf.append(' ');
+            for (int i = lft; i > 0; i -= LEFT.length) {
+                if (i >= LEFT.length) {
+                    out.write(LEFT);
+                } else {
+                    out.write(LEFT, 0, i);
+                }
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static void left(Writer buf, int lft, Object val) {
+    public static void indent(Writer out, int lft, Object val) {
         if (val == null) return;
 
-        try {
-            Class<?> clz = val.getClass();
-            if (Collection.class.isAssignableFrom(clz)) {
-                boolean f = false;
-                for (Object o : ((Collection<?>) val)) {
-                    if (o == null) continue;
-                    if (f) {
-                        left(buf, lft);
-                    } else {
-                        f = true;
-                    }
-                    buf.append(o.toString());
+        Class<?> clz = val.getClass();
+        if (Collection.class.isAssignableFrom(clz)) {
+            boolean f = false;
+            for (Object o : ((Collection<?>) val)) {
+                if (o == null) continue;
+                if (f) {
+                    indent(out, lft);
+                } else {
+                    f = true;
                 }
-            } else if (clz.isArray()) {
-                boolean f = false;
-                for (int i = 0, len = Array.getLength(val); i < len; i++) {
-                    Object o = Array.get(val, i);
-                    if (o == null) continue;
+                toString(out, o);
+            }
+        } else if (clz.isArray()) {
+            boolean f = false;
+            for (int i = 0, len = Array.getLength(val); i < len; i++) {
+                Object o = Array.get(val, i);
+                if (o == null) continue;
 
-                    if (f) {
-                        left(buf, lft);
-                    } else {
-                        f = true;
-                    }
-                    buf.append(o.toString());
+                if (f) {
+                    indent(out, lft);
+                } else {
+                    f = true;
                 }
+                toString(out, o);
+            }
+        } else {
+            toString(out, val);
+        }
+    }
+
+    public static void toString(Writer out, Object val) {
+        if (val == null) return;
+
+        if (out instanceof StringWriter) {
+            StringBuffer buf = ((StringWriter) out).getBuffer();
+            if (val instanceof CharSequence) {
+                buf.append((CharSequence) val);
+            } else if (val instanceof Integer) {
+                buf.append(((Integer) val).intValue());
+            } else if (val instanceof Long) {
+                buf.append(((Long) val).longValue());
+            } else if (val instanceof Double) {
+                buf.append(((Double) val).doubleValue());
+            } else if (val instanceof Float) {
+                buf.append(((Float) val).floatValue());
+            } else if (val instanceof Boolean) {
+                buf.append(((Boolean) val).booleanValue());
+            } else if (val instanceof Short) {
+                buf.append(((Short) val).shortValue());
+            } else if (val instanceof Byte) {
+                buf.append(((Byte) val).byteValue());
+            } else if (val instanceof Character) {
+                buf.append(((Character) val).charValue());
+            } else if (val instanceof BigDecimal) {
+                buf.append(((BigDecimal) val).toPlainString());
+            } else if (val instanceof char[]) {
+                buf.append((char[]) val);
             } else {
                 buf.append(val.toString());
             }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+        } else {
+            try {
+                if (val instanceof String) {
+                    out.write((String) val);
+                } else if (val instanceof Character) {
+                    out.write((Character) val);
+                } else if (val instanceof BigDecimal) {
+                    out.write(((BigDecimal) val).toPlainString());
+                } else if (val instanceof char[]) {
+                    out.write((char[]) val);
+                } else {
+                    out.write(val.toString());
+                }
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 }

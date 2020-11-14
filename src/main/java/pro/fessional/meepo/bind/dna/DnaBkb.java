@@ -62,7 +62,7 @@ public class DnaBkb extends Tick {
         try {
             buff.append("DnaBkb{");
             buff.append("name='");
-            Dent.line(buff, name9);
+            Dent.lineIt(buff, name9);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

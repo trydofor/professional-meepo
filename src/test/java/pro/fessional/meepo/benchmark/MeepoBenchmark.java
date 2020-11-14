@@ -17,6 +17,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import pro.fessional.meepo.sack.Gene;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,13 +30,14 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class MeepoBenchmark extends BaseBenchmark {
+public class MeepoBenchmark {
 
     private Gene template;
+    private Map<String,Object> context;
 
     @Setup
     public void setup() throws PebbleException {
-        super.setup();
+        context = Stock.mockContext();
         template = pro.fessional.meepo.Meepo.parse("classpath:/template/jmh/stocks.meepo.html");
     }
 

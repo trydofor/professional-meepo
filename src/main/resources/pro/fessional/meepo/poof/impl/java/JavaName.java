@@ -14,7 +14,7 @@ import java.util.Map;
 // RNA:USE #JavaName#class#
 public class JavaName implements JavaEval {
     @Override
-    public Object eval(@NotNull Map<String, Object> ctx) {
+    public Object eval(@NotNull Map<String, Object> ctx, Object obj, String... arg) {
         // RNA:USE #return +null#method#
         // RNA:USE #;#colon#
         return null;

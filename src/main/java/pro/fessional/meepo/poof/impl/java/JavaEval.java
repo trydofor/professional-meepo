@@ -9,5 +9,14 @@ import java.util.Map;
  * @since 2020-11-04
  */
 public interface JavaEval {
-    Object eval(@NotNull Map<String, Object> ctx);
+
+    /**
+     * java函数
+     *
+     * @param ctx 上下文
+     * @param obj 管道第一个参数
+     * @param arg 管道参数
+     * @return 结果
+     */
+    Object eval(@NotNull Map<String, Object> ctx, Object obj, String... arg);
 }

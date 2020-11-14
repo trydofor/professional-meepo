@@ -51,7 +51,7 @@ public class TxtRnaRun extends Exon implements Rng {
 
         Object s = eng.eval(acid.context, warmed, mute);
         if (edge.length > 0) {
-            Dent.left(buff, left, s);
+            Dent.indent(buff, left, s);
         }
     }
 
@@ -81,9 +81,9 @@ public class TxtRnaRun extends Exon implements Rng {
         try {
             buff.append("TxtRnaRun{");
             buff.append("type='");
-            Dent.line(buff, type);
+            Dent.lineIt(buff, type);
             buff.append("', expr='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("', mute=");
             buff.append(String.valueOf(mute));
             buff.append("}");

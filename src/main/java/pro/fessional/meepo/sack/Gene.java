@@ -6,7 +6,6 @@ import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.util.Dent;
 
-import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -27,7 +26,7 @@ public class Gene {
     public final List<Exon> exon;
     public final Set<String> rngs;
 
-    private final ThreadLocal<CharArrayWriter> buff;
+    private final ThreadLocal<StringWriter> buff;
     private volatile String text7 = null;
     private volatile char[] text9 = null;
 
@@ -35,7 +34,7 @@ public class Gene {
         this.exon = Collections.unmodifiableList(xna);
         this.rngs = Collections.unmodifiableSet(rng);
         this.born = System.currentTimeMillis();
-        this.buff = ThreadLocal.withInitial(() -> new CharArrayWriter(1024));
+        this.buff = ThreadLocal.withInitial(() -> new StringWriter(1024));
     }
 
     /**
@@ -49,9 +48,9 @@ public class Gene {
         final String str = text7;
         if (str != null) return str;
 
-        final CharArrayWriter out = buff.get();
+        final StringWriter out = buff.get();
 
-        out.reset();
+        out.getBuffer().setLength(0);
         merge(ctx, out);
         out.flush();
 
@@ -76,7 +75,7 @@ public class Gene {
     public void merge(Map<String, Object> ctx, Writer out) {
         final char[] str = text9;
         if (rngs.isEmpty() && str != null) {
-            Dent.pend(out, str);
+            Dent.write(out, str);
         } else {
             Acid acid = new Acid(ctx, rngs);
             for (Exon exon : exon) {
@@ -128,9 +127,9 @@ public class Gene {
         for (Exon ex : exon) {
             Clop edge = ex.edge;
             if (edge.start != start) {
-                Dent.dent(buff, -level);
+                Dent.treeIt(buff, -level);
             } else {
-                Dent.dent(buff, level);
+                Dent.treeIt(buff, level);
             }
             try {
                 buff.append(ex.toString());

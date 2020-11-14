@@ -3,21 +3,18 @@ package pro.fessional.meepo.poof.impl.map;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.poof.impl.java.JavaEval;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_DATE;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_TIME;
 
 /**
  * 依次从context，System.getProperty 和System.getenv 取值
@@ -31,17 +28,6 @@ public class MapEngine implements RnaEngine {
 
     private static final String[] TYPE = {ENGINE$MAP};
 
-    public static final Map<String, Supplier<String>> BUILTIN = new HashMap<>();
-
-    static {
-        DateTimeFormatter full = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
-        BUILTIN.put(KEY$ENVS_NOW, () -> LocalDateTime.now().format(full));
-        BUILTIN.put(KEY$ENVS_NOW_DATE, () -> LocalDate.now().format(date));
-        BUILTIN.put(KEY$ENVS_NOW_TIME, () -> LocalTime.now().format(time));
-    }
-
     @Override
     public @NotNull String[] type() {
         return TYPE;
@@ -49,32 +35,61 @@ public class MapEngine implements RnaEngine {
 
     @Override
     public @NotNull RnaWarmed warm(@NotNull String type, @NotNull String expr) {
-        return new RnaWarmed(type, expr, AttrGetter.nav(expr));
+        return MapHelper.warm(type, expr);
     }
 
     @Override
     public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
-
+        final ArrayList<RnaWarmed> work = expr.getTypedWork();
+        Iterator<RnaWarmed> wit = work.iterator();
+        RnaWarmed navi = wit.next();
         Object obj = null;
+        boolean ie = false;
         try {
-            obj = AttrGetter.get(ctx, expr.expr, (String[]) expr.work);
+            obj = MapHelper.get(ctx, navi.expr, navi.getTypedWork());
+
             if (obj == null) {
-                obj = System.getProperty(expr.expr);
+                obj = System.getProperty(navi.expr);
             }
 
             if (obj == null) {
-                obj = System.getenv(expr.expr);
+                obj = System.getenv(navi.expr);
             }
 
-            if (obj == null) {
-                Supplier<String> ss = BUILTIN.get(expr.expr);
-                obj = ss == null ? null : ss.get();
+            if (obj instanceof Supplier) {
+                obj = ((Supplier<?>) obj).get();
+            } else if (obj instanceof JavaEval) {
+                obj = ((JavaEval) obj).eval(ctx, null, Const.ARR$EMPTY_STRING);
+            } else if (obj instanceof Function) {
+                @SuppressWarnings("unchecked")
+                Function<Object, Object> fun = (Function<Object, Object>) obj;
+                obj = fun.apply(null);
+            }
+
+            while (wit.hasNext()) {
+                RnaWarmed pip = wit.next();
+                Object cmd = ctx.get(pip.expr);
+                String[] arg = pip.getTypedWork();
+                if (cmd instanceof JavaEval) {
+                    obj = ((JavaEval) cmd).eval(ctx, obj, arg);
+                } else if (cmd instanceof Function) {
+                    @SuppressWarnings("unchecked")
+                    Function<Object, Object> fun = (Function<Object, Object>) cmd;
+                    obj = fun.apply(obj);
+                } else {
+                    ie = true;
+                    throw new IllegalStateException("failed to get cmd, expr=" + pip);
+                }
             }
         } catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
             } else {
-                throw new IllegalStateException(expr.expr, t);
+                if (ie) {
+                    throw t;
+                } else {
+                    throw new IllegalStateException(expr.toString(), t);
+                }
             }
         }
 

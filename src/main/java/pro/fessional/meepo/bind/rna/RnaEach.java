@@ -25,7 +25,7 @@ import java.util.RandomAccess;
 
 import static pro.fessional.meepo.bind.Const.BLT$EACH_COUNT;
 import static pro.fessional.meepo.bind.Const.BLT$EACH_TOTAL;
-import static pro.fessional.meepo.bind.Const.OBJ$NAVIGATOR;
+import static pro.fessional.meepo.bind.Const.OBJ$NAVI_DOT;
 
 /**
  * <pre>
@@ -91,8 +91,8 @@ public class RnaEach extends Tock implements Rng {
             logger.trace("[👹Merge:tock] deal RNA:EACH tock={}, size={}, step={}, type={}, expr={}", tock, size, step, type, expr);
             acid.execute.put(tock, this);
 
-            final String keyTotal = tock + OBJ$NAVIGATOR + BLT$EACH_TOTAL;
-            final String keyCount = tock + OBJ$NAVIGATOR + BLT$EACH_COUNT;
+            final String keyTotal = tock + OBJ$NAVI_DOT + BLT$EACH_TOTAL;
+            final String keyCount = tock + OBJ$NAVI_DOT + BLT$EACH_COUNT;
 
             ctx.put(keyTotal, size);
             ctx.put(keyCount, 0);
@@ -210,13 +210,13 @@ public class RnaEach extends Tock implements Rng {
         try {
             buff.append("RnaEach{");
             buff.append("tock='");
-            Dent.line(buff, tock);
+            Dent.lineIt(buff, tock);
             buff.append("', type='");
-            Dent.line(buff, type);
+            Dent.lineIt(buff, type);
             buff.append("', step=");
             buff.write(String.valueOf(step));
             buff.append(", expr='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("', mute=");
             buff.write(String.valueOf(mute));
             buff.append("}");

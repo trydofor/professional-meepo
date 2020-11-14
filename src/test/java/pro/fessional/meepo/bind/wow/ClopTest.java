@@ -1,9 +1,8 @@
-package pro.fessional.meepo.bind;
+package pro.fessional.meepo.bind.wow;
 
 import org.junit.Assert;
 import org.junit.Test;
 import pro.fessional.meepo.TraceTest;
-import pro.fessional.meepo.bind.wow.Clop;
 
 /**
  * @author trydofor

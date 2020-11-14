@@ -1,4 +1,4 @@
-package pro.fessional.meepo.bind.wow;
+package pro.fessional.meepo.util;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,6 +6,8 @@ import pro.fessional.meepo.TraceTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -47,5 +49,29 @@ public class EvalTest extends TraceTest {
 
         Assert.assertTrue(Eval.asFalse(new ArrayList<>()));
         Assert.assertTrue(Eval.asFalse(new HashMap<>()));
+    }
+
+    @Test
+    public void parseArgs() {
+        Assert.assertEquals(Collections.singletonList("12"), Eval.parseArgs("12"));
+        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\\"));
+        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\"\\"));
+        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs("12 34"));
+        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs(" 12 34 "));
+        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs("\n 12 \n34 "));
+        Assert.assertEquals(Arrays.asList("12", "3 4"), Eval.parseArgs(" 12 '3 4' "));
+        Assert.assertEquals(Arrays.asList("12", "3' 4"), Eval.parseArgs(" 12 '3\\' 4' "));
+        Assert.assertEquals(Arrays.asList("12", "3' 4"), Eval.parseArgs(" 12 \"3' 4\" "));
+        Assert.assertEquals(Arrays.asList("12", "3\" 4"), Eval.parseArgs(" 12 '3\" 4' "));
+    }
+
+    @Test
+    public void split() {
+        Assert.assertEquals(Arrays.asList("12", "34"), Eval.split("12|34", '|', '\\'));
+        Assert.assertEquals(Collections.singletonList("1|2"), Eval.split("1\\|2", '|', '\\'));
+        Assert.assertEquals(Arrays.asList("12", "34"), Eval.split("|12|34|", '|', '\\'));
+        Assert.assertEquals(Arrays.asList("1|2", "34"), Eval.split("|1\\|2|34|", '|', '\\'));
+        Assert.assertEquals(Arrays.asList("1\\2", "34"), Eval.split("|1\\2|34|", '|', '\\'));
+        Assert.assertEquals(Arrays.asList("1\\'2", "34"), Eval.split("|1\\'2|34|", '|', '\\'));
     }
 }

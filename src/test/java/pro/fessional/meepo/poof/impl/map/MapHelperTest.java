@@ -2,7 +2,6 @@ package pro.fessional.meepo.poof.impl.map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.fessional.meepo.bind.Const;
 
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -16,7 +15,7 @@ import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
  * @author trydofor
  * @since 2020-11-10
  */
-public class AttrGetterTest {
+public class MapHelperTest {
 
     /**
      * java.runtime.name
@@ -47,10 +46,10 @@ public class AttrGetterTest {
 
     @Test
     public void navTest() {
-        Assert.assertArrayEquals(Const.ARR$EMPTY_STRING, AttrGetter.nav("name"));
-        Assert.assertArrayEquals(new String[]{"my", "name"}, AttrGetter.nav("my.name"));
-        Assert.assertArrayEquals(new String[]{"my", "name", "is"}, AttrGetter.nav("my.name.is"));
-        Assert.assertArrayEquals(new String[]{"it", "name"}, AttrGetter.nav("it.name"));
+//        Assert.assertArrayEquals(Const.ARR$EMPTY_STRING, MapHelper.warm("name"));
+//        Assert.assertArrayEquals(new String[]{"my", "name"}, MapHelper.warm("my.name"));
+//        Assert.assertArrayEquals(new String[]{"my", "name", "is"}, MapHelper.warm("my.name.is"));
+//        Assert.assertArrayEquals(new String[]{"it", "name"}, MapHelper.warm("it.name"));
     }
 
     @Test
@@ -107,7 +106,7 @@ public class AttrGetterTest {
 
         long s5 = System.currentTimeMillis();
         for (int i = 0; i < tm; i++) {
-            AttrGetter.get(bean, "code", ARR$EMPTY_STRING); // bean.naviget cost 417ms
+            MapHelper.get(bean, "code", ARR$EMPTY_STRING); // bean.naviget cost 417ms
         }
         System.out.println("bean.naviget cost " + (System.currentTimeMillis() - s5) + "ms");
     }
@@ -125,17 +124,17 @@ public class AttrGetterTest {
         map.put("male", true);
         map.put("bean", bean);
 
-        Assert.assertEquals("name", AttrGetter.get(map, "name", ARR$EMPTY_STRING));
-        Assert.assertEquals("code", AttrGetter.get(map, "code", ARR$EMPTY_STRING));
-        Assert.assertEquals(Boolean.TRUE, AttrGetter.get(map, "male", ARR$EMPTY_STRING));
+        Assert.assertEquals("name", MapHelper.get(map, "name", ARR$EMPTY_STRING));
+        Assert.assertEquals("code", MapHelper.get(map, "code", ARR$EMPTY_STRING));
+        Assert.assertEquals(Boolean.TRUE, MapHelper.get(map, "male", ARR$EMPTY_STRING));
 
-        Assert.assertEquals("name", AttrGetter.get(bean, "name", ARR$EMPTY_STRING));
-        Assert.assertEquals("code", AttrGetter.get(bean, "code", ARR$EMPTY_STRING));
-        Assert.assertEquals(Boolean.TRUE, AttrGetter.get(bean, "male", ARR$EMPTY_STRING));
+        Assert.assertEquals("name", MapHelper.get(bean, "name", ARR$EMPTY_STRING));
+        Assert.assertEquals("code", MapHelper.get(bean, "code", ARR$EMPTY_STRING));
+        Assert.assertEquals(Boolean.TRUE, MapHelper.get(bean, "male", ARR$EMPTY_STRING));
 
-        Assert.assertEquals("name", AttrGetter.get(map, "bean.name", new String[]{"bean", "name"}));
-        Assert.assertEquals("code", AttrGetter.get(map, "bean.code", new String[]{"bean", "code"}));
-        Assert.assertEquals(Boolean.TRUE, AttrGetter.get(map, "bean.male", new String[]{"bean", "male"}));
+        Assert.assertEquals("name", MapHelper.get(map, "bean.name", new String[]{"bean", "name"}));
+        Assert.assertEquals("code", MapHelper.get(map, "bean.code", new String[]{"bean", "code"}));
+        Assert.assertEquals(Boolean.TRUE, MapHelper.get(map, "bean.male", new String[]{"bean", "male"}));
     }
 
     public static class Bean {

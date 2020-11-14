@@ -4,13 +4,13 @@ import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.kin.Rng;
 import pro.fessional.meepo.bind.wow.Clop;
-import pro.fessional.meepo.bind.wow.Eval;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
 import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.sack.Acid;
 import pro.fessional.meepo.util.Dent;
+import pro.fessional.meepo.util.Eval;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -113,13 +113,13 @@ public class RnaWhen extends Tock implements Rng {
         try {
             buff.append("RnaWhen{");
             buff.append("tock='");
-            Dent.line(buff, tock);
+            Dent.lineIt(buff, tock);
             buff.append("', type='");
-            Dent.line(buff, type);
+            Dent.lineIt(buff, type);
             buff.append("', nope=");
             buff.append(String.valueOf(nope));
             buff.append(", expr='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("', mute=");
             buff.append(String.valueOf(mute));
             buff.append("}");

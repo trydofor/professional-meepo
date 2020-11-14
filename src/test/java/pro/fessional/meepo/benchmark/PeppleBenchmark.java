@@ -20,6 +20,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,13 +33,15 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class PeppleBenchmark extends BaseBenchmark {
+public class PeppleBenchmark {
 
     private PebbleTemplate template;
 
+    private Map<String, Object> context;
+
     @Setup
     public void setup() throws PebbleException {
-        super.setup();
+        context = Stock.mockContext();
         PebbleEngine engine = new PebbleEngine.Builder()
                 .autoEscaping(false).build();
         template = engine.getTemplate("template/jmh/stocks.pebble.html");

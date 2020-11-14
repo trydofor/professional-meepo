@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$JAVA;
 import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
+import static pro.fessional.meepo.poof.RnaWarmed.EMPTY;
 
 /**
  * 编译java代码并执行
@@ -37,16 +38,17 @@ public class JavaEngine implements RnaEngine {
 
     @Override
     public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
+        if (expr == EMPTY) return null;
+
         Object obj = null;
         try {
             JavaEval java = expr.getTypedWork();
-            obj = java.eval(ctx);
+            obj = java.eval(ctx, null);
         } catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
             } else {
-                Throwable c = t.getCause();
-                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+                throw new IllegalStateException(expr.toString(), t);
             }
         }
         return obj;

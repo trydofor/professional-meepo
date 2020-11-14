@@ -35,7 +35,7 @@ public class DnaRaw extends Exon {
 
     @Override
     public void merge(Acid acid, Writer buff) {
-        Dent.pend(buff, body9);
+        Dent.write(buff, body9);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DnaRaw extends Exon {
         try {
             buff.append("DnaRaw{");
             buff.append("text='");
-            Dent.line(buff, body9);
+            Dent.lineIt(buff, body9);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

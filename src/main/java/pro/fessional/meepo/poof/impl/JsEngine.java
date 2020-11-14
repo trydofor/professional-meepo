@@ -43,8 +43,7 @@ public class JsEngine implements RnaEngine {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
             } else {
-                Throwable c = t.getCause();
-                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+                throw new IllegalStateException(expr.toString(), t);
             }
         }
         return obj;

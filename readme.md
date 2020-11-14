@@ -563,7 +563,7 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 语法：`RNA:USE` `空白`+ `界定` `查找` `界定` `变量` `界定` `作用`?
 
 `SET`的`RNA`版本，区别在于从`map`引擎中取得`变量`值，而非底层模板的字面量替换。  
-变量获取规则，详见map引擎说明。
+变量获取规则（如，导航类对象，管道处理函数），详见map引擎说明。
 
 在`变量`合并时，会根据`变量值`的类型进行自动`多段缩排`支持，同时满足，
 
@@ -587,7 +587,7 @@ var userHome = "/home/trydofor";
 
 语法：`RNA:PUT` `空白`+ `引擎`? `界定` `变量` `界定` `功能体` `界定`
 
-指定`引擎`执行`功能体`，把执行结果存入`环境`（参加map引擎），以便其他`RNA`取值。
+指定`引擎`执行`功能体`，把`函数`或`执行结果`存入`环境`（参加map引擎），以便其他`RNA`取值。
 
  * `环境`指米波context和部分脚本引擎上下文。
  * `引擎`，参考引擎说明。
@@ -748,12 +748,15 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
- * 以`功能体`为`key`，依次查找，找到`非null`即返回
+ * 以`功能体`为`参数`（`key`)，依次查找，找到`非null`即返回
  * 顺序为context,System.property,System.env,Builtin
- * 没有找到`非null`值，直接返回`字符串空`
+ * `key`中不可包含管道符`|`，或使用`\`转义
+ * `key`中的引号`'"`作为变量边界，或使用`\`转义。
+ * 转义如`\t`,`\r`,`\n`，此外仅保留`\`后字符。
+
+#### 01.以`.`分隔`导航类`对象
 
 支持简单的`导航类`对象，即key中以`.`分隔对象，会存在以下干扰情况，
-
  * java的System中有大量`.`型变量，如`os.name`，`user.home`
  * 如果用户存有`os`或`user`，使用`.`导航，则会发生混乱
 
@@ -761,8 +764,8 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 存入（put）时，尽量保证读取时，以整key和对象导航方式都可正确读取。
 
- * 如果可以，以整key存入。
- * 再以`.`分隔，逐级存入分段的key
+ * 必须以整key存入。
+ * 可以`.`分隔，逐级存入分段的key（map引擎未实现）
 
 读取（get）时，优先使用整key读取，不存在则使用对象导航形式读取。
 
@@ -774,13 +777,39 @@ console.log('<div>result='+count+'/'+total+'</div>')
     - 其他类型，通过反射取值，以Getter命名规则和Field查找。
  * 递归中的最终对象，以`name`为key取值（map或反射）
 
-内置以下`变量`，有些是动态计算，每次获得不同，有些是静态变量。
+#### 02.管道符`|`函数，链式处理
 
- * `now` - String, 动态计算，当前日期时间 `yyyy-MM-dd HH:mm:ss`
- * `now.date` - String, 动态计算，系统日期 `yyyy-MM-dd`
- * `now.time` - String, 动态计算，系统时间 `HH:mm:ss`
+可以用`|`分隔多个处理函数，第一个为key，其后的都是`函数`，格式下。
+
+`key` `|` `funA` `|` `funB arg1 "arg 2"`
+
+以上等同于调用链，`funB(ctx, funA(ctx.get("key")), "arg1", "arg 2")`
+
+ * `key` - 字符串key，可以是`.`的对象导航格式。
+   - key对应的值可以是`Object`或`Supplier<Object>`。
+ * `fun` - 管道内的第一个字符串
+   - 必须`Function`或`JavaEval`类型
+   - Function.apply(obj)，obj是上一个管道的输出或key
+   - JavaEval.eval(ctx, obj, arg...);
+ * `arg` - 管道内的第二个起字符串。
+   - 若arg中有空格，使用`"`或`'`括起来，其内使用`\`转义。
+
+函数，可以通过以下3中方式设置，
+ * RnaManager 注册，如内置`变量`或方法
+ * merger时存入context中，如java编码
+ * 可以通过`RNA:PUT`指令
+
+#### 03.内置以下`变量`
+
+有些是动态计算，每次获得不同，有些是静态变量。
+
  * `user.name` - String, 当前系统用户，java内置
  * `user.dir` - String, 当前的工作目录，java内置
+ * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
+ * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
+ * `now pattern?` - String:javaEval, 动态计算，`pattern`格式化
+ * `fun.mod arg...` -String:javaEval，根据数字对args取余获得args值
+ * `fun.fmt pattern` - String:javaEval, printf格式化对象
 
 ### 7.2.来啥回啥(raw)
 
@@ -867,3 +896,32 @@ console.log('<div>result='+count+'/'+total+'</div>')
 | Trimou.benchmark     | thrpt | 50  | 19718.903 ± |  669.759 | ops/s |
 | Velocity.benchmark   | thrpt | 50  | 18956.594 ± |  766.578 | ops/s |
 
+### 03.如何调教性能
+
+远行MeepoAsyncProfile的main，然后使用`async-profiler`
+
+```bash
+mvn clean
+mvn -Dmaven.test.skip=false test 
+mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/lib
+
+# 启动一个大循环，也可以在IDE中直接运行
+java -cp target/classes:target/test-classes\
+:target/lib/slf4j-api-1.7.30.jar\
+:target/lib/annotations-19.0.0.jar \
+pro.fessional.meepo.benchmark.MeepoAsyncProfile
+
+# 获取 pid
+jps
+# 使用 async-profiler生成svg火焰图
+#/Users/trydofor/Applications-cli/async-profiler-1.8.2/profiler.sh
+profiler.sh -d 30 -f meepo-profile.svg $pid
+```
+
+和性能有关的细节非常之多，对应模板引擎，主要集中在字符处理技巧上。
+
+ * zero-copy，因为String的特性，尽量使用`char[]`代替完成copy
+ * array的赋值，尽量使用System.arraycopy
+ * hashCode和equals方法，if条件中的短路计算
+ * 基本类型的toString
+ * buffer类，避免扩容，线程安全下尽量复用

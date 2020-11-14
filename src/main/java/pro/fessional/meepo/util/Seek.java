@@ -46,7 +46,7 @@ public class Seek {
         return -1;
     }
 
-    public static int seekPrevGrace(String txt, int off, int end) {
+    public static int seekPrevGrace(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return -1;
         for (int i = end - 1; i >= off; i--) {
             char c = txt.charAt(i);
@@ -59,7 +59,7 @@ public class Seek {
         return -1;
     }
 
-    public static int seekNextGrace(String txt, int off, int end) {
+    public static int seekNextGrace(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return -1;
         for (int i = off; i < end; i++) {
             char c = txt.charAt(i);
@@ -72,7 +72,7 @@ public class Seek {
         return -1;
     }
 
-    public static int seekPrevWhite(String txt, int off, int end) {
+    public static int seekPrevWhite(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return -1;
         for (int i = end - 1; i >= off; i--) {
             char c = txt.charAt(i);
@@ -85,7 +85,7 @@ public class Seek {
         return -1;
     }
 
-    public static int seekNextWhite(String txt, int off, int end) {
+    public static int seekNextWhite(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return -1;
         for (int i = off; i < end; i++) {
             char c = txt.charAt(i);
@@ -98,7 +98,7 @@ public class Seek {
         return -1;
     }
 
-    public static int[] seekPrevWords(String txt, int off, int end) {
+    public static int[] seekPrevWords(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return new int[]{-1, -1};
 
         int pos1, pos0;
@@ -117,7 +117,7 @@ public class Seek {
         return new int[]{pos0 + 1, pos1 + 1};
     }
 
-    public static int[] seekNextWords(String txt, int off, int end) {
+    public static int[] seekNextWords(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return new int[]{-1, -1};
 
         int pos0, pos1;
@@ -136,7 +136,7 @@ public class Seek {
         return new int[]{pos0, pos1};
     }
 
-    public static int seekNextSplit(String txt, int off, int end) {
+    public static int seekNextSplit(CharSequence txt, int off, int end) {
         for (int i = off; i < end; i++) {
             if (isSplit(txt.charAt(i))) {
                 return i;
@@ -145,7 +145,7 @@ public class Seek {
         return -1;
     }
 
-    public static int[] seekNextAlnum(String txt, int off, int end) {
+    public static int[] seekNextAlnum(CharSequence txt, int off, int end) {
         if (off < 0 || end < 0) return new int[]{-1, -1};
 
         int pos0, pos1;
@@ -165,7 +165,7 @@ public class Seek {
     }
 
 
-    public static int[] trimBlank(String txt, int off, int end) {
+    public static int[] trimBlank(CharSequence txt, int off, int end) {
         for (int i = off; i < end; i++) {
             if (notBlank(txt.charAt(i))) {
                 off = i;
@@ -185,7 +185,7 @@ public class Seek {
     /**
      * 左侧不包含`\n`，index为start
      */
-    public static int seekPrevEdge(String txt, int end) {
+    public static int seekPrevEdge(CharSequence txt, int end) {
         for (int i = end - 1; i >= 0; i--) {
             char c = txt.charAt(i);
             if (notWhite(c)) {
@@ -198,7 +198,7 @@ public class Seek {
     /**
      * 右侧包含`\n`，index为end
      */
-    public static int seekNextEdge(String txt, int off) {
+    public static int seekNextEdge(CharSequence txt, int off) {
         int len = txt.length();
         for (int i = off; i < len; i++) {
             char c = txt.charAt(i);
@@ -227,5 +227,11 @@ public class Seek {
 
     public static boolean notBlank(char c) {
         return c != ' ' && c != '\t' && c != '\n' && c != '\r';
+    }
+
+    public static int indent(CharSequence text, int end) {
+        if (end <= 0) return 0;
+        int eg = Seek.seekPrevEdge(text, end);
+        return eg >= 0 ? end - eg : 0;
     }
 }

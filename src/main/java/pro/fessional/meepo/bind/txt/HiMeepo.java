@@ -92,9 +92,9 @@ public class HiMeepo extends Exon {
         try {
             buff.append("HiMeepo{");
             buff.append("head='");
-            Dent.line(buff, head);
+            Dent.lineIt(buff, head);
             buff.append("', tail='");
-            Dent.line(buff, tail);
+            Dent.lineIt(buff, tail);
             buff.append("', echo=");
             buff.append(String.valueOf(echo));
             buff.append(", trim=");

@@ -94,11 +94,11 @@ public class RnaPut extends Exon implements Rng {
         try {
             buff.append("RnaPut{");
             buff.append("type='");
-            Dent.line(buff, type);
+            Dent.lineIt(buff, type);
             buff.append("', para='");
-            Dent.line(buff, para);
+            Dent.lineIt(buff, para);
             buff.append("', expr='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("', mute=");
             buff.append(String.valueOf(mute));
             buff.append("}");

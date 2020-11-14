@@ -82,9 +82,9 @@ public class RnaDone extends Tock {
         try {
             buff.append("RnaDone{");
             buff.append("tock='");
-            Dent.line(buff, tock9);
+            Dent.lineIt(buff, tock9);
             buff.append("', name=[");
-            Dent.line(buff, String.join(",", name));
+            Dent.lineIt(buff, String.join(",", name));
             buff.append("]}");
             buff.append("; ");
             edge.toString(buff);

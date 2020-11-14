@@ -84,9 +84,9 @@ public class RnaUse extends Tick implements Bar, Prc {
         try {
             buff.append("RnaUse{");
             buff.append("find='");
-            Dent.line(buff, find.pattern());
+            Dent.lineIt(buff, find.pattern());
             buff.append("', para='");
-            Dent.line(buff, para);
+            Dent.lineIt(buff, para);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

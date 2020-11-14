@@ -1,7 +1,6 @@
 package pro.fessional.meepo.tmpl;
 
 import org.junit.Assert;
-import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 import pro.fessional.meepo.util.Read;
@@ -14,11 +13,6 @@ import java.util.Map;
  * @since 2020-10-28
  */
 public class TmplHelp {
-
-    public static String trim(String txt) {
-        if (txt == null) return Const.TXT$EMPTY;
-        return txt.replaceAll("[\n\t\r ]+", " ");
-    }
 
     public static void assertTmpl(String expected, String actual) {
         assertTmpl(expected, actual, new HashMap<>());

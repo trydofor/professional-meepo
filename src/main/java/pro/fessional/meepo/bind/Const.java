@@ -48,9 +48,13 @@ public interface Const {
     String KEY$ENVS_NOW = "now";
     String KEY$ENVS_NOW_DATE = "now.date";
     String KEY$ENVS_NOW_TIME = "now.time";
+    String KEY$FUNC_FMT = "fun.fmt";
+    String KEY$FUNC_MOD = "fun.mod";
 
     // 对象
-    char OBJ$NAVIGATOR = '.';
+    char OBJ$NAVI_DOT = '.';
+    char OBJ$PIPE_BAR = '|';
+    char OBJ$CHAR_ESC = '\\';
 
     // each
     String BLT$EACH_COUNT = "_count";

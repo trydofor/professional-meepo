@@ -1,9 +1,9 @@
-package pro.fessional.meepo.bind;
+package pro.fessional.meepo.bind.wow;
 
 import org.junit.Assert;
 import org.junit.Test;
 import pro.fessional.meepo.TraceTest;
-import pro.fessional.meepo.bind.wow.Life;
+import pro.fessional.meepo.bind.Const;
 
 /**
  * @author trydofor

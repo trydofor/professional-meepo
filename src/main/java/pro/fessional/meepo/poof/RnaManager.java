@@ -3,14 +3,14 @@ package pro.fessional.meepo.poof;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fessional.meepo.poof.impl.JsEngine;
-import pro.fessional.meepo.poof.impl.OsEngine;
-import pro.fessional.meepo.poof.impl.RawEngine;
-import pro.fessional.meepo.poof.impl.UriEngine;
-import pro.fessional.meepo.poof.impl.java.JavaEngine;
+import pro.fessional.meepo.poof.impl.java.JavaEval;
 import pro.fessional.meepo.poof.impl.map.MapEngine;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * RnaEngine引擎工厂
@@ -21,19 +21,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RnaManager {
 
     protected static final Logger logger = LoggerFactory.getLogger(RnaManager.class);
-    private static final ConcurrentHashMap<String, RnaEngine> engines = new ConcurrentHashMap<>();
-    private static volatile int count = 0;
 
-    private static RnaEngine defaultEngine = new MapEngine();
+    private static final ConcurrentHashMap<String, RnaEngine> engines = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Object> functions = new ConcurrentHashMap<>();
+
+    private static final AtomicReference<RnaEngine> defaultEngine = new AtomicReference<>();
+    private static volatile int count = 0;
 
     // init engine
     static {
-        register(defaultEngine);
-        register(new RawEngine());
-        register(new UriEngine());
-        register(new JsEngine());
-        register(new JavaEngine());
-        register(new OsEngine());
+        setDefault(new MapEngine());
     }
 
     /**
@@ -45,7 +42,7 @@ public class RnaManager {
     @NotNull
     public static RnaEngine newEngine(String type) {
         RnaEngine engine = engines.get(type);
-        return engine == null ? defaultEngine : engine.fork();
+        return (engine == null ? defaultEngine.get() : engine).fork();
     }
 
     /**
@@ -60,11 +57,73 @@ public class RnaManager {
                 RnaEngine old = engines.put(t, engine);
                 if (old == null) {
                     logger.info("register new engine for type={}, clz={}", t, clz);
+                } else if (old == engine) {
+                    logger.info("skip same engine for type={}", t);
                 } else {
                     logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
                 }
             }
             count = engines.size();
+        }
+    }
+
+    /**
+     * 获得一个函数
+     *
+     * @param key 函数名
+     * @return 函数
+     */
+    public static Object getFunction(String key) {
+        return functions.get(key);
+    }
+
+    /**
+     * 在上下文中注入function
+     *
+     * @param ctx 上下文
+     */
+    public static void fillFunction(Map<String, Object> ctx) {
+        ctx.putAll(functions);
+    }
+
+    /**
+     * 注册一个函数变量
+     *
+     * @param key 函数名
+     * @param fun 函数体
+     */
+    public static void register(String key, Supplier<?> fun) {
+        register(key, fun, "Supplier");
+    }
+
+    /**
+     * 注册一个函数
+     *
+     * @param key 函数名
+     * @param fun 函数体
+     */
+    public static void register(String key, Function<?, ?> fun) {
+        register(key, fun, "Function");
+    }
+
+    /**
+     * 注册一个函数
+     *
+     * @param key 函数名
+     * @param fun 函数体
+     */
+    public static void register(String key, JavaEval fun) {
+        register(key, fun, "JavaEval");
+    }
+
+    private static void register(String key, Object fun, String info) {
+        Object old = functions.put(key, fun);
+        if (old == null) {
+            logger.info("register function for key={}, info={}", key, info);
+        } else if (fun == old) {
+            logger.warn("skip same function for key={}, info={}", key, info);
+        } else {
+            logger.warn("replace function for key={}, info={}", key, info);
         }
     }
 
@@ -79,10 +138,16 @@ public class RnaManager {
 
     @NotNull
     public static RnaEngine getDefault() {
-        return defaultEngine;
+        return defaultEngine.get();
     }
 
+    /**
+     * 设置默认值，并注册引擎
+     *
+     * @param engine 引擎
+     */
     public static void setDefault(@NotNull RnaEngine engine) {
-        defaultEngine = engine;
+        defaultEngine.set(engine);
+        register(engine);
     }
 }

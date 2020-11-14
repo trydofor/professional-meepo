@@ -68,7 +68,7 @@ public class DnaEnd extends Exon {
         try {
             buff.append("DnaEnd{");
             buff.append("name=[");
-            Dent.line(buff, String.join(",", name));
+            Dent.lineIt(buff, String.join(",", name));
             buff.append("]}");
             buff.append("; ");
             edge.toString(buff);

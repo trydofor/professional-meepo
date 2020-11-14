@@ -1,4 +1,4 @@
-package pro.fessional.meepo.bind.wow;
+package pro.fessional.meepo.util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,8 +54,8 @@ public class Eval {
      * @return 解析后命令行
      */
     @NotNull
-    public static List<String> parseArgs(String line) {
-        if (line == null || line.isEmpty()) return Collections.emptyList();
+    public static List<String> parseArgs(CharSequence line) {
+        if (line == null || line.length() == 0) return Collections.emptyList();
         List<String> args = new ArrayList<>();
         int len = line.length();
         StringBuilder buf = new StringBuilder(len);
@@ -79,7 +79,7 @@ public class Eval {
                         qto = c;
                     } else {
                         if (qto == c) {
-                            args.add(buf.toString());
+                            trimAdd(args, buf);
                             buf.setLength(0);
                             qto = 0;
                         } else {
@@ -87,12 +87,12 @@ public class Eval {
                         }
                     }
                 }
-            } else if (c == ' ' || c == '\t') {
+            } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
                 if (qto > 0) {
                     buf.append(c);
                 } else {
                     if (buf.length() > 0) {
-                        args.add(buf.toString());
+                        trimAdd(args, buf);
                         buf.setLength(0);
                     }
                 }
@@ -109,9 +109,52 @@ public class Eval {
             if (esc) {
                 buf.append('\\');
             }
-            args.add(buf.toString());
+            trimAdd(args, buf);
         }
 
         return args;
+    }
+
+
+    public static ArrayList<String> split(CharSequence text, char spt) {
+        return split(text, spt, '\0');
+    }
+
+    public static ArrayList<String> split(CharSequence text, char spt, char esc) {
+        ArrayList<String> arr = new ArrayList<>();
+        StringBuilder buf = new StringBuilder();
+        int cnt = 1;
+        for (int i = 0, len = text.length(); i < len; i++) {
+            char c = text.charAt(i);
+            if (c == esc) {
+                cnt++;
+                buf.append(c);
+            } else {
+                if (c == spt) {
+                    if (cnt % 2 == 0) {
+                        buf.setCharAt(buf.length() - 1, c);
+                    } else {
+                        trimAdd(arr, buf);
+                        buf.setLength(0);
+                        cnt = 1;
+                    }
+                } else {
+                    cnt = 1;
+                    buf.append(c);
+                }
+            }
+
+        }
+        if (buf.length() > 0) {
+            trimAdd(arr, buf);
+        }
+        return arr;
+    }
+
+    public static void trimAdd(List<String> lst, StringBuilder buf) {
+        int[] ps = Seek.trimBlank(buf, 0, buf.length());
+        if (ps[1] > ps[0]) {
+            lst.add(buf.substring(ps[0], ps[1]));
+        }
     }
 }

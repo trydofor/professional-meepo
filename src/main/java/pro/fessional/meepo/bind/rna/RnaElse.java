@@ -63,7 +63,7 @@ public class RnaElse extends Tock implements Rng {
         try {
             buff.append("RnaElse{");
             buff.append("tock='");
-            Dent.line(buff, tock);
+            Dent.lineIt(buff, tock);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

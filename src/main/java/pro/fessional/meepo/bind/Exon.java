@@ -75,7 +75,7 @@ public class Exon {
      * @param buff buff
      */
     public void build(Writer buff) {
-        Dent.pend(buff, text9);
+        Dent.write(buff, text9);
     }
 
     /**

@@ -29,7 +29,7 @@ public class TxtSimple extends Exon {
 
     @Override
     public void merge(Acid acid, Writer buff) {
-        Dent.pend(buff, text9);
+        Dent.write(buff, text9);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TxtSimple extends Exon {
         try {
             buff.append("TxtSimple{");
             buff.append("text='");
-            Dent.line(buff, text9);
+            Dent.lineIt(buff, text9);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

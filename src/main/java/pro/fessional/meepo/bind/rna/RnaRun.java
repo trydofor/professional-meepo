@@ -92,11 +92,11 @@ public class RnaRun extends Tick implements Bar, Prc {
         try {
             buff.append("RnaRun{");
             buff.append("type='");
-            Dent.line(buff, type);
+            Dent.lineIt(buff, type);
             buff.append("', find='");
-            Dent.line(buff, find.pattern());
+            Dent.lineIt(buff, find.pattern());
             buff.append("', expr='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("', mute=");
             buff.append(String.valueOf(mute));
             buff.append("}");

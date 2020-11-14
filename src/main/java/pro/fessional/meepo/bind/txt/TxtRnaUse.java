@@ -48,7 +48,7 @@ public class TxtRnaUse extends Exon implements Rng {
         RnaEngine eng = acid.getEngine(type);
 
         Object o = eng.eval(acid.context, warmed, true);
-        Dent.left(buff, left, o);
+        Dent.indent(buff, left, o);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class TxtRnaUse extends Exon implements Rng {
         try {
             buff.append("TxtRnaUse{");
             buff.append("para='");
-            Dent.line(buff, expr);
+            Dent.lineIt(buff, expr);
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);

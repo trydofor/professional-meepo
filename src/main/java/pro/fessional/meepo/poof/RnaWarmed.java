@@ -2,11 +2,15 @@ package pro.fessional.meepo.poof;
 
 import org.jetbrains.annotations.NotNull;
 
+import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
+
 /**
  * @author trydofor
  * @since 2020-11-09
  */
 public class RnaWarmed {
+
+    public static final RnaWarmed EMPTY = new RnaWarmed(TXT$EMPTY, TXT$EMPTY);
 
     @NotNull
     public final String type;
@@ -16,26 +20,17 @@ public class RnaWarmed {
     /**
      * warm的预热对象
      */
-    public final Object work;
-    /**
-     * warm后type下的子类别
-     */
-    public final int kind;
+    private final Object work;
     /**
      * warm后的信息
      */
     public String info;
 
     public RnaWarmed(@NotNull String type, @NotNull String expr) {
-        this(type, expr, null, -1);
+        this(type, expr, null);
     }
 
     public RnaWarmed(@NotNull String type, @NotNull String expr, Object work) {
-        this(type, expr, work, -1);
-    }
-
-    public RnaWarmed(@NotNull String type, @NotNull String expr, Object work, int kind) {
-        this.kind = kind;
         this.type = type;
         this.expr = expr;
         this.work = work;
@@ -44,10 +39,6 @@ public class RnaWarmed {
     @SuppressWarnings("unchecked")
     public <T> T getTypedWork() {
         return (T) work;
-    }
-
-    public <T> T getTypedWork(Class<T> clz) {
-        return clz.cast(work);
     }
 
     public boolean hasInfo() {

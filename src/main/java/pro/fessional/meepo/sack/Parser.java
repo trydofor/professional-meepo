@@ -25,7 +25,6 @@ import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RngChecker;
-import pro.fessional.meepo.util.Dent;
 import pro.fessional.meepo.util.Seek;
 
 import java.util.ArrayDeque;
@@ -1096,7 +1095,7 @@ public class Parser {
                 }
                 List<Exon> appl;
                 if (n.xna instanceof Bar) {
-                    int bar = Dent.left(text, st0);
+                    int bar = Seek.indent(text, st0);
                     appl = n.xna.apply(pos.shift(done1), txt, bar);
                 } else {
                     appl = n.xna.apply(pos.shift(done1), txt, 0);

@@ -3,9 +3,9 @@ package pro.fessional.meepo.poof.impl;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fessional.meepo.bind.wow.Eval;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
+import pro.fessional.meepo.util.Eval;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -68,8 +68,7 @@ public class OsEngine implements RnaEngine {
         } else if (ENGINE$SH.equalsIgnoreCase(expr.type)) {
             builder.command("bash", "-c", expr.expr);
         } else {
-            @SuppressWarnings("unchecked")
-            List<String> args = (List<String>) expr.work;
+            List<String> args = expr.getTypedWork();
             builder.command(args);
         }
 
@@ -96,8 +95,7 @@ public class OsEngine implements RnaEngine {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
             } else {
-                Throwable c = t.getCause();
-                throw new IllegalStateException(expr.toString(), c == null ? t : c);
+                throw new IllegalStateException(expr.toString(), t);
             }
         } finally {
             if (p != null) p.destroy();
