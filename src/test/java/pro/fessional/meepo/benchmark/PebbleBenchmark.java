@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class PeppleBenchmark {
+public class PebbleBenchmark {
 
     private PebbleTemplate template;
 
@@ -57,7 +57,7 @@ public class PeppleBenchmark {
     public static void main(String[] args) throws RunnerException {
         System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", "error");
         Options opt = new OptionsBuilder()
-                .include(PeppleBenchmark.class.getSimpleName())
+                .include(PebbleBenchmark.class.getSimpleName())
                 .build();
 
         new Runner(opt).run();

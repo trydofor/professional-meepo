@@ -346,6 +346,16 @@ return ldt.format(fmt);
     }
 ```
 
+### 2.14.如何自定义函数
+
+```
+/* HI-MEEPO */
+/* RNA:PUT fun/fun:abs/return Math.abs(((Number)obj).intValue())/ */
+/* RNA:USE /abs/number|fun:abs/*/
+abs
+```
+以上模板，通过`RNA:PUT`和`fun`引擎，在context中，put一个名为`fun:abs`的`函数`，
+在合并时，context.put("number",-1)，模板输出为`1`，详见`testFunAbs`。
 
 ## 3.框架集成
 
@@ -789,27 +799,45 @@ console.log('<div>result='+count+'/'+total+'</div>')
    - key对应的值可以是`Object`或`Supplier<Object>`。
  * `fun` - 管道内的第一个字符串
    - 必须`Function`或`JavaEval`类型
+   - 函数名字，不用使用`.`，建议以`fun:`开头
    - Function.apply(obj)，obj是上一个管道的输出或key
    - JavaEval.eval(ctx, obj, arg...);
  * `arg` - 管道内的第二个起字符串。
    - 若arg中有空格，使用`"`或`'`括起来，其内使用`\`转义。
+   - arg默认为字符串，尤其使用引号括起来
+   - 自动解析数值，格式为`,`,`_`分隔的数字，可以`D`和`L`结尾（double和long）
+   - `1,000`,`1_0000`,`1_0000L`,`1_0000.00D`,`1_0000.0`
 
 函数，可以通过以下3中方式设置，
  * RnaManager 注册，如内置`变量`或方法
  * merger时存入context中，如java编码
- * 可以通过`RNA:PUT`指令
+ * 可以通过`RNA:PUT`指令`fun`引擎设置
 
 #### 03.内置以下`变量`
 
-有些是动态计算，每次获得不同，有些是静态变量。
+米波内置了很少侧变量和方法，以下是java system.property和env的举例
 
  * `user.name` - String, 当前系统用户，java内置
  * `user.dir` - String, 当前的工作目录，java内置
+
+以下是，内置日期和时间的变量
+
  * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
  * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
- * `now pattern?` - String:javaEval, 动态计算，`pattern`格式化
- * `fun.mod arg...` -String:javaEval，根据数字对args取余获得args值
- * `fun.fmt pattern` - String:javaEval, printf格式化对象
+
+以下是，内置的函数，均以`fun:`为前缀
+
+ * `fun:now pattern?` - String:javaEval, 动态计算，`pattern`格式化
+   - obj，若是`java.util.Date`或`TemporalAccessor`，则格式化
+   - 若是null或其他，则为`LocalDateTime.now()`
+   - pattern，为`DateTimeFormatter`格式，
+   - 若是null，则为`yyyy-MM-dd HH:mm:ss`
+ * `fun:mod arg...` -String:javaEval，根据数字对args取余获得args值
+   - obj, 需要是Number，取intValue，对arg.length取余
+   - arg，必须有值，可为字符串或数字
+ * `fun:fmt pattern` - String:javaEval, printf格式化对象
+   - obj，为任意对象
+   - pattern，为java格式化，，调用String.format(pattern,obj)
 
 ### 7.2.来啥回啥(raw)
 
@@ -859,6 +887,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
     - org.jetbrains.annotations.NotNull;
     - pro.fessional.meepo.poof.impl.JavaEngine;
     - java.util.Map;
+
+### 7.9.设置java函数(fun)
+
+通过米波模板动态编译java代码，并以被PUT到context中作为`函数`，供`USE`执行。
+
 
 ## 9.常见问题
 
@@ -925,3 +958,21 @@ profiler.sh -d 30 -f meepo-profile.svg $pid
  * hashCode和equals方法，if条件中的短路计算
  * 基本类型的toString
  * buffer类，避免扩容，线程安全下尽量复用
+
+### 04.米波语法解析非`lexer`
+
+正统的语法解析，一般分为词法和语法分析两步。
+
+ * 先是进行词法分析，将输入转换成一个一个的Token
+ * 然后是进行语法分析。一个一个的Token组成语句，对应一定的语法。
+
+米波采用的是硬头皮有限状态死磕法，以便简单处理动态MEEPO头尾和BKB块。
+
+### 05.如何记住米波的破语法
+
+米波的命名十分简单，如果你了解`dota`，`vi`和2020的新冠。
+
+ * DNA，就是静态替换，目的是做模板中间件，翻译模板
+ * RNA，具有动态性，支持了for和if，以及engine扩展。
+ * 各指令的语法，均类似`vi`的`s/find/replace/g`替换。
+ * 米波嘴上说区分大小写，实际上自身的指令支持大小写。

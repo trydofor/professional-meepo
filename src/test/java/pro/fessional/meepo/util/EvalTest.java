@@ -53,16 +53,18 @@ public class EvalTest extends TraceTest {
 
     @Test
     public void parseArgs() {
-        Assert.assertEquals(Collections.singletonList("12"), Eval.parseArgs("12"));
-        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\\"));
-        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\"\\"));
-        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs("12 34"));
-        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs(" 12 34 "));
-        Assert.assertEquals(Arrays.asList("12", "34"), Eval.parseArgs("\n 12 \n34 "));
-        Assert.assertEquals(Arrays.asList("12", "3 4"), Eval.parseArgs(" 12 '3 4' "));
-        Assert.assertEquals(Arrays.asList("12", "3' 4"), Eval.parseArgs(" 12 '3\\' 4' "));
-        Assert.assertEquals(Arrays.asList("12", "3' 4"), Eval.parseArgs(" 12 \"3' 4\" "));
-        Assert.assertEquals(Arrays.asList("12", "3\" 4"), Eval.parseArgs(" 12 '3\" 4' "));
+        Assert.assertEquals(Collections.singletonList(12), Eval.parseArgs("12", Eval.ArgType.Obj));
+        Assert.assertEquals(Collections.singletonList("12"), Eval.parseArgs("12", Eval.ArgType.Str));
+        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\\", Eval.ArgType.Obj));
+        Assert.assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\"\\", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12, 34L), Eval.parseArgs("12 34L", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList("12", "34L"), Eval.parseArgs("12 34L", Eval.ArgType.Str));
+        Assert.assertEquals(Arrays.asList(12, 34L), Eval.parseArgs(" 12 34L ", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12, 34L), Eval.parseArgs("\n 12 \n34L ", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12D, "3 4"), Eval.parseArgs(" 12D '3 4' ", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12, "3' 4"), Eval.parseArgs(" 12 '3\\' 4' ", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12, "3' 4"), Eval.parseArgs(" 12 \"3' 4\" ", Eval.ArgType.Obj));
+        Assert.assertEquals(Arrays.asList(12, "3\" 4"), Eval.parseArgs(" 12 '3\" 4' ", Eval.ArgType.Obj));
     }
 
     @Test

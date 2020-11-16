@@ -18,5 +18,5 @@ public interface JavaEval {
      * @param arg 管道参数
      * @return 结果
      */
-    Object eval(@NotNull Map<String, Object> ctx, Object obj, String... arg);
+    Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg);
 }

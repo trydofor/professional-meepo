@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.poof.RnaWarmed;
 import pro.fessional.meepo.util.Eval;
+import pro.fessional.meepo.util.Eval.ArgType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static pro.fessional.meepo.bind.Const.ARR$EMPTY_OBJECT;
 import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
 
 /**
@@ -24,6 +26,10 @@ import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
 public class MapHelper {
 
     private static final ConcurrentHashMap<Key, Member> MEMBER = new ConcurrentHashMap<>();
+
+    public static final int KIND_PURE = 1;
+    public static final int KIND_NAVI = 2;
+    public static final int KIND_FUNC = 3;
 
     public static RnaWarmed warm(@NotNull String type, @NotNull String expr) {
         ArrayList<String> pipes = Eval.split(expr, Const.OBJ$PIPE_BAR, Const.OBJ$CHAR_ESC);
@@ -35,14 +41,27 @@ public class MapHelper {
         Iterator<String> it = pipes.iterator();
         String key = it.next();
         ArrayList<String> navi = Eval.split(key, Const.OBJ$NAVI_DOT);
-        String[] suw = navi.size() > 1 ? navi.toArray(ARR$EMPTY_STRING) : ARR$EMPTY_STRING;
-        work.add(new RnaWarmed(type, key, suw));
+        if (navi.size() > 1) {
+            work.add(new RnaWarmed(type, key, navi.toArray(ARR$EMPTY_STRING), KIND_NAVI));
+        } else {
+            List<String> args = Eval.parseArgs(key, ArgType.Str);
+            if (args.size() > 1) {
+                String cmd = args.get(0);
+                String[] arg = args.subList(1, args.size()).toArray(ARR$EMPTY_STRING);
+                work.add(new RnaWarmed(type, cmd, arg, KIND_FUNC));
+            } else {
+                work.add(new RnaWarmed(type, key, ARR$EMPTY_STRING, KIND_PURE));
+            }
+        }
 
         while (it.hasNext()) {
-            List<String> pipe = Eval.parseArgs(it.next());
-            String cmd = pipe.get(0);
-            String[] arg = pipe.size() > 1 ? pipe.subList(1, pipe.size()).toArray(ARR$EMPTY_STRING) : ARR$EMPTY_STRING;
-            work.add(new RnaWarmed(type, cmd, arg));
+            List<Object> pipe = Eval.parseArgs(it.next(), ArgType.Obj);
+            String cmd = (String) pipe.get(0);
+            Object[] arg = ARR$EMPTY_OBJECT;
+            if (pipe.size() > 1) {
+                arg = pipe.subList(1, pipe.size()).toArray();
+            }
+            work.add(new RnaWarmed(type, cmd, arg, KIND_FUNC));
         }
 
         return new RnaWarmed(type, expr, work);
@@ -144,10 +163,12 @@ public class MapHelper {
     private static class Key {
         private final Class<?> claz;
         private final String attr;
+        private final int hash;
 
         public Key(Class<?> claz, String attr) {
             this.claz = claz;
             this.attr = attr;
+            this.hash = claz.hashCode() + 31 * attr.hashCode();
         }
 
         @Override
@@ -160,7 +181,7 @@ public class MapHelper {
 
         @Override
         public int hashCode() {
-            return claz.hashCode() + 31 * attr.hashCode();
+            return hash;
         }
     }
 }

@@ -27,11 +27,11 @@ public class ExpectedOutputTest {
 
     @Test
     public void testPebbleOutput() throws IOException, PebbleException {
-        PeppleBenchmark pepple = new PeppleBenchmark();
-        pepple.setup();
+        PebbleBenchmark pebble = new PebbleBenchmark();
+        pebble.setup();
         String expect = trim(Read.read("classpath:/template/jmh/expected-output.html"));
         for (int i = 0; i < 10; i++) {
-            String actual = trim(pepple.benchmark());
+            String actual = trim(pebble.benchmark());
             assertEquals(expect, actual);
         }
     }

@@ -1,12 +1,6 @@
 package pro.fessional.meepo;
 
 import org.jetbrains.annotations.NotNull;
-import pro.fessional.meepo.poof.RnaManager;
-import pro.fessional.meepo.poof.impl.JsEngine;
-import pro.fessional.meepo.poof.impl.OsEngine;
-import pro.fessional.meepo.poof.impl.RawEngine;
-import pro.fessional.meepo.poof.impl.UriEngine;
-import pro.fessional.meepo.poof.impl.java.JavaEngine;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 import pro.fessional.meepo.util.Read;
@@ -16,20 +10,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_DATE;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_TIME;
-import static pro.fessional.meepo.bind.Const.KEY$FUNC_FMT;
-import static pro.fessional.meepo.bind.Const.KEY$FUNC_MOD;
 
 /**
  * 通过Meepo类，load的模板，可以缓存。
@@ -47,32 +32,6 @@ public class Meepo {
     public static final int CACHE_HOUR_1 = CACHE_MINUTE_1 * 60;
     public static final int CACHE_DAY_1 = CACHE_HOUR_1 * 24;
     public static final int CACHE_DAY_30 = CACHE_DAY_1 * 30;
-
-    // init engine
-    static {
-        RnaManager.register(new RawEngine());
-        RnaManager.register(new UriEngine());
-        RnaManager.register(new JsEngine());
-        RnaManager.register(new JavaEngine());
-        RnaManager.register(new OsEngine());
-
-        DateTimeFormatter full = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        RnaManager.register(KEY$ENVS_NOW_DATE, () -> LocalDate.now().format(date));
-        RnaManager.register(KEY$ENVS_NOW_TIME, () -> LocalTime.now().format(time));
-        RnaManager.register(KEY$ENVS_NOW, (ctx, obj, arg) -> {
-            DateTimeFormatter df = full;
-            if (arg != null && arg.length > 0) {
-                df = DateTimeFormatter.ofPattern(arg[0]);
-            }
-            return LocalDateTime.now().format(df);
-        });
-
-        RnaManager.register(KEY$FUNC_FMT, (ctx, obj, arg) -> String.format(arg[0], obj));
-        RnaManager.register(KEY$FUNC_MOD, (ctx, obj, arg) -> arg[(Integer) obj % arg.length]);
-    }
 
     private static final ConcurrentHashMap<String, Gene> cache = new ConcurrentHashMap<>();
 

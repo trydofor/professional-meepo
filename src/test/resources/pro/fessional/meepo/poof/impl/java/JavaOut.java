@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class JavaOut implements JavaEval {
     @Override
-    public Object eval(@NotNull Map<String, Object> ctx, Object obj, String... arg) {
+    public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
         LocalDate date = LocalDate.parse("2020-07-09");
         LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

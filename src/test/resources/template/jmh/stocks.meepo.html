@@ -55,9 +55,7 @@
     <!-- HI-MEEPO -->
     <tbody>
     <!-- RNA:EACH map/1/items/item -->
-    <!-- RNA:RUN java/even-or-odd/
-    return ((Integer)ctx.get("item._count")) % 2 == 0 ? "even" : "odd"
-    / -->
+    <!-- RNA:RUN map/even-or-odd/item._count | fun:mod even odd / -->
     <tr class="even-or-odd">
         <!-- RNA:USE /count/item._count/ -->
         <!-- RNA:USE /item.symbol/item.symbol/* -->

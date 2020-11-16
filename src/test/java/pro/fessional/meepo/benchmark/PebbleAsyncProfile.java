@@ -13,7 +13,7 @@ import java.util.Map;
  * @since 2020-10-28
  */
 
-public class PeppleAsyncProfile {
+public class PebbleAsyncProfile {
 
     private PebbleTemplate template;
 
@@ -35,7 +35,7 @@ public class PeppleAsyncProfile {
 
     public static void main(String[] args) throws IOException {
         System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", "error");
-        PeppleAsyncProfile profile = new PeppleAsyncProfile();
+        PebbleAsyncProfile profile = new PebbleAsyncProfile();
         profile.setup();
         int end = 1000_0000;
         System.out.println("don setup, loop= " + end);

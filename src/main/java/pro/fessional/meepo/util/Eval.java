@@ -47,74 +47,145 @@ public class Eval {
         return f;
     }
 
+
+    public abstract static class ArgType<T> {
+        public static final ArgType<Object> Obj = new ArgType<Object>() {
+            @Override
+            public Object transform(String str) {
+                StringBuilder num = new StringBuilder(str.length());
+                boolean hasDot = false;
+                int p1 = str.length() - 1;
+                char lt = str.charAt(p1);
+                for (int i = 0, len = str.length(); i < len; i++) {
+                    char c = str.charAt(i);
+                    if (c == '.') {
+                        hasDot = true;
+                        num.append(c);
+                    } else if (c == '-' || c >= '0' && c <= '9') {
+                        num.append(c);
+                    } else if (c == '+') {
+                        // skip
+                    } else {
+                        if (p1 == i && c != 'D' && c != 'd' && c != 'L' && c != 'l') {
+                            num.setLength(0);
+                        }
+                        break;
+                    }
+                }
+
+                if (num.length() > 0) {
+                    if (lt == 'D' || lt == 'd') {
+                        return Double.valueOf(num.toString());
+                    } else if (lt == 'L' || lt == 'l') {
+                        return Long.valueOf(num.toString());
+                    } else {
+                        if (hasDot) {
+                            return Float.valueOf(num.toString());
+                        } else {
+                            return Integer.valueOf(num.toString());
+                        }
+                    }
+                }
+
+                return str;
+            }
+
+            @Override
+            public ArgType<? extends String> forceStr() {
+                return Str;
+            }
+        };
+
+        public static final ArgType<String> Str = new ArgType<String>() {
+            @Override
+            public String transform(String str) {
+                return str;
+            }
+
+            @Override
+            public ArgType<? extends String> forceStr() {
+                return this;
+            }
+        };
+
+        private ArgType() {
+        }
+
+        public abstract T transform(String str);
+
+        public abstract ArgType<? extends T> forceStr();
+    }
+
     /**
-     * 按空白解析命令行，支持引号块和转义 "one\" arg"
+     * 按空白解析命令行，支持引号块和转义 "one\" arg"和数字解析。
+     * 支持，String，Long，Integer，Double，Float类型。
      *
      * @param line 参数行
+     * @param type 解析类型
      * @return 解析后命令行
      */
     @NotNull
-    public static List<String> parseArgs(CharSequence line) {
+    public static <T> List<T> parseArgs(CharSequence line, ArgType<T> type) {
         if (line == null || line.length() == 0) return Collections.emptyList();
-        List<String> args = new ArrayList<>();
+        List<T> args = new ArrayList<>();
         int len = line.length();
-        StringBuilder buf = new StringBuilder(len);
+        StringBuilder buff = new StringBuilder(len);
         char qto = 0;
         boolean esc = false;
+
         for (int i = 0; i < len; i++) {
             char c = line.charAt(i);
             if (c == '\\') {
                 if (esc) {
-                    buf.append(c);
+                    buff.append(c);
                     esc = false;
                 } else {
                     esc = true;
                 }
             } else if (c == '"' || c == '\'') {
                 if (esc) {
-                    buf.append(c);
+                    buff.append(c);
                     esc = false;
                 } else {
                     if (qto == 0) {
                         qto = c;
                     } else {
                         if (qto == c) {
-                            trimAdd(args, buf);
-                            buf.setLength(0);
+                            typedAdd(args, buff, type.forceStr());
+                            buff.setLength(0);
                             qto = 0;
                         } else {
-                            buf.append(c);
+                            buff.append(c);
                         }
                     }
                 }
             } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
                 if (qto > 0) {
-                    buf.append(c);
+                    buff.append(c);
                 } else {
-                    if (buf.length() > 0) {
-                        trimAdd(args, buf);
-                        buf.setLength(0);
+                    if (buff.length() > 0) {
+                        typedAdd(args, buff, type);
+                        buff.setLength(0);
                     }
                 }
             } else {
                 if (esc) {
-                    buf.append('\\');
+                    buff.append('\\');
                     esc = false;
                 }
-                buf.append(c);
+                buff.append(c);
             }
         }
 
-        if (buf.length() > 0) {
+        if (buff.length() > 0) {
             if (esc) {
-                buf.append('\\');
+                buff.append('\\');
             }
-            trimAdd(args, buf);
+            typedAdd(args, buff, type);
         }
 
         return args;
     }
-
 
     public static ArrayList<String> split(CharSequence text, char spt) {
         return split(text, spt, '\0');
@@ -124,6 +195,7 @@ public class Eval {
         ArrayList<String> arr = new ArrayList<>();
         StringBuilder buf = new StringBuilder();
         int cnt = 1;
+        ArgType<String> typ = ArgType.Str;
         for (int i = 0, len = text.length(); i < len; i++) {
             char c = text.charAt(i);
             if (c == esc) {
@@ -134,7 +206,7 @@ public class Eval {
                     if (cnt % 2 == 0) {
                         buf.setCharAt(buf.length() - 1, c);
                     } else {
-                        trimAdd(arr, buf);
+                        typedAdd(arr, buf, typ);
                         buf.setLength(0);
                         cnt = 1;
                     }
@@ -143,18 +215,17 @@ public class Eval {
                     buf.append(c);
                 }
             }
-
         }
         if (buf.length() > 0) {
-            trimAdd(arr, buf);
+            typedAdd(arr, buf, typ);
         }
         return arr;
     }
 
-    public static void trimAdd(List<String> lst, StringBuilder buf) {
-        int[] ps = Seek.trimBlank(buf, 0, buf.length());
-        if (ps[1] > ps[0]) {
-            lst.add(buf.substring(ps[0], ps[1]));
-        }
+    private static <T> void typedAdd(List<? super T> list, StringBuilder buff, ArgType<T> type) {
+        int[] ps = Seek.trimBlank(buff, 0, buff.length());
+        if (ps[1] <= ps[0]) return;
+        String str = buff.substring(ps[0], ps[1]);
+        list.add(type.transform(str));
     }
 }

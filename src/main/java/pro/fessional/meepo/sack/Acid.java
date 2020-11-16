@@ -27,10 +27,17 @@ public class Acid {
     @NotNull
     private final Map<String, RnaEngine> engines;
 
+    /**
+     * 构造一个包含ctx所有元素的新HashMap
+     *
+     * @param ctx 上下文
+     * @param rng 引擎名
+     */
     public Acid(Map<String, Object> ctx, Set<String> rng) {
         this.execute = new HashMap<>();
-        this.context = ctx == null ? new HashMap<>() : ctx;
+        this.context = ctx == null ? new HashMap<>() : new HashMap<>(ctx);
         this.engines = rng.stream().collect(toMap(Function.identity(), RnaManager::newEngine));
+        RnaManager.putFunction(this.context);
     }
 
     public RnaEngine getEngine(String type) {
@@ -39,6 +46,7 @@ public class Acid {
 
     public void clear() {
         execute.clear();
+        context.clear();
         engines.clear();
     }
 }

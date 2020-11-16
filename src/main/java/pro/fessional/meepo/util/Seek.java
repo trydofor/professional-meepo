@@ -18,7 +18,7 @@ public class Seek {
         int tln = tkn.length();
         boolean fd = false;
         for (int i = off, len = end - tln; i <= len; i++) {
-            if (txt.regionMatches(i, tkn, 0, tln)) {
+            if (txt.regionMatches(true, i, tkn, 0, tln)) {
                 fd = true;
                 if (!echo) {
                     return i;
@@ -36,7 +36,7 @@ public class Seek {
         int tln = tkn.length();
         for (int i = off, len = end - tln; i <= len; i++) {
             if (notWhite(txt.charAt(i))) {
-                if (txt.regionMatches(i, tkn, 0, tln)) {
+                if (txt.regionMatches(true, i, tkn, 0, tln)) {
                     return i;
                 } else {
                     return -1;

@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static pro.fessional.meepo.bind.Const.ENGINE$FUN;
 import static pro.fessional.meepo.bind.Const.ENGINE$JAVA;
 import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 import static pro.fessional.meepo.poof.RnaWarmed.EMPTY;
@@ -27,8 +28,11 @@ import static pro.fessional.meepo.poof.RnaWarmed.EMPTY;
  */
 public class JavaEngine implements RnaEngine {
 
+    public static final int KIND_JAVA = 1;
+    public static final int KIND_FUN = 2;
+
     private static final Logger logger = LoggerFactory.getLogger(JavaEngine.class);
-    private static final String[] TYPE = {ENGINE$JAVA};
+    private static final String[] TYPE = {ENGINE$JAVA, ENGINE$FUN};
     private static final ConcurrentHashMap<String, JavaEval> ExprEval = new ConcurrentHashMap<>();
 
     @Override
@@ -43,7 +47,11 @@ public class JavaEngine implements RnaEngine {
         Object obj = null;
         try {
             JavaEval java = expr.getTypedWork();
-            obj = java.eval(ctx, null);
+            if (expr.kind == KIND_JAVA){
+                obj = java.eval(ctx, null);
+            }else{
+                obj = java;
+            }
         } catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
@@ -62,7 +70,8 @@ public class JavaEngine implements RnaEngine {
     @Override
     public @NotNull RnaWarmed warm(@NotNull String type, @NotNull String expr) {
         JavaEval eval = ExprEval.computeIfAbsent(expr, this::compile);
-        return new RnaWarmed(type, expr, eval);
+        int kind = type.equalsIgnoreCase(ENGINE$JAVA) ? KIND_JAVA : KIND_FUN;
+        return new RnaWarmed(type, expr, eval, kind);
     }
 
     private static final Pattern PtnImps = Pattern.compile("\\s*import\\s+[^;]+;\\s*", Pattern.MULTILINE);

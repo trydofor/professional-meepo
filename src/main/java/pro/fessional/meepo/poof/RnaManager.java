@@ -3,14 +3,33 @@ package pro.fessional.meepo.poof;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.poof.impl.JsEngine;
+import pro.fessional.meepo.poof.impl.OsEngine;
+import pro.fessional.meepo.poof.impl.RawEngine;
+import pro.fessional.meepo.poof.impl.UriEngine;
+import pro.fessional.meepo.poof.impl.java.JavaEngine;
 import pro.fessional.meepo.poof.impl.java.JavaEval;
 import pro.fessional.meepo.poof.impl.map.MapEngine;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_DATE;
+import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_TIME;
+import static pro.fessional.meepo.bind.Const.KEY$FUNC_FMT;
+import static pro.fessional.meepo.bind.Const.KEY$FUNC_MOD;
+import static pro.fessional.meepo.bind.Const.KEY$FUNC_NOW;
 
 /**
  * RnaEngine引擎工厂
@@ -31,6 +50,37 @@ public class RnaManager {
     // init engine
     static {
         setDefault(new MapEngine());
+
+        RnaManager.register(new RawEngine());
+        RnaManager.register(new UriEngine());
+        RnaManager.register(new JsEngine());
+        RnaManager.register(new JavaEngine());
+        RnaManager.register(new OsEngine());
+
+        DateTimeFormatter full = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        RnaManager.register(KEY$ENVS_NOW_DATE, () -> LocalDate.now().format(date));
+        RnaManager.register(KEY$ENVS_NOW_TIME, () -> LocalTime.now().format(time));
+        RnaManager.register(KEY$FUNC_NOW, (ctx, obj, arg) -> {
+            DateTimeFormatter df = full;
+            if (arg != null && arg.length > 0) {
+                df = DateTimeFormatter.ofPattern((String) arg[0]);
+            }
+            TemporalAccessor tm;
+            if (obj instanceof TemporalAccessor) {
+                tm = (TemporalAccessor) obj;
+            } else if (obj instanceof Date) {
+                tm = Instant.ofEpochMilli(((Date) obj).getTime()).atZone(ZoneOffset.UTC);
+            } else {
+                tm = LocalDateTime.now();
+            }
+            return df.format(tm);
+        });
+
+        RnaManager.register(KEY$FUNC_FMT, (ctx, obj, arg) -> String.format((String) arg[0], obj));
+        RnaManager.register(KEY$FUNC_MOD, (ctx, obj, arg) -> arg[((Number) obj).intValue() % arg.length]);
     }
 
     /**
@@ -73,8 +123,9 @@ public class RnaManager {
      * @param key 函数名
      * @return 函数
      */
-    public static Object getFunction(String key) {
-        return functions.get(key);
+    @SuppressWarnings("unchecked")
+    public static <T> T getFunction(String key) {
+        return (T) functions.get(key);
     }
 
     /**
@@ -82,7 +133,7 @@ public class RnaManager {
      *
      * @param ctx 上下文
      */
-    public static void fillFunction(Map<String, Object> ctx) {
+    public static void putFunction(Map<String, Object> ctx) {
         ctx.putAll(functions);
     }
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
 import pro.fessional.meepo.util.Eval;
+import pro.fessional.meepo.util.Eval.ArgType;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -42,7 +43,7 @@ public class OsEngine implements RnaEngine {
         if (ENGINE$CMD.equalsIgnoreCase(type) || ENGINE$SH.equalsIgnoreCase(type)) {
             warmed = new RnaWarmed(type, expr);
         } else {
-            warmed = new RnaWarmed(type, expr, Eval.parseArgs(expr));
+            warmed = new RnaWarmed(type, expr, Eval.parseArgs(expr, ArgType.Str));
             if (!ENGINE$EXE.equalsIgnoreCase(type)) {
                 warmed.info = "\nunsupported type=" +
                         type + ", expr=" + expr;
