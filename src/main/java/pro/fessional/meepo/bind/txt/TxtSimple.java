@@ -23,8 +23,8 @@ import java.util.Arrays;
  */
 public class TxtSimple extends Exon {
 
-    public TxtSimple(@NotNull String text, int start, int until) {
-        super(text, new Clop(start, until));
+    public TxtSimple(@NotNull String text, Clop edge) {
+        super(text, edge);
     }
 
     @Override

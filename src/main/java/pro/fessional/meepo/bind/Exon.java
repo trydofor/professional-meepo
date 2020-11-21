@@ -97,17 +97,23 @@ public class Exon {
     }
 
     public static class N implements Comparable<N> {
-        public final Clop pos;
+        public final int start;
+        public final int until;
         public final Exon xna;
 
         public N(int p0, int p1, Exon xna) {
-            this.pos = new Clop(p0, p1);
+            this.start = p0;
+            this.until = p1;
             this.xna = xna;
+        }
+
+        public boolean cross(N o) {
+            return until > o.start && o.until > start;
         }
 
         @Override
         public int compareTo(@NotNull Exon.N o) {
-            return pos.compareTo(o.pos);
+            return start == o.start ? o.until - until : start - o.start;
         }
     }
 }

@@ -2,6 +2,7 @@ package pro.fessional.meepo.benchmark;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import org.junit.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Read;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  * @author trydofor
  * @since 2020-11-10
  */
-public class ExpectedOutputTest {
+public class ExpectedOutputTest extends TraceTest {
 
     @Test
     public void testMeepoOutput() {

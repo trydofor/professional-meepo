@@ -47,7 +47,7 @@ public class HiMeepo extends Exon {
      */
     public final boolean crlf;
 
-    public HiMeepo(@NotNull String text, Clop edge, @NotNull Clop main, @NotNull String head, @NotNull String tail, boolean trim) {
+    public HiMeepo(@NotNull String text, Clop edge, @NotNull String head, @NotNull String tail, boolean trim) {
         super(text, edge);
         this.head = head;
         this.tail = tail;

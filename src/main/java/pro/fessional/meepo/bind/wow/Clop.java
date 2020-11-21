@@ -19,14 +19,15 @@ public class Clop implements Comparable<Clop> {
     public final int until;
     public final int length;
 
-    public Clop(int start, int until) {
+    public final int line0;
+    public final int line1;
+
+    public Clop(int start, int until, int line0, int line1) {
         this.start = start;
         this.until = until;
         this.length = until - start;
-    }
-
-    public Clop shift(int off) {
-        return new Clop(start + off, until + off);
+        this.line0 = line0;
+        this.line1 = line1;
     }
 
     /**
@@ -70,7 +71,9 @@ public class Clop implements Comparable<Clop> {
             buff.append("start=").write(String.valueOf(start));
             buff.append(", until=").write(String.valueOf(until));
             buff.append(", length=").write(String.valueOf(length));
-            buff.write('}');
+            buff.append(", line0=").write(String.valueOf(line0));
+            buff.append(", line1=").write(String.valueOf(line1));
+            buff.write("}");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

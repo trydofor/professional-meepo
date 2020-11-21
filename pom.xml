@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -8,11 +23,55 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <name>meepo hero template</name>
+
+    <description>
+        meepo, first, is a dota2 hero, and then a template engine
+        that using the single/multi-comment of target file's syntax
+        as directive in order to keep the template and the target file
+        in the same syntax highlight, preview and IDE editing features.
+    </description>
+
+    <url>https://github.com/trydofor/pro.fessional.meepo</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Trydofor</name>
+            <email>trydofor@gmail.com</email>
+            <organization>moilioncircle</organization>
+            <organizationUrl>http://www.moilioncircle.com/</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:trydofor/pro.fessional.meepo.git</connection>
+        <url>scm:git:git@github.com:trydofor/pro.fessional.meepo.git</url>
+        <developerConnection>scm:git:git@github.com:trydofor/pro.fessional.meepo.git</developerConnection>
+        <tag>1.x</tag>
+    </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/trydofor/pro.fessional.meepo/issues</url>
+    </issueManagement>
+
     <properties>
         <java.version>1.8</java.version>
         <maven.test.skip>true</maven.test.skip>
         <nonull.version>19.0.0</nonull.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <!-- test -->
         <pebble.version>3.1.4</pebble.version>
         <junit.version>4.13</junit.version>
         <jmh.version>1.26</jmh.version>

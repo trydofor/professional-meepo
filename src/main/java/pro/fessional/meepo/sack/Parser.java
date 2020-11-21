@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
@@ -65,8 +65,8 @@ import static pro.fessional.meepo.bind.Const.TKN$WHEN_YES;
 public class Parser {
 
     protected static final Logger logger = LoggerFactory.getLogger(Parser.class);
-    protected static final Exon SkipThis = new Exon("", new Clop(0, 0));
-    protected static final Exon DealText = new Exon("", new Clop(0, 0));
+    protected static final Exon SkipThis = new Exon("", new Clop(0, 0, 1, 1));
+    protected static final Exon DealText = new Exon("", new Clop(0, 0, 1, 1));
     protected static final int RegxFlag = Pattern.UNIX_LINES | Pattern.MULTILINE;
 
     /**
@@ -184,14 +184,14 @@ public class Parser {
         final int end1 = ctx.end;
         HiMeepo meepo = ctx.meepo;
         if (meepo == null) { // 首次查找
-            meepo = bornHiMeepo(txt, edg0, end1);
+            meepo = bornHiMeepo(ctx, edg0, end1);
             if (meepo == null) { // 不是米波模板
                 logger.trace("[👹Parse:Parse:markHiMeepo] no meepo found");
                 dealTxtPlain(ctx, end1, null); // 非米波模板
                 ctx.edge1 = end1;
                 return true;
             } else {
-                logger.trace("[👹Parse:Parse:markHiMeepo] find first meepo at edge0={}", meepo.edge.start);
+                logger.trace("[👹Parse:Parse:markHiMeepo] find first meepo at edge={}", meepo.edge);
             }
         } else {
             // 标记起点
@@ -200,7 +200,7 @@ public class Parser {
 
             meepo = null;
             if (ctx.notBkb()) { // 米波-标记起点
-                meepo = bornHiMeepo(txt, edg0, head0 > edg0 ? head0 : end1);
+                meepo = bornHiMeepo(ctx, edg0, head0 > edg0 ? head0 : end1);
             } else {
                 logger.trace("[👹Parse:markHiMeepo] skip born-meepo in bkb");
             }
@@ -218,7 +218,7 @@ public class Parser {
                     return true;
                 }
             } else {
-                logger.trace("[👹Parse:markHiMeepo] find other-meepo at edge0={}", meepo.edge.start);
+                logger.trace("[👹Parse:markHiMeepo] find other-meepo at edge={}", meepo.edge);
             }
         }
 
@@ -226,7 +226,7 @@ public class Parser {
         int edge0 = meepo.edge.start;
         int edge1 = meepo.edge.until;
 
-        logger.trace("[markHiMeepo] deal text at done1={}, edge0={}", ctx.done1, edge0);
+        logger.trace("[👹markHiMeepo] deal text at done1={}, edge0={}", ctx.done1, edge0);
         dealTxtPlain(ctx, edge0, meepo); // 米波前文字
         ctx.meepo = meepo;
         ctx.done1 = edge1;
@@ -253,7 +253,7 @@ public class Parser {
 
         if (exon == null) {
             logger.trace("deal whole text at done1={}, edge0={}", done1, edge0);
-            TxtSimple dna = new TxtSimple(ctx.txt, done1, edge0);
+            TxtSimple dna = new TxtSimple(ctx.txt, ctx.newClop(done1, edge0));
             ctx.procExon(dna);
             ctx.done1 = edge0;
         } else if (exon == SkipThis) {  // skip for next
@@ -272,7 +272,7 @@ public class Parser {
             } else {
                 if (ctx.endBkb(exon)) {
                     // BKB文本
-                    TxtSimple txt = new TxtSimple(ctx.txt, done1, edge0);
+                    TxtSimple txt = new TxtSimple(ctx.txt, ctx.newClop(done1, edge0));
                     ctx.procExon(txt);
                     // 增加指令
                     ctx.procExon(exon);
@@ -767,7 +767,8 @@ public class Parser {
 
     // ////////////
 
-    private static HiMeepo bornHiMeepo(String txt, int edge0, int edge1) {
+    private static HiMeepo bornHiMeepo(Ctx ctx, int edge0, int edge1) {
+        String txt = ctx.txt;
         int tkn0 = Seek.seekToken(txt, edge0, edge1, TKN$HIMEEPO, false);
         if (tkn0 <= 0) return null;
 
@@ -809,7 +810,8 @@ public class Parser {
                 tl[1] = tl1;
             }
         }
-        return new HiMeepo(txt, new Clop(hd[0], tl[1]), new Clop(tkn0, tk1), head, tail, trim);
+
+        return new HiMeepo(txt, ctx.newClop(hd[0], tl[1]), head, tail, trim);
     }
 
     private static void trimEdge(Ctx ctx) {
@@ -946,7 +948,8 @@ public class Parser {
 
         protected final HashSet<String> bkbs = new HashSet<>();
         protected final ArrayList<Exon> proc = new ArrayList<>();
-        protected final Map<String, Life> life = new HashMap<>();
+        protected final HashMap<String, Life> life = new HashMap<>();
+        protected final TreeMap<Integer, Integer> line = new TreeMap<>();
         protected final StringBuilder errs = new StringBuilder();
         protected final RngChecker rngs = new RngChecker();
 
@@ -956,10 +959,20 @@ public class Parser {
             this.lax = lax;
 
             tree.offerLast(new G("ROOT", Const.TXT$EMPTY, new ArrayList<>()));
+
+            //
+            int ln = 1;
+            line.put(0, ln);
+            for (int i = 0; i < end; i++) {
+                if (txt.charAt(i) == '\n') {
+                    line.put(i, ln++);
+                }
+            }
+            line.put(end, ln);
         }
 
         public Clop toEdge() {
-            return new Clop(edge0, edge1);
+            return newClop(edge0, edge1);
         }
 
         public boolean notBkb() {
@@ -982,7 +995,7 @@ public class Parser {
             exon.check(errs, rngs);
             G g = tree.getLast();
             g.gene.add(exon);
-            logger.trace("[👹Parse:addGene] append gene {}, stack={}", exon.getClass().getSimpleName(), tree.size());
+            logger.trace("[👹Parse:addGene] append gene {}, stack={}, edge={}", exon.getClass().getSimpleName(), tree.size(), exon.edge);
         }
 
         public void procExon(Exon exon) {
@@ -1055,7 +1068,7 @@ public class Parser {
             if (done1 >= edge1) return;
 
             if (proc.isEmpty()) {
-                TxtSimple txt = new TxtSimple(this.txt, done1, edge1);
+                TxtSimple txt = new TxtSimple(this.txt, newClop(done1, edge1));
                 addGene(txt);
                 return;
             }
@@ -1071,15 +1084,15 @@ public class Parser {
             }
 
             if (rst.isEmpty()) {
-                TxtSimple txt = new TxtSimple(this.txt, done1, edge1);
+                TxtSimple txt = new TxtSimple(this.txt, newClop(done1, edge1));
                 addGene(txt);
                 return;
             }
 
             for (Exon.N n1 : rst) {
                 for (Exon.N n2 : rst) {
-                    if (n1 != n2 && n1.pos.cross(n2.pos)) {
-                        String err = "cross range, n1=" + n1.pos.shift(done1) + ", n2=" + n2.pos.shift(done1) + ", text=" + text;
+                    if (n1 != n2 && n1.cross(n2)) {
+                        String err = "cross range, n1=" + altClop(n1, done1) + ", n2=" + altClop(n2, done1) + ", text=" + text;
                         throw new IllegalStateException(err);
                     }
                 }
@@ -1088,26 +1101,25 @@ public class Parser {
             Collections.sort(rst);
             int off = 0;
             for (Exon.N n : rst) {
-                Clop pos = n.pos;
-                int st0 = pos.start;
+                int st0 = n.start;
                 if (off < st0) {
-                    addGene(new TxtSimple(txt, off + done1, st0 + done1));
+                    addGene(new TxtSimple(txt, newClop(off + done1, st0 + done1)));
                 }
                 List<Exon> appl;
                 if (n.xna instanceof Bar) {
                     int bar = Seek.indent(text, st0);
-                    appl = n.xna.apply(pos.shift(done1), txt, bar);
+                    appl = n.xna.apply(altClop(n, done1), txt, bar);
                 } else {
-                    appl = n.xna.apply(pos.shift(done1), txt, 0);
+                    appl = n.xna.apply(altClop(n, done1), txt, 0);
                 }
                 for (Exon exon : appl) {
                     addGene(exon);
                 }
-                off = pos.until;
+                off = n.until;
             }
             int len = text.length();
             if (off < len) {
-                addGene(new TxtSimple(txt, off + done1, len + done1));
+                addGene(new TxtSimple(txt, newClop(off + done1, len + done1)));
             }
         }
 
@@ -1130,6 +1142,16 @@ public class Parser {
 
             G g = tree.pollLast();
             return new Gene(g.gene, rngs.getCheckedEngine());
+        }
+
+        private Clop newClop(int start, int until) {
+            int line0 = line.ceilingEntry(start).getValue();
+            int line1 = line.ceilingEntry(until).getValue();
+            return new Clop(start, until, line0, Math.max(line0, line1));
+        }
+
+        private Clop altClop(Exon.N n, int off) {
+            return newClop(n.start + off, n.until + off);
         }
     }
 }

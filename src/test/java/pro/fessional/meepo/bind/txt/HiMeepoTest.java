@@ -11,8 +11,8 @@ import pro.fessional.meepo.bind.wow.Clop;
  */
 public class HiMeepoTest extends TraceTest {
 
-    HiMeepo d1 = new HiMeepo("/* H!MEEPO */", new Clop(0, 13), new Clop(3, 10), "/*", "*/", true);
-    HiMeepo d2 = new HiMeepo("/* H!MEEPO  */ ", new Clop(0, 14), new Clop(3, 10), "/*", "*/", true);
+    HiMeepo d1 = new HiMeepo("/* H!MEEPO */", new Clop(0, 13, 1, 1), "/*", "*/", true);
+    HiMeepo d2 = new HiMeepo("/* H!MEEPO  */ ", new Clop(0, 14, 1, 1), "/*", "*/", true);
 
     @Test
     public void testEquals() {

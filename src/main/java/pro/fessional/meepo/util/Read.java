@@ -3,6 +3,7 @@ package pro.fessional.meepo.util;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -14,6 +15,9 @@ import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ * 自动读取`classpath:`，`file://`和URL格式，
+ * 如果没有协议部分，尝试以classpath和file读取
+ *
  * @author trydofor
  * @since 2020-10-31
  */
@@ -27,19 +31,28 @@ public class Read {
         return read(uri, UTF_8);
     }
 
+    @NotNull
     public static String read(String uri, Charset cs) {
         String str;
-        InputStream is;
+        InputStream is = null;
         try {
             if (uri.regionMatches(true, 0, CLAS, 0, CLAS.length())) {
                 is = Read.class.getResourceAsStream(uri.substring(CLAS.length()));
             } else if (uri.regionMatches(true, 0, FILE, 0, FILE.length())) {
                 is = new FileInputStream(uri.substring(FILE.length()));
             } else {
-                char c = uri.charAt(0);
-                if (c == '.' || c == '/' || c == '\\') {
-                    is = new FileInputStream(uri);
-                } else {
+                if (uri.indexOf(':') < 0) {
+                    is = Read.class.getResourceAsStream(uri);
+                    if (is == null) {
+                        try {
+                            is = new FileInputStream(uri);
+                        } catch (FileNotFoundException e) {
+                            // ignore
+                        }
+                    }
+                }
+
+                if (is == null) {
                     URL url = new URI(uri).toURL();
                     URLConnection con = url.openConnection();
                     con.setConnectTimeout(3000);
@@ -47,7 +60,7 @@ public class Read {
                     is = con.getInputStream();
                 }
             }
-            str = Read.read(is);
+            str = Read.read(is, cs);
         } catch (Exception e) {
             throw new IllegalStateException(uri, e);
         }
@@ -68,13 +81,22 @@ public class Read {
      */
     @NotNull
     public static String read(InputStream is, Charset cs) {
-        if (cs == null) cs = UTF_8;
+        return read(new InputStreamReader(is, cs == null ? UTF_8 : cs));
+    }
 
+    /**
+     * 自动close Reader
+     *
+     * @param rd reader
+     * @return 字符串
+     */
+    @NotNull
+    public static String read(Reader rd) {
         StringBuilder sb = new StringBuilder();
         char[] buf = new char[1024];
         int len;
-        try (Reader rd = new InputStreamReader(is, cs)) {
-            while ((len = rd.read(buf)) != -1) {
+        try (Reader r0 = rd) {
+            while ((len = r0.read(buf)) != -1) {
                 sb.append(buf, 0, len);
             }
         } catch (Exception e) {

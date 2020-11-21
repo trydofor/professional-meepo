@@ -54,8 +54,8 @@ public class ParserTest extends TraceTest {
         }
     }
 
-    private final HiMeepo level5 = new HiMeepo("/*HI-MEEPO*/", new Clop(0, 11), new Clop(2, 9), "/*", "*/", false);
-    private final HiMeepo single = new HiMeepo("//HI-MEEPO", new Clop(0, 9), new Clop(2, 9), "//", "\n", false);
+    private final HiMeepo level5 = new HiMeepo("/*HI-MEEPO*/", new Clop(0, 11, 1, 1), "/*", "*/", false);
+    private final HiMeepo single = new HiMeepo("//HI-MEEPO", new Clop(0, 9, 1, 1), "//", "\n", false);
 
     private Acid newAcid(Parser.Ctx ctx) {
         return new Acid(new HashMap<>(), ctx.rngs.getCheckedEngine());

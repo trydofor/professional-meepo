@@ -13,8 +13,8 @@ import java.util.Arrays;
  */
 public class DnaEndTest extends TraceTest {
 
-    DnaEnd d1 = new DnaEnd("// DNA:END 黑皇杖,id", new Clop(0, 17), Arrays.asList("黑皇杖", "id"));
-    DnaEnd d2 = new DnaEnd(" // DNA:END 黑皇杖,id", new Clop(1, 18), Arrays.asList("id", "黑皇杖"));
+    DnaEnd d1 = new DnaEnd("// DNA:END 黑皇杖,id", new Clop(0, 17,1,1), Arrays.asList("黑皇杖", "id"));
+    DnaEnd d2 = new DnaEnd(" // DNA:END 黑皇杖,id", new Clop(1, 18,1,1), Arrays.asList("id", "黑皇杖"));
 
     @Test
     public void testEquals() {
