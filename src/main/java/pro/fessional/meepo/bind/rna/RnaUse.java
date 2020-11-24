@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 
 /**
  * <pre>
- * ` <% RNA:USE /meepo/who/1 %> \n`
- * edge=`<% RNA:USE /meepo/who/1 %>`
+ * ` &lt;% RNA:USE /meepo/who/1 %&gt; \n`
+ * edge=`&lt;% RNA:USE /meepo/who/1 %&gt;`
  *
  * ` // RNA:USE /meepo/who/1 \n`
  * edge=`// RNA:USE /meepo/who/1 \n`

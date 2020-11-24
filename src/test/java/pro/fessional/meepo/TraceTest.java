@@ -1,6 +1,6 @@
 package pro.fessional.meepo;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * @author trydofor
@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
  */
 public class TraceTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setTrace(){
         System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo","trace");
     }

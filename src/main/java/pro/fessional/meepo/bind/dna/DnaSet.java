@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 
 /**
  * <pre>
- * ` <% DNA:SET /ConstantEnumTemplate/{{className}}/* %> \n`
- * edge=`<% DNA:SET /ConstantEnumTemplate/{{className}}/* %>`
+ * ` &lt;% DNA:SET /ConstantEnumTemplate/{{className}}/* %&gt; \n`
+ * edge=`&lt;% DNA:SET /ConstantEnumTemplate/{{className}}/* %&gt;`
  *
  * ` // DNA:SET /ConstantEnumTemplate/{{className}}/* \n`
  * edge=`// DNA:SET /ConstantEnumTemplate/{{className}}/* \n`

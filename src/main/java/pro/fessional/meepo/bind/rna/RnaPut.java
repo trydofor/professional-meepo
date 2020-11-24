@@ -18,8 +18,8 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` <% RNA:PUT os/who/basename $(pwd)/ %> \n`
- * edge=`<% RNA:PUT os/who/basename $(pwd)/ %>`
+ * ` &lt;% RNA:PUT os/who/basename $(pwd)/ %&gt; \n`
+ * edge=`&lt;% RNA:PUT os/who/basename $(pwd)/ %&gt;`
  *
  * ` // RNA:PUT os/who/basename $(pwd)/ \n`
  * edge=`// RNA:PUT os/who/basename $(pwd)/ \n`

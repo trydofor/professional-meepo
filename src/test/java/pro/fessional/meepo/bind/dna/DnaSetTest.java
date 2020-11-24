@@ -1,12 +1,13 @@
 package pro.fessional.meepo.bind.dna;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
 
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -19,12 +20,12 @@ public class DnaSetTest extends TraceTest {
 
     @Test
     public void testEquals() {
-        Assert.assertEquals(d1, d2);
+        assertEquals(d1, d2);
     }
 
     @Test
     public void testHashCode() {
-        Assert.assertEquals(d1.hashCode(), d2.hashCode());
+        assertEquals(d1.hashCode(), d2.hashCode());
     }
 
     @Test

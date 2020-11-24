@@ -14,7 +14,7 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` <% RNA:ELSE user %> \n`
+ * ` &lt;% RNA:ELSE user %&gt; \n`
  * </pre>
  *
  * @author trydofor

@@ -1,12 +1,15 @@
 package pro.fessional.meepo.poof.impl;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.poof.RnaWarmed;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -22,24 +25,24 @@ public class UriEngineTest extends TraceTest {
         Object t1 = engine.eval(context, new RnaWarmed("uri", "file://./readme.md"), false);
         Object t2 = engine.eval(context, new RnaWarmed("uri", "file://./readme.md"), false);
         Object t3 = engine.eval(context, new RnaWarmed("uri", "./readme.md"), false);
-        Assert.assertTrue(((String) t1).length() > 100);
-        Assert.assertSame(t1, t2);
-        Assert.assertEquals(t1, t3);
+        assertTrue(((String) t1).length() > 100);
+        assertSame(t1, t2);
+        assertEquals(t1, t3);
     }
 
     @Test
     public void evalClas() {
         Object t1 = engine.eval(context, new RnaWarmed("uri", "classpath:/template/blog/blog-pure.htm"), false);
         Object t2 = engine.eval(context, new RnaWarmed("uri", "classpath:/template/blog/blog-pure.htm"), false);
-        Assert.assertTrue(((String) t1).length() > 100);
-        Assert.assertSame(t1, t2);
+        assertTrue(((String) t1).length() > 100);
+        assertSame(t1, t2);
     }
 
     @Test
     public void evalHttp() {
         Object t1 = engine.eval(context, new RnaWarmed("uri", "http://www.gitee.com"), false);
         Object t2 = engine.eval(context, new RnaWarmed("uri", "http://www.gitee.com"), false);
-        Assert.assertTrue(((String) t1).length() > 100);
-        Assert.assertSame(t1, t2);
+        assertTrue(((String) t1).length() > 100);
+        assertSame(t1, t2);
     }
 }

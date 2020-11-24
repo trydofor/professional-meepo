@@ -1,12 +1,13 @@
 package pro.fessional.meepo.poof.impl.java;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.Meepo;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Java;
 
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -18,7 +19,7 @@ public class JavaEvalTest extends TraceTest {
     public void create() {
         String s0 = Java.create(String.class);
         String s1 = Java.create(String.class, "");
-        Assert.assertEquals(s0, s1);
+        assertEquals(s0, s1);
     }
 
     @Test
@@ -34,6 +35,6 @@ public class JavaEvalTest extends TraceTest {
 
         String fullName = "pro.fessional.meepo.poof.impl.java." + name;
         Class<Object> clz = Java.compile(fullName, code);
-        Assert.assertEquals(fullName, clz.getName());
+        assertEquals(fullName, clz.getName());
     }
 }

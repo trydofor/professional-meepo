@@ -13,8 +13,8 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` <% DNA:BKB 黑皇杖 %> \n`
- * edge=`<% DNA:BKB 黑皇杖 %>`
+ * ` &lt;% DNA:BKB 黑皇杖 %&gt; \n`
+ * edge=`&lt;% DNA:BKB 黑皇杖 %&gt;`
  *
  * ` // DNA:BKB 黑皇杖 \n`
  * edge=`// DNA:BKB 黑皇杖 \n`

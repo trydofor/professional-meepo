@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 
 /**
  * <pre>
- * ` <% RNA:RUN os/who/basename $(pwd)/1 %> \n`
- * edge=`<% RNA:RUN os/who/basename $(pwd)/1 %>`
+ * ` &lt;% RNA:RUN os/who/basename $(pwd)/1 %&gt; \n`
+ * edge=`&lt;% RNA:RUN os/who/basename $(pwd)/1 %&gt;`
  *
  * ` // RNA:RUN os/who/basename $(pwd)/1 \n`
  * edge=`// RNA:RUN os/who/basename $(pwd)/1 \n`

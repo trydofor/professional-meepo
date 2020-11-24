@@ -122,6 +122,7 @@ public class Eval {
      *
      * @param line 参数行
      * @param type 解析类型
+     * @param <T> 命令行结果类型
      * @return 解析后命令行
      */
     @NotNull

@@ -1,7 +1,6 @@
 package pro.fessional.meepo.poof.impl.map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -9,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
 
 /**
@@ -46,10 +46,10 @@ public class MapHelperTest {
 
     @Test
     public void navTest() {
-//        Assert.assertArrayEquals(Const.ARR$EMPTY_STRING, MapHelper.warm("name"));
-//        Assert.assertArrayEquals(new String[]{"my", "name"}, MapHelper.warm("my.name"));
-//        Assert.assertArrayEquals(new String[]{"my", "name", "is"}, MapHelper.warm("my.name.is"));
-//        Assert.assertArrayEquals(new String[]{"it", "name"}, MapHelper.warm("it.name"));
+//        assertArrayEquals(Const.ARR$EMPTY_STRING, MapHelper.warm("name"));
+//        assertArrayEquals(new String[]{"my", "name"}, MapHelper.warm("my.name"));
+//        assertArrayEquals(new String[]{"my", "name", "is"}, MapHelper.warm("my.name.is"));
+//        assertArrayEquals(new String[]{"it", "name"}, MapHelper.warm("it.name"));
     }
 
     @Test
@@ -124,17 +124,17 @@ public class MapHelperTest {
         map.put("male", true);
         map.put("bean", bean);
 
-        Assert.assertEquals("name", MapHelper.get(map, "name", ARR$EMPTY_STRING));
-        Assert.assertEquals("code", MapHelper.get(map, "code", ARR$EMPTY_STRING));
-        Assert.assertEquals(Boolean.TRUE, MapHelper.get(map, "male", ARR$EMPTY_STRING));
+        assertEquals("name", MapHelper.get(map, "name", ARR$EMPTY_STRING));
+        assertEquals("code", MapHelper.get(map, "code", ARR$EMPTY_STRING));
+        assertEquals(Boolean.TRUE, MapHelper.get(map, "male", ARR$EMPTY_STRING));
 
-        Assert.assertEquals("name", MapHelper.get(bean, "name", ARR$EMPTY_STRING));
-        Assert.assertEquals("code", MapHelper.get(bean, "code", ARR$EMPTY_STRING));
-        Assert.assertEquals(Boolean.TRUE, MapHelper.get(bean, "male", ARR$EMPTY_STRING));
+        assertEquals("name", MapHelper.get(bean, "name", ARR$EMPTY_STRING));
+        assertEquals("code", MapHelper.get(bean, "code", ARR$EMPTY_STRING));
+        assertEquals(Boolean.TRUE, MapHelper.get(bean, "male", ARR$EMPTY_STRING));
 
-        Assert.assertEquals("name", MapHelper.get(map, "bean.name", new String[]{"bean", "name"}));
-        Assert.assertEquals("code", MapHelper.get(map, "bean.code", new String[]{"bean", "code"}));
-        Assert.assertEquals(Boolean.TRUE, MapHelper.get(map, "bean.male", new String[]{"bean", "male"}));
+        assertEquals("name", MapHelper.get(map, "bean.name", new String[]{"bean", "name"}));
+        assertEquals("code", MapHelper.get(map, "bean.code", new String[]{"bean", "code"}));
+        assertEquals(Boolean.TRUE, MapHelper.get(map, "bean.male", new String[]{"bean", "male"}));
     }
 
     public static class Bean {

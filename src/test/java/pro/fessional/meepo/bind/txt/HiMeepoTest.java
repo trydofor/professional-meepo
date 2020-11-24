@@ -1,9 +1,10 @@
 package pro.fessional.meepo.bind.txt;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -16,12 +17,12 @@ public class HiMeepoTest extends TraceTest {
 
     @Test
     public void testEquals() {
-        Assert.assertEquals(d1, d2);
+        assertEquals(d1, d2);
     }
 
     @Test
     public void testHashCode() {
-        Assert.assertEquals(d1.hashCode(), d2.hashCode());
+        assertEquals(d1.hashCode(), d2.hashCode());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package pro.fessional.meepo.poof;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.poof.impl.java.JavaEval;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
@@ -11,6 +10,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author trydofor
@@ -26,7 +28,7 @@ public class RnaManagerTest {
         String out = gene.merge(ctx);
         System.out.println(out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
-        Assert.assertTrue(ptn.matcher(out).find());
+        assertTrue(ptn.matcher(out).find());
     }
 
     @Test
@@ -37,7 +39,7 @@ public class RnaManagerTest {
         String out = gene.merge(ctx);
         System.out.println(out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-        Assert.assertTrue(ptn.matcher(out).find());
+        assertTrue(ptn.matcher(out).find());
     }
 
     @Test
@@ -50,35 +52,35 @@ public class RnaManagerTest {
         }
         {
             Object obj = fun.eval(ctx, new java.util.Date(0));
-            Assert.assertEquals("1970-01-01 00:00:00", obj);
+            assertEquals("1970-01-01 00:00:00", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.sql.Date(0));
-            Assert.assertEquals("1970-01-01 00:00:00", obj);
+            assertEquals("1970-01-01 00:00:00", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.sql.Timestamp(0));
-            Assert.assertEquals("1970-01-01 00:00:00", obj);
+            assertEquals("1970-01-01 00:00:00", obj);
         }
         {
             Object obj = fun.eval(ctx, LocalDateTime.of(1970, 1, 1, 0, 0, 0));
-            Assert.assertEquals("1970-01-01 00:00:00", obj);
+            assertEquals("1970-01-01 00:00:00", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.util.Date(0), "yyyy-MM-dd");
-            Assert.assertEquals("1970-01-01", obj);
+            assertEquals("1970-01-01", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.sql.Date(0), "yyyy-MM-dd");
-            Assert.assertEquals("1970-01-01", obj);
+            assertEquals("1970-01-01", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.sql.Timestamp(0), "yyyy-MM-dd");
-            Assert.assertEquals("1970-01-01", obj);
+            assertEquals("1970-01-01", obj);
         }
         {
             Object obj = fun.eval(ctx, LocalDate.of(1970, 1, 1), "yyyy-MM-dd");
-            Assert.assertEquals("1970-01-01", obj);
+            assertEquals("1970-01-01", obj);
         }
     }
 
@@ -92,6 +94,6 @@ public class RnaManagerTest {
         ctx.put("number", -1);
         String out = gene.merge(ctx);
         System.out.println(out);
-        Assert.assertEquals("1", out);
+        assertEquals("1", out);
     }
 }

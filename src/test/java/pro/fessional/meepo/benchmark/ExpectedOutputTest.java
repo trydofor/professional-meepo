@@ -1,13 +1,13 @@
 package pro.fessional.meepo.benchmark;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Read;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor

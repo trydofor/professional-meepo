@@ -1,7 +1,6 @@
 package pro.fessional.meepo.tmpl;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.poof.impl.java.JavaEngine;
 import pro.fessional.meepo.sack.Gene;
@@ -10,6 +9,8 @@ import pro.fessional.meepo.util.Read;
 
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author trydofor
@@ -40,6 +41,6 @@ public class JavaTest extends TraceTest {
         String code = gene.merge(c);
 
         String out = Read.read(JavaEngine.class.getResourceAsStream("/pro/fessional/meepo/poof/impl/java/JavaOut.java"));
-        Assert.assertEquals(out,code);
+        assertEquals(out,code);
     }
 }

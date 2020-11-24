@@ -16,8 +16,8 @@ import java.util.Set;
 
 /**
  * <pre>
- * ` <% DNA:END id 黑皇杖 %> \n`
- * edge=`<% DNA:END id 黑皇杖 %>`
+ * ` &lt;% DNA:END id 黑皇杖 %&gt; \n`
+ * edge=`&lt;% DNA:END id 黑皇杖 %&gt;`
  *
  * ` // DNA:END id 黑皇杖 \n`
  * edge=`// DNA:END id 黑皇杖 \n`

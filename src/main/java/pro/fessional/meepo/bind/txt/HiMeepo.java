@@ -12,10 +12,10 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` <% HI-MEEPO %> \n`
- * head=`<%`
- * tail=`%>`
- * edge=`<% HI-MEEPO %>`
+ * `&lt;% HI-MEEPO %&gt; \n`
+ * head=`&lt;%`
+ * tail=`%&gt;`
+ * edge=`&lt;% HI-MEEPO %&gt;`
  * main=`HI-MEEPO`
  *
  * ` // HI-MEEPO \n`

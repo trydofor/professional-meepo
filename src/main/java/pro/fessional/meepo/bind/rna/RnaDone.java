@@ -18,7 +18,7 @@ import java.util.Set;
 
 /**
  * <pre>
- * ` <% RNA:DONE user pwd %> \n`
+ * ` &lt;% RNA:DONE user pwd %&gt; \n`
  * </pre>
  *
  * @author trydofor

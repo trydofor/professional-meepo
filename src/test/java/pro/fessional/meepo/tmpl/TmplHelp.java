@@ -1,12 +1,14 @@
 package pro.fessional.meepo.tmpl;
 
-import org.junit.Assert;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 import pro.fessional.meepo.util.Read;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 /**
  * @author trydofor
@@ -25,9 +27,9 @@ public class TmplHelp {
         Gene gene = Parser.parse(strIn);
         String merge = gene.merge(ctx);
         String build = gene.build();
-        Assert.assertEquals("merge mismatch", strOut, merge);
-        Assert.assertNotSame(strIn, build);
-        Assert.assertEquals("build mismatch", strIn, build);
+        assertEquals(strOut, merge, "merge mismatch");
+        assertNotSame(strIn, build);
+        assertEquals(strIn, build, "build mismatch");
     }
 
     public static void printGene(String clzPath) {

@@ -29,11 +29,11 @@ import static pro.fessional.meepo.bind.Const.OBJ$NAVI_DOT;
 
 /**
  * <pre>
- * ` <% RNA:EACH map/1/users/user %> \n`
- * edge=`<% RNA:EACH map/1/users/user %>`
+ * ` &lt;% RNA:EACH map/1/users/user %&gt; \n`
+ * edge=`&lt;% RNA:EACH map/1/users/user %&gt;`
  *
- * ` // <% RNA:EACH map/1/users/user %> \n`
- * edge=`<% RNA:EACH map/1/users/user %> \n`
+ * ` // &lt;% RNA:EACH map/1/users/user %&gt; \n`
+ * edge=`&lt;% RNA:EACH map/1/users/user %&gt; \n`
  *
  * main=`RNA:EACH map/1/users/user`
  * type=`map`

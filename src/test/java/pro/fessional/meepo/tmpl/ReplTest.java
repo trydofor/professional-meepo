@@ -1,6 +1,6 @@
 package pro.fessional.meepo.tmpl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 
 /**

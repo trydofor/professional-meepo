@@ -1,7 +1,6 @@
 package pro.fessional.meepo.sack;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.TraceTest;
@@ -25,9 +24,10 @@ import java.io.CharArrayWriter;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_;
 import static pro.fessional.meepo.bind.Const.TKN$RNA_;
 
@@ -71,14 +71,14 @@ public class ParserTest extends TraceTest {
         CharArrayWriter buf = new CharArrayWriter();
         if (pre == null) {
             assertNull(meepo);
-            Assert.assertTrue(exon instanceof TxtSimple);
+            assertTrue(exon instanceof TxtSimple);
             exon.build(buf);
-            Assert.assertEquals(txt, buf.toString());
+            assertEquals(txt, buf.toString());
         } else {
-            Assert.assertNotNull(meepo);
-            Assert.assertEquals(pre, meepo.head);
-            Assert.assertEquals(suf, meepo.tail);
-            Assert.assertEquals(edge, txt.substring(meepo.edge.start, meepo.edge.until));
+            assertNotNull(meepo);
+            assertEquals(pre, meepo.head);
+            assertEquals(suf, meepo.tail);
+            assertEquals(edge, txt.substring(meepo.edge.start, meepo.edge.until));
             exon.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -118,7 +118,7 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$DNA_);
 
         Exon exon = Parser.dealDnaRaw(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
 
         CharArrayWriter buf = new CharArrayWriter();
         exon.merge(newAcid(ctx), buf);
@@ -155,10 +155,10 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$DNA_);
 
         Exon exon = Parser.dealDnaBkb(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         System.out.println(exon);
         if (name == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             assertEquals(name, ((Tick) exon).life.name);
@@ -195,11 +195,11 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$DNA_);
 
         Exon exon = Parser.dealDnaEnd(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (name == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             DnaEnd dna = (DnaEnd) exon;
@@ -242,17 +242,17 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$DNA_);
 
         Exon exon = Parser.dealDnaSet(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (life == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             DnaSet dna = (DnaSet) exon;
-            Assert.assertEquals(find, dna.find.pattern());
-            Assert.assertEquals(repl, dna.repl);
-            Assert.assertEquals(life, dna.life);
+            assertEquals(find, dna.find.pattern());
+            assertEquals(repl, dna.repl);
+            assertEquals(life, dna.life);
 
             dna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
@@ -297,19 +297,19 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaRun(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (type == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaRun rna = (RnaRun) exon;
-            Assert.assertEquals(type, rna.type);
-            Assert.assertEquals(find, rna.find.pattern());
-            Assert.assertEquals(expr, rna.expr);
-            Assert.assertEquals(life, rna.life);
-            Assert.assertEquals(quiet, rna.mute);
+            assertEquals(type, rna.type);
+            assertEquals(find, rna.find.pattern());
+            assertEquals(expr, rna.expr);
+            assertEquals(life, rna.life);
+            assertEquals(quiet, rna.mute);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -359,17 +359,17 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaUse(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (life == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaUse rna = (RnaUse) exon;
-            Assert.assertEquals(find, rna.find.pattern());
-            Assert.assertEquals(para, rna.para);
-            Assert.assertEquals(life, rna.life);
+            assertEquals(find, rna.find.pattern());
+            assertEquals(para, rna.para);
+            assertEquals(life, rna.life);
 
             Acid ctx1 = newAcid(ctx);
             ctx1.context.put("who", "meepo");
@@ -416,19 +416,19 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaPut(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaPut rna = (RnaPut) exon;
-            Assert.assertEquals(type, rna.type);
-            Assert.assertEquals(para, rna.para);
-            Assert.assertEquals(expr, rna.expr);
-            Assert.assertEquals(mute, rna.mute);
+            assertEquals(type, rna.type);
+            assertEquals(para, rna.para);
+            assertEquals(expr, rna.expr);
+            assertEquals(mute, rna.mute);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -475,20 +475,20 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaWhen(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaWhen rna = (RnaWhen) exon;
-            Assert.assertEquals(type, rna.type);
-            Assert.assertEquals(nope, rna.nope);
-            Assert.assertEquals(expr, rna.expr);
-            Assert.assertEquals(tock, rna.tock);
-            Assert.assertEquals(quiet, rna.mute);
+            assertEquals(type, rna.type);
+            assertEquals(nope, rna.nope);
+            assertEquals(expr, rna.expr);
+            assertEquals(tock, rna.tock);
+            assertEquals(quiet, rna.mute);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -520,20 +520,20 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaEach(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
         logger.debug(exon.toString());
 
         if (type == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaEach rna = (RnaEach) exon;
-            Assert.assertEquals(type, rna.type);
-            Assert.assertEquals(step, rna.step);
-            Assert.assertEquals(expr, rna.expr);
-            Assert.assertEquals(tock, rna.tock);
-            Assert.assertEquals(quiet, rna.mute);
+            assertEquals(type, rna.type);
+            assertEquals(step, rna.step);
+            assertEquals(expr, rna.expr);
+            assertEquals(tock, rna.tock);
+            assertEquals(quiet, rna.mute);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -564,15 +564,15 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaElse(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (tock == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaElse rna = (RnaElse) exon;
-            Assert.assertEquals(tock, rna.tock);
+            assertEquals(tock, rna.tock);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
             buf.reset();
@@ -599,11 +599,11 @@ public class ParserTest extends TraceTest {
         Parser.findXnaGrp(ctx, TKN$RNA_);
 
         Exon exon = Parser.dealRnaDone(ctx);
-        Assert.assertNotNull(exon);
+        assertNotNull(exon);
         logger.debug(exon.toString());
 
         if (name == null) {
-            Assert.assertEquals(0, exon.edge.until);
+            assertEquals(0, exon.edge.until);
         } else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaDone rna = (RnaDone) exon;

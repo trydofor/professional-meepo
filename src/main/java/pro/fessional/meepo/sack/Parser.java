@@ -122,6 +122,7 @@ public class Parser {
      * 处理 DNA 组
      *
      * @param ctx 上下文
+     * @return Exon
      */
     @NotNull
     protected static Exon dealDnaGroup(Ctx ctx) {
@@ -144,6 +145,7 @@ public class Parser {
      * 处理 RNA 组
      *
      * @param ctx 上下文
+     * @return Exon
      */
     @NotNull
     protected static Exon dealRnaGroup(Ctx ctx) {
@@ -238,7 +240,9 @@ public class Parser {
     /**
      * 处理普通文本
      *
-     * @param ctx 上下文
+     * @param ctx   上下文
+     * @param edge0 左边缘
+     * @param exon  exon
      */
     protected static void dealTxtPlain(Ctx ctx, int edge0, Exon exon) {
         final int done1 = ctx.done1;

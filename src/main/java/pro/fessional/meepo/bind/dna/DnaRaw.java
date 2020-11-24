@@ -12,8 +12,8 @@ import java.util.Arrays;
 
 /**
  * <pre>
- * ` <% DNA:RAW {{pebbleVariable}} %> \n`
- * edge=`<% DNA:RAW {{pebbleVariable}} %>`*
+ * ` &lt;% DNA:RAW {{pebbleVariable}} %&gt; \n`
+ * edge=`&lt;% DNA:RAW {{pebbleVariable}} %&gt;`*
  * ` // DNA:RAW {{pebbleVariable}} \n`
  * edge=`// DNA:RAW {{pebbleVariable}} \n`
  *

@@ -19,11 +19,11 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` <% RNA:WHEN os/not/basename $(pwd)/pwd %> \n`
- * edge=`<% RNA:WHEN os/not/basename $(pwd)/pwd %>`
+ * ` &lt;% RNA:WHEN os/not/basename $(pwd)/pwd %&gt; \n`
+ * edge=`&lt;% RNA:WHEN os/not/basename $(pwd)/pwd %&gt;`
  *
- * ` // <% RNA:WHEN os/not/basename $(pwd)/pwd %> \n`
- * edge=`<% RNA:WHEN os/not/basename $(pwd)/pwd %> \n`
+ * ` // &lt;% RNA:WHEN os/not/basename $(pwd)/pwd %&gt; \n`
+ * edge=`&lt;% RNA:WHEN os/not/basename $(pwd)/pwd %&gt; \n`
  *
  * main=`RNA:WHEN os/not/basename $(pwd)/pwd`
  * type=`os`

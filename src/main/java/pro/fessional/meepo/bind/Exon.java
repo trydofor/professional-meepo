@@ -13,8 +13,8 @@ import java.util.List;
 
 /**
  * <pre>
- * ` <% DNA:RAW 空白处都是一个空格 %> \n`
- * edge=`<% DNA:RAW 空白处都是一个空格 %>`
+ * ` &lt;% DNA:RAW 空白处都是一个空格 %&gt; \n`
+ * edge=`&lt;% DNA:RAW 空白处都是一个空格 %&gt;`
  * main=`DNA:RAW 空白处都是一个空格`
  * xxxx9 为xxxx的char[]形式，一般为内部使用
  * </pre>

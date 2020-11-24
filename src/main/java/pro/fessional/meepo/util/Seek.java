@@ -8,10 +8,11 @@ public class Seek {
     /**
      * 区域内查找特征字符
      *
-     * @param txt 源
-     * @param off 开始位置，包含
-     * @param end 结束位置，不包含
-     * @param tkn 特征
+     * @param txt  源
+     * @param off  开始位置，包含
+     * @param end  结束位置，不包含
+     * @param tkn  特征
+     * @param echo 是否叠字
      * @return -1 如果没有
      */
     public static int seekToken(String txt, int off, int end, String tkn, boolean echo) {
@@ -184,6 +185,10 @@ public class Seek {
 
     /**
      * 左侧不包含`\n`，index为start
+     *
+     * @param txt 文本
+     * @param end 结束，不含
+     * @return 边缘位置
      */
     public static int seekPrevEdge(CharSequence txt, int end) {
         for (int i = end - 1; i >= 0; i--) {
@@ -197,7 +202,9 @@ public class Seek {
 
     /**
      * 右侧包含`\n`，index为end
-     */
+     * @param txt 文本
+     * @param off 开始，含
+     * @return 边缘位置    */
     public static int seekNextEdge(CharSequence txt, int off) {
         int len = txt.length();
         for (int i = off; i < len; i++) {

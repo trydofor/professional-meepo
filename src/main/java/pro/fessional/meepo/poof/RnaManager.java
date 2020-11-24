@@ -121,6 +121,7 @@ public class RnaManager {
      * 获得一个函数
      *
      * @param key 函数名
+     * @param <T> 函数类型
      * @return 函数
      */
     @SuppressWarnings("unchecked")
