@@ -357,15 +357,45 @@ abs
 以上模板，通过`RNA:PUT`和`fun`引擎，在context中，put一个名为`fun:abs`的`函数`，
 在合并时，context.put("number",-1)，模板输出为`1`，详见`testFunAbs`。
 
-## 3.框架集成
+## 3.如何使用
 
-## 3.1.与Spring体系集成
+① 自己`clone`和`install`最豪横。
 
-在SpringMvc和SpringBoot体系中，View层的输出，有以下约定，
+② 使用 maven central 比较稳妥。
+``` xml
+<dependency>
+    <groupId>pro.fessional</groupId>
+    <artifactId>meepo</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+③ 使用 SNAPSHOT 与时俱进。
+``` xml
+<!-- 1.0.0-SNAPSHOT -->
+<repository>
+    <id>oss-sonatype</id>
+    <name>oss-sonatype</name>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    <snapshots>
+        <enabled>true</enabled>
+    </snapshots>
+</repository>
+```
+
+### 3.1.独立编码使用
+
+Meepo封装了parse，merge方法和缓存机制。能够满足一般的场景需求。
+
+如果有定制需要，可以自定义使用Parser和Gene来组合出需要的工具类。
+
+### 3.2.集成其他模板
+
 TODO
 
-## 3.2.与底层模板引擎集成
+### 3.3.集成Spring
 
+在SpringMvc和SpringBoot体系中，View层的输出，有以下约定，
 TODO
 
 ## 4.语法概要
@@ -649,9 +679,9 @@ var userPass = "16345-31415";
   * `empty`  空字符串，空数组，空Collection，空Map
 
 ``` html
-<!-- RNA:WHEN /yes/it:rem0/bg -->
+<!-- RNA:WHEN /yes/it.rem0/bg -->
 <li value="code">rem0-name</li>
-<!-- RNA:WHEN /not/it:rem1/bg -->
+<!-- RNA:WHEN /not/it.rem1/bg -->
 <li value="code">rem2-name</li>
 <!-- RNA:ELSE bg -->
 <li value="code">rem1-name</li>
@@ -702,7 +732,7 @@ if (it.rem0){
 
 ``` html
 <!-- RNA:EACH map/2/items/it -->
-<!-- RNA:USE /name/it:name/* -->
+<!-- RNA:USE /name/it.name/* -->
 <li value="code">rem0-name</li>
 <!-- RNA:ELSE it -->
 <li>no item</li>
