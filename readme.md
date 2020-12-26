@@ -737,8 +737,8 @@ if (it.rem0){
 <!-- RNA:ELSE it -->
 <li>no item</li>
 <!-- RNA:DONE it -->
-<!-- RNA:USE /total/it.total/ -->
-<!-- RNA:USE /count/it.count/ -->
+<!-- RNA:USE /total/it._total/ -->
+<!-- RNA:USE /count/it._count/ -->
 <div>result=count/total</div>
 ```
 
