@@ -1,7 +1,7 @@
 package pro.fessional.meepo.poof;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.meepo.poof.impl.java.JavaEval;
+import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 

@@ -3,33 +3,26 @@ package pro.fessional.meepo.poof;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.eval.JavaEval;
+import pro.fessional.meepo.eval.NameEval;
+import pro.fessional.meepo.eval.fmt.Fmt;
+import pro.fessional.meepo.eval.num.Cal;
+import pro.fessional.meepo.eval.time.Now;
 import pro.fessional.meepo.poof.impl.JsEngine;
 import pro.fessional.meepo.poof.impl.OsEngine;
 import pro.fessional.meepo.poof.impl.RawEngine;
 import pro.fessional.meepo.poof.impl.UriEngine;
 import pro.fessional.meepo.poof.impl.java.JavaEngine;
-import pro.fessional.meepo.poof.impl.java.JavaEval;
 import pro.fessional.meepo.poof.impl.map.MapEngine;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_DATE;
-import static pro.fessional.meepo.bind.Const.KEY$ENVS_NOW_TIME;
-import static pro.fessional.meepo.bind.Const.KEY$FUNC_FMT;
-import static pro.fessional.meepo.bind.Const.KEY$FUNC_MOD;
-import static pro.fessional.meepo.bind.Const.KEY$FUNC_NOW;
+import static pro.fessional.meepo.eval.FunEnv.ENV$NOW_DATE;
+import static pro.fessional.meepo.eval.FunEnv.ENV$NOW_TIME;
 
 /**
  * RnaEngine引擎工厂
@@ -56,31 +49,11 @@ public class RnaManager {
         RnaManager.register(new JsEngine());
         RnaManager.register(new JavaEngine());
         RnaManager.register(new OsEngine());
-
-        DateTimeFormatter full = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        RnaManager.register(KEY$ENVS_NOW_DATE, () -> LocalDate.now().format(date));
-        RnaManager.register(KEY$ENVS_NOW_TIME, () -> LocalTime.now().format(time));
-        RnaManager.register(KEY$FUNC_NOW, (ctx, obj, arg) -> {
-            DateTimeFormatter df = full;
-            if (arg != null && arg.length > 0) {
-                df = DateTimeFormatter.ofPattern((String) arg[0]);
-            }
-            TemporalAccessor tm;
-            if (obj instanceof TemporalAccessor) {
-                tm = (TemporalAccessor) obj;
-            } else if (obj instanceof Date) {
-                tm = Instant.ofEpochMilli(((Date) obj).getTime()).atZone(ZoneOffset.UTC);
-            } else {
-                tm = LocalDateTime.now();
-            }
-            return df.format(tm);
-        });
-
-        RnaManager.register(KEY$FUNC_FMT, (ctx, obj, arg) -> String.format((String) arg[0], obj));
-        RnaManager.register(KEY$FUNC_MOD, (ctx, obj, arg) -> arg[((Number) obj).intValue() % arg.length]);
+        RnaManager.register(ENV$NOW_DATE, Now.envNowDate);
+        RnaManager.register(ENV$NOW_TIME, Now.envNowTime);
+        RnaManager.register(Now.funNow);
+        RnaManager.register(Fmt.funFmtAuto);
+        RnaManager.register(Cal.funMod);
     }
 
     /**
@@ -166,6 +139,10 @@ public class RnaManager {
      */
     public static void register(String key, JavaEval fun) {
         register(key, fun, "JavaEval");
+    }
+
+    public static void register(NameEval fun) {
+        register(fun.name(), fun, fun.info());
     }
 
     private static void register(String key, Object fun, String info) {

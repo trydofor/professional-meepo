@@ -843,6 +843,8 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * merger时存入context中，如java编码
  * 可以通过`RNA:PUT`指令`fun`引擎设置
 
+内置函数列表，参考[function.md](./function.md)
+
 #### 03.内置以下`变量`
 
 米波内置了很少侧变量和方法，以下是java system.property和env的举例
@@ -854,20 +856,6 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
  * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
  * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
-
-以下是，内置的函数，均以`fun:`为前缀
-
- * `fun:now pattern?` - String:javaEval, 动态计算，`pattern`格式化
-   - obj，若是`java.util.Date`或`TemporalAccessor`，则格式化
-   - 若是null或其他，则为`LocalDateTime.now()`
-   - pattern，为`DateTimeFormatter`格式，
-   - 若是null，则为`yyyy-MM-dd HH:mm:ss`
- * `fun:mod arg...` -String:javaEval，根据数字对args取余获得args值
-   - obj, 需要是Number，取intValue，对arg.length取余
-   - arg，必须有值，可为字符串或数字
- * `fun:fmt pattern` - String:javaEval, printf格式化对象
-   - obj，为任意对象
-   - pattern，为java格式化，，调用String.format(pattern,obj)
 
 ### 7.2.来啥回啥(raw)
 
@@ -911,7 +899,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
  * 尾部以`return obj`返回，`;`可以省略。
  * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
- * 编译的java实现了`JavaEval`接口，位于`pro.fessional.meepo.poof.impl.java`
+ * 编译的java实现了`pro.fessional.meepo.eval.JavaEval`接口
  * 传入`RngContext ctx`，可读取context
  * 已经import的class有，
     - org.jetbrains.annotations.NotNull;

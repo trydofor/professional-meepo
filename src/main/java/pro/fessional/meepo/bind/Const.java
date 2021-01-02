@@ -45,13 +45,6 @@ public interface Const {
     String ENGINE$JAVA = "java";
     String ENGINE$FUN = "fun";
 
-    // map 变量
-    String KEY$ENVS_NOW_DATE = "now.date";
-    String KEY$ENVS_NOW_TIME = "now.time";
-    String KEY$FUNC_NOW = "fun:now";
-    String KEY$FUNC_FMT = "fun:fmt";
-    String KEY$FUNC_MOD = "fun:mod";
-
     // 对象
     char OBJ$NAVI_DOT = '.';
     char OBJ$PIPE_BAR = '|';

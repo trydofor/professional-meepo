@@ -3,9 +3,9 @@ package pro.fessional.meepo.poof.impl.map;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
-import pro.fessional.meepo.poof.impl.java.JavaEval;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import static pro.fessional.meepo.bind.Const.ARR$EMPTY_OBJECT;
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
+import static pro.fessional.meepo.eval.FunEnv.KEY$PREFIX;
 import static pro.fessional.meepo.poof.impl.map.MapHelper.KIND_FUNC;
 
 /**
@@ -75,8 +76,13 @@ public class MapEngine implements RnaEngine {
             while (wit.hasNext()) {
                 RnaWarmed pip = wit.next();
                 curr = pip;
-                Object cmd = ctx.get(pip.expr);
                 Object[] arg = pip.getTypedWork();
+                Object cmd;
+                if (pip.expr.startsWith(KEY$PREFIX)) {
+                    cmd = ctx.get(pip.expr);
+                } else {
+                    cmd = ctx.get(KEY$PREFIX + pip.expr);
+                }
                 if (cmd instanceof JavaEval) {
                     obj = ((JavaEval) cmd).eval(ctx, obj, arg);
                 } else if (cmd instanceof Function) {
