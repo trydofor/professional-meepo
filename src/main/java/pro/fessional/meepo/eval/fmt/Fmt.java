@@ -13,7 +13,7 @@ import static pro.fessional.meepo.eval.FunEnv.FUN$FMT;
  */
 public class Fmt {
 
-    public static final NameEval funFmtAuto = new NameEval() {
+    public static final NameEval funFmt = new NameEval() {
         @Override
         public @NotNull String name() {
             return FUN$FMT;

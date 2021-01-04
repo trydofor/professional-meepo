@@ -86,7 +86,7 @@ public class Gene {
     }
 
     /**
-     * 通过gene构造原始文本，有用调试。
+     * 通过gene构造原始或转移后文本，有用调试。
      *
      * @return template
      */
@@ -100,7 +100,7 @@ public class Gene {
     }
 
     /**
-     * 打印层级语法树，并校验edge的连续性
+     * 打印层级语法树，并校验edge的连续性，`#`表示有交叉
      *
      * @return 语法树
      */

@@ -39,6 +39,12 @@ public class Dent {
         }
     }
 
+    /**
+     * 以tree形式显示，#表示交叉
+     *
+     * @param out   输出
+     * @param level 缩进级别
+     */
     public static void treeIt(Writer out, int level) {
         char[] chr = PADDING.computeIfAbsent(level, s -> {
             boolean ng = false;

@@ -78,4 +78,30 @@ public class SeekTest extends TraceTest {
         assertArrayEquals(new int[]{2, 2}, Seek.seekNextWords("\n \n \n", 1, 4));
         assertArrayEquals(new int[]{3, 3}, Seek.seekPrevWords("\n \n \n", 1, 4));
     }
+
+    @Test
+    public void countPreToken() {
+        assertEquals(0, Seek.countPreToken("/{", 1, ""));
+        assertEquals(1, Seek.countPreToken("/{", 1, "/"));
+        assertEquals(3, Seek.countPreToken("///{", 3, "/"));
+        assertEquals(2, Seek.countPreToken("//{", 2, "/"));
+        assertEquals(4, Seek.countPreToken("////{", 4, "/"));
+        assertEquals(2, Seek.countPreToken("////{", 4, "//"));
+    }
+
+    @Test
+    public void seekPrevToken() {
+        assertArrayEquals(new int[]{1, 1}, Seek.seekPrevToken("/{", 1, 2, "{", "/"));
+        assertArrayEquals(new int[]{2, 2}, Seek.seekPrevToken("//{", 1, 3, "{", "/"));
+        assertArrayEquals(new int[]{3, 3}, Seek.seekPrevToken("///{", 1, 4, "{", "/"));
+        assertArrayEquals(new int[]{4, 4}, Seek.seekPrevToken("////{", 1, 5, "{", "/"));
+    }
+
+    @Test
+    public void seekNextToken() {
+        assertArrayEquals(new int[]{1, 1}, Seek.seekNextToken("/{", 0, 2, "{", "/"));
+        assertArrayEquals(new int[]{2, 2}, Seek.seekNextToken("//{", 0, 3, "{", "/"));
+        assertArrayEquals(new int[]{3, 3}, Seek.seekNextToken("///{", 0, 4, "{", "/"));
+        assertArrayEquals(new int[]{4, 4}, Seek.seekNextToken("////{", 0, 5, "{", "/"));
+    }
 }

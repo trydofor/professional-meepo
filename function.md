@@ -20,8 +20,6 @@
    - pattern，为`DateTimeFormatter`格式，
    - 若是null，则为`yyyy-MM-dd HH:mm:ss`
 
-
-
 ## 数字取余 mod
 
 `fun:mod arg...` -String:javaEval，根据数字对args取余获得args值

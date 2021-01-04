@@ -7,11 +7,12 @@ https://keepachangelog.com
 ### Added
 
 - 丰富内建函数，详细参考 function.md
-- 变量模板直接解析与使用map引擎合并
+- 支持`占位符模板`的解析，使用map引擎合并
 
 ### Changed
 
 - 内建函数接口JavaEval，移动至eval包
+- MapEngine支持简化版函数，即无前缀
 
 ## [1.0.0] - 2020-11-24
 

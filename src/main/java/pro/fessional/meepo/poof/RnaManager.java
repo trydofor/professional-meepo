@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.eval.NameEval;
+import pro.fessional.meepo.eval.fmt.Case;
 import pro.fessional.meepo.eval.fmt.Fmt;
 import pro.fessional.meepo.eval.num.Cal;
 import pro.fessional.meepo.eval.time.Now;
@@ -38,7 +39,8 @@ public class RnaManager {
     private static final ConcurrentHashMap<String, Object> functions = new ConcurrentHashMap<>();
 
     private static final AtomicReference<RnaEngine> defaultEngine = new AtomicReference<>();
-    private static volatile int count = 0;
+    private static volatile int engCount = 0;
+    private static volatile int funCount = 0;
 
     // init engine
     static {
@@ -49,10 +51,23 @@ public class RnaManager {
         RnaManager.register(new JsEngine());
         RnaManager.register(new JavaEngine());
         RnaManager.register(new OsEngine());
+        //
         RnaManager.register(ENV$NOW_DATE, Now.envNowDate);
         RnaManager.register(ENV$NOW_TIME, Now.envNowTime);
         RnaManager.register(Now.funNow);
-        RnaManager.register(Fmt.funFmtAuto);
+        //
+        RnaManager.register(Fmt.funFmt);
+        RnaManager.register(Case.funCamelCase);
+        RnaManager.register(Case.funPascalCase);
+        RnaManager.register(Case.funSnakeCase);
+        RnaManager.register(Case.funBigSnake);
+        RnaManager.register(Case.funKebabCase);
+        RnaManager.register(Case.funBigKebab);
+        RnaManager.register(Case.funDotCase);
+        RnaManager.register(Case.funUpperCase);
+        RnaManager.register(Case.funLowerCase);
+
+        //
         RnaManager.register(Cal.funMod);
     }
 
@@ -86,7 +101,7 @@ public class RnaManager {
                     logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
                 }
             }
-            count = engines.size();
+            engCount = engines.size();
         }
     }
 
@@ -154,6 +169,7 @@ public class RnaManager {
         } else {
             logger.warn("replace function for key={}, info={}", key, info);
         }
+        funCount = functions.size();
     }
 
     /**
@@ -161,8 +177,17 @@ public class RnaManager {
      *
      * @return 数量
      */
-    public static int getCount() {
-        return count;
+    public static int getEngineCount() {
+        return engCount;
+    }
+
+    /**
+     * 当前存在的函数数量
+     *
+     * @return 数量
+     */
+    public static int getFunctionCount() {
+        return funCount;
     }
 
     @NotNull

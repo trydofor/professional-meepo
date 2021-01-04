@@ -77,21 +77,26 @@ public class MapEngine implements RnaEngine {
                 RnaWarmed pip = wit.next();
                 curr = pip;
                 Object[] arg = pip.getTypedWork();
-                Object cmd;
-                if (pip.expr.startsWith(KEY$PREFIX)) {
-                    cmd = ctx.get(pip.expr);
-                } else {
-                    cmd = ctx.get(KEY$PREFIX + pip.expr);
-                }
-                if (cmd instanceof JavaEval) {
-                    obj = ((JavaEval) cmd).eval(ctx, obj, arg);
-                } else if (cmd instanceof Function) {
-                    @SuppressWarnings("unchecked")
-                    Function<Object, Object> fun = (Function<Object, Object>) cmd;
-                    obj = fun.apply(obj);
-                } else {
-                    ie = true;
-                    throw new IllegalStateException("failed to get cmd, expr=" + pip);
+                String key = pip.expr;
+                // 自定义或简化模式，function 可能不带前缀'fun:'
+                while (true) {
+                    Object cmd = ctx.get(key);
+                    if (cmd instanceof JavaEval) {
+                        obj = ((JavaEval) cmd).eval(ctx, obj, arg);
+                    } else if (cmd instanceof Function) {
+                        @SuppressWarnings("unchecked")
+                        Function<Object, Object> fun = (Function<Object, Object>) cmd;
+                        obj = fun.apply(obj);
+                    } else {
+                        if (key.startsWith(KEY$PREFIX)) {
+                            ie = true;
+                            throw new IllegalStateException("failed to get cmd, expr=" + pip);
+                        } else {
+                            key = KEY$PREFIX + key;
+                            continue;
+                        }
+                    }
+                    break;
                 }
             }
         } catch (Throwable t) {

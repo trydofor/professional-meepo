@@ -11,6 +11,10 @@ public interface Const {
     Object[] ARR$EMPTY_OBJECT = new Object[0];
     String[] ARR$EMPTY_STRING = new String[0];
 
+    // 站位
+    String TKN$VAR_PRE = "{{";
+    String TKN$VAR_SUF = "}}";
+    String TKN$VAR_ESC = "";
 
     // 解析
     String TKN$HIMEEPO = "HI-MEEPO";

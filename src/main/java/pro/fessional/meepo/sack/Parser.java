@@ -1,5 +1,6 @@
 package pro.fessional.meepo.sack;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,9 @@ public class Parser {
      * 解析文本，严格模式。
      *
      * @param txt 文本
-     * @return 记忆
+     * @return 基因
      */
+    @Contract("null->null;!null->!null")
     public static Gene parse(String txt) {
         return parse(txt, false);
     }
@@ -84,8 +86,9 @@ public class Parser {
      *
      * @param txt 文本
      * @param lax 放松模式
-     * @return 记忆
+     * @return 基因
      */
+    @Contract("null,_->null;!null,_->!null")
     public static Gene parse(String txt, boolean lax) {
         if (txt == null) return null;
         final Ctx ctx = new Ctx(txt, lax);
