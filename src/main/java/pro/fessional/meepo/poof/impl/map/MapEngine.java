@@ -52,14 +52,13 @@ public class MapEngine implements RnaEngine {
             curr = navi;
             obj = MapHelper.get(ctx, navi.expr, navi.getTypedWork());
 
-            if (navi.kind != KIND_FUNC) {
-                if (obj == null) {
-                    obj = System.getProperty(navi.expr);
+            if (navi.kind == KIND_FUNC) {
+                if (!(obj instanceof JavaEval || obj instanceof Function) && !navi.expr.startsWith(KEY$PREFIX)) {
+                    obj = MapHelper.get(ctx, KEY$PREFIX + navi.expr, navi.getTypedWork());
                 }
-
-                if (obj == null) {
-                    obj = System.getenv(navi.expr);
-                }
+            } else {
+                if (obj == null) obj = System.getProperty(navi.expr);
+                if (obj == null) obj = System.getenv(navi.expr);
             }
 
             if (obj instanceof Supplier) {
@@ -70,10 +69,11 @@ public class MapEngine implements RnaEngine {
             } else if (obj instanceof Function) {
                 @SuppressWarnings("unchecked")
                 Function<Object, Object> fun = (Function<Object, Object>) obj;
-                obj = fun.apply(null);
+                Object arg = navi.kind == KIND_FUNC ? navi.getTypedWork() : null;
+                obj = fun.apply(arg);
             }
 
-            while (wit.hasNext()) {
+            while (wit.hasNext()) { // function
                 RnaWarmed pip = wit.next();
                 curr = pip;
                 Object[] arg = pip.getTypedWork();

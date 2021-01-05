@@ -31,9 +31,8 @@ public class Now {
     public static final Supplier<String> envNowTime = () -> LocalTime.now().format(time);
     public static final NameEval funNow = new NameEval() {
         @Override
-        @NotNull
-        public String name() {
-            return FUN$NOW;
+        public @NotNull String[] name() {
+            return new String[]{FUN$NOW};
         }
 
         @Override

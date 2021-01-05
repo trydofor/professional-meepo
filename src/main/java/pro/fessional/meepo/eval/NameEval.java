@@ -15,7 +15,7 @@ public interface NameEval extends JavaEval {
      * @see FunEnv#KEY$PREFIX
      */
     @NotNull
-    String name();
+    String[] name();
 
     /**
      * 信息

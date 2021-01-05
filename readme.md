@@ -305,7 +305,7 @@ return ldt.format(fmt);
 java-output
 ```
 
-### 2.12.替换的界定符，不想用`/`
+### 2.12.替换默认界定符，不想用斜杆
 
 `界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。  
 所以只要避免和指令中内容重复即可，但是，像👹这种的3,4字节不可以，getChar会分裂。
@@ -459,7 +459,7 @@ TODO
  * x Pattern.COMMENTS 忽略空白，支持行注释，默认关闭
  * U Pattern.UNICODE_CHARACTER_CLASS，默认关闭
 
-### 4.1.HI-MEEPO 嗨！米波
+### 4.1.HI-MEEPO 嗨，米波
 
 语法：`注释头` `空白`+ `HI-MEEPO` `!`? `空白`+ `注释尾`?
 
@@ -796,7 +796,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 执行中的引擎环境，在每次eval时，可以被context覆盖，也可以不覆盖，依赖于引擎实现。
 
-### 7.1.字典引擎(map)
+### 7.1.字典引擎 map
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
@@ -806,7 +806,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * `key`中的引号`'"`作为变量边界，或使用`\`转义。
  * 转义如`\t`,`\r`,`\n`，此外仅保留`\`后字符。
 
-#### 01.以`.`分隔`导航类`对象
+#### 01.以句点分隔的导航类对象
 
 支持简单的`导航类`对象，即key中以`.`分隔对象，会存在以下干扰情况，
  * java的System中有大量`.`型变量，如`os.name`，`user.home`
@@ -829,7 +829,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
     - 其他类型，通过反射取值，以Getter命名规则和Field查找。
  * 递归中的最终对象，以`name`为key取值（map或反射）
 
-#### 02.管道符`|`函数，链式处理
+#### 02.管道符链接函数，链式处理
 
 可以用`|`分隔多个处理函数，第一个为key，其后的都是`函数`，格式下。
 
@@ -838,15 +838,15 @@ console.log('<div>result='+count+'/'+total+'</div>')
 以上等同于调用链，`funB(ctx, funA(ctx.get("key")), "arg1", "arg 2")`
 
  * `key` - 字符串key，可以是`.`的对象导航格式。
-   - key对应的值可以是`Object`或`Supplier<Object>`。
- * `fun` - 管道内的第一个字符串
+   - key对应的值可以是`Object`，`Supplier<Object>`或`fun arg`。
+ * `fun` - 管道语法的第一个字符串
    - 必须`Function`或`JavaEval`类型
    - 函数名字，不用使用`.`，建议以`fun:`开头
-   - Function.apply(obj)，obj是上一个管道的输出或key
+   - Function.apply(obj)，obj为管道输出或`key`或`arg`
    - JavaEval.eval(ctx, obj, arg...);
- * `arg` - 管道内的第二个起字符串。
+ * `arg` - 用户定义的变量，即管道语法的第二个参数其。
    - 若arg中有空格，使用`"`或`'`括起来，其内使用`\`转义。
-   - arg默认为字符串，尤其使用引号括起来
+   - arg默认为字符串，可使用引号括起来
    - 自动解析数值，格式为`,`,`_`分隔的数字，可以`D`和`L`结尾（double和long）
    - `1,000`,`1_0000`,`1_0000L`,`1_0000.00D`,`1_0000.0`
 
@@ -857,7 +857,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 内置函数列表，参考[function.md](./function.md)
 
-#### 03.内置以下`变量`
+#### 03.内置以下变量
 
 米波内置了很少侧变量和方法，以下是java system.property和env的举例
 
@@ -869,11 +869,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
  * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
 
-### 7.2.来啥回啥(raw)
+### 7.2.来啥回啥 raw
 
 `nothing`级，直接把`功能体`当字符串返回，但mute时返回`字符串空`。
 
-### 7.3.内容引入(uri)
+### 7.3.内容引入 uri
 
 `nothing`级，把uri的内容以UTF8输出为字符串。首次读入，后续缓存。
 
@@ -883,27 +883,28 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * 其他，以URLConnection读取，超时为3秒
  * 读入的内容，会以uri为key，缓存到context中
 
-### 7.4.直接执行(exe)
+### 7.4.直接执行 exe
 
 `nothing`级，直接执行命令，解析引号块和转义，捕获std_out输出。  
 注意的是，每次eval时，engine会用context覆盖环境变量。
 
-### 7.5.win下命令(cmd)
+### 7.5.win下命令 cmd
 
 在window系，以`cmd /c`执行的exe。
 
-### 7.6.unx下命令(sh)
+### 7.6.unx下命令 sh
 
 在bash系，以`bash -c`执行的exe。
 
-### 7.7.执行js脚本(js)
+### 7.7.执行js脚本 js
 
 `session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
 对于在context读入和写入`导航类`对象，参考map引擎的规则。
+注意，java8特有，后续java11以后会移除
 
-### 7.8.执行java代码(java)
+### 7.8.执行java代码 java
 
 `session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
@@ -918,7 +919,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
     - pro.fessional.meepo.poof.impl.JavaEngine;
     - java.util.Map;
 
-### 7.9.设置java函数(fun)
+### 7.9.设置java函数 fun
 
 通过米波模板动态编译java代码，并以被PUT到context中作为`函数`，供`USE`执行。
 
@@ -948,6 +949,9 @@ console.log('<div>result='+count+'/'+total+'</div>')
 需要把设置`pro.fessional.meepo`的级别为`trace`。
 
 如果通过日志，不能调试到位，可以通过继承Parser，调用protected方法。
+
+如果发生 Class path contains multiple SLF4J bindings等错误提示，
+直接exclude meepo工程对slf4j的依赖即可。
 
 ### 02.有关性能和线程安全
 
@@ -1005,7 +1009,7 @@ profiler.sh -d 30 -f meepo-profile.svg $pid
  * 基本类型的toString
  * buffer类，避免扩容，线程安全下尽量复用
 
-### 04.米波语法解析非`lexer`
+### 04.米波语法解析非lexer
 
 正统的语法解析，一般分为词法和语法分析两步。
 

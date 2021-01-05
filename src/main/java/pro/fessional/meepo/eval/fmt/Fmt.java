@@ -15,8 +15,8 @@ public class Fmt {
 
     public static final NameEval funFmt = new NameEval() {
         @Override
-        public @NotNull String name() {
-            return FUN$FMT;
+        public @NotNull String[] name() {
+            return new String[]{FUN$FMT};
         }
 
         @Override

@@ -17,7 +17,7 @@ public class FunEnv {
 
     // num
     public static final String FUN$MOD = KEY$PREFIX + "mod";
-    public static final String FUN$ABS = KEY$PREFIX + "abc";
+    public static final String FUN$ABS = KEY$PREFIX + "abs";
 
     // fmt
     public static final String FUN$FMT = KEY$PREFIX + "fmt";
@@ -26,10 +26,15 @@ public class FunEnv {
     public static final String FUN$UPPER_CASE = KEY$PREFIX + "upperCase";
     public static final String FUN$LOWER_CASE = KEY$PREFIX + "lowerCase";
     public static final String FUN$DOT_CASE = KEY$PREFIX + "dotCase";
-    public static final String FUN$KEBAB_CASE = KEY$PREFIX + "kebab-case";
-    public static final String FUN$BIG_KEBAB = KEY$PREFIX + "BIG-KEBAB";
+    public static final String FUN$KEBAB_CASE = KEY$PREFIX + "kebabCase";
+    public static final String FUN$KEBAB_CASE_1 = KEY$PREFIX + "kebab-case";
+    public static final String FUN$BIG_KEBAB = KEY$PREFIX + "bigKebab";
+    public static final String FUN$BIG_KEBAB_1 = KEY$PREFIX + "BIG-KEBAB";
     public static final String FUN$CAMEL_CASE = KEY$PREFIX + "camelCase";
-    public static final String FUN$PASCAL_CASE = KEY$PREFIX + "PascalCase";
-    public static final String FUN$BIG_SNAKE = KEY$PREFIX + "BIG_SNAKE";
+    public static final String FUN$PASCAL_CASE = KEY$PREFIX + "pascalCase";
+    public static final String FUN$PASCAL_CASE_1 = KEY$PREFIX + "PascalCase";
+    public static final String FUN$BIG_SNAKE = KEY$PREFIX + "bigCase";
+    public static final String FUN$BIG_SNAKE_1 = KEY$PREFIX + "BIG_SNAKE";
     public static final String FUN$SNAKE_CASE = KEY$PREFIX + "snake_case";
+    public static final String FUN$SNAKE_CASE_1 = KEY$PREFIX + "snakeCase";
 }

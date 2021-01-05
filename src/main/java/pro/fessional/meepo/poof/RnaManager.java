@@ -157,7 +157,9 @@ public class RnaManager {
     }
 
     public static void register(NameEval fun) {
-        register(fun.name(), fun, fun.info());
+        for (String name : fun.name()) {
+            register(name, fun, fun.info());
+        }
     }
 
     private static void register(String key, Object fun, String info) {

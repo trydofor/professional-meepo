@@ -1,8 +1,9 @@
 package pro.fessional.meepo.eval.fmt;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.meepo.sack.Holder;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 2021-01-04
  */
 class CaseTest {
-    private final Map<String, Object> ctx = Collections.emptyMap();
+    private final Map<String, Object> ctx = new HashMap<>();
 
     @Test
     public void testCamelCase() {
@@ -102,6 +103,72 @@ class CaseTest {
         assertEquals("trydofor", Case.funLowerCase.eval(ctx, "tryDoFOR"));
         assertEquals("trydofor", Case.funLowerCase.eval(ctx, "TRyDoFOR"));
         assertEquals("trydofor", Case.funLowerCase.eval(ctx, "TryDoFOR"));
+    }
+
+
+    @Test
+    public void testHolderCase() {
+        ctx.put("author", "try&DO&for");
+        {
+            String hd = "{{ author | upperCase zh-cn }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("TRY&DO&FOR", str);
+        }
+        {
+            String hd = "{{ author | lowerCase zh-cn }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try&do&for", str);
+        }
+        {
+            String hd = "{{ author | dotCase }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try.do.for", str);
+        }
+        {
+            String hd = "{{ author | dotCase lower}}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try.do.for", str);
+        }
+        {
+            String hd = "{{ author | dotCase upper }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("TRY.DO.FOR", str);
+        }
+        {
+            String hd = "{{ author | dotCase keep }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try.DO.for", str);
+        }
+        {
+            String hd = "{{ author | kebab-case }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try-do-for", str);
+        }
+        {
+            String hd = "{{ author | BIG-KEBAB }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("TRY-DO-FOR", str);
+        }
+        {
+            String hd = "{{ author | camelCase }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("tryDoFor", str);
+        }
+        {
+            String hd = "{{ author | PascalCase }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("TryDoFor", str);
+        }
+        {
+            String hd = "{{ author | snake_case }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("try_do_for", str);
+        }
+        {
+            String hd = "{{ author | BIG_SNAKE }}";
+            String str = Holder.parse(hd).merge(ctx);
+            assertEquals("TRY_DO_FOR", str);
+        }
     }
 
 }

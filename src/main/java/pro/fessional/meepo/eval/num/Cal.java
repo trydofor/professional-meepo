@@ -16,13 +16,13 @@ public class Cal {
 
     public static final NameEval funMod = new NameEval() {
         @Override
-        public @NotNull String name() {
-            return FUN$MOD;
+        public @NotNull String[] name() {
+            return new String[]{FUN$MOD};
         }
 
         @Override
         public @NotNull String info() {
-            return "根据数字对args取余获得args值";
+            return "根据数字对args长度的余数，取得args余数位置的值";
         }
 
         @Override
