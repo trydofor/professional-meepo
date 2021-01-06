@@ -11,6 +11,10 @@ public interface Const {
     Object[] ARR$EMPTY_OBJECT = new Object[0];
     String[] ARR$EMPTY_STRING = new String[0];
 
+    // 站位
+    String TKN$VAR_PRE = "{{";
+    String TKN$VAR_SUF = "}}";
+    String TKN$VAR_ESC = "";
 
     // 解析
     String TKN$HIMEEPO = "HI-MEEPO";
@@ -44,13 +48,6 @@ public interface Const {
     String ENGINE$JS = "js";
     String ENGINE$JAVA = "java";
     String ENGINE$FUN = "fun";
-
-    // map 变量
-    String KEY$ENVS_NOW_DATE = "now.date";
-    String KEY$ENVS_NOW_TIME = "now.time";
-    String KEY$FUNC_NOW = "fun:now";
-    String KEY$FUNC_FMT = "fun:fmt";
-    String KEY$FUNC_MOD = "fun:mod";
 
     // 对象
     char OBJ$NAVI_DOT = '.';

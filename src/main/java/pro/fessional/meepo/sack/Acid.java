@@ -35,9 +35,11 @@ public class Acid {
      */
     public Acid(Map<String, Object> ctx, Set<String> rng) {
         this.execute = new HashMap<>();
-        this.context = ctx == null ? new HashMap<>() : new HashMap<>(ctx);
+        this.context = new HashMap<>(ctx.size() + RnaManager.getFunctionCount());
         this.engines = rng.stream().collect(toMap(Function.identity(), RnaManager::newEngine));
+        //
         RnaManager.putFunction(this.context);
+        context.putAll(ctx);
     }
 
     public RnaEngine getEngine(String type) {

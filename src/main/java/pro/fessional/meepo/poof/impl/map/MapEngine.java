@@ -3,9 +3,9 @@ package pro.fessional.meepo.poof.impl.map;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.poof.RnaEngine;
 import pro.fessional.meepo.poof.RnaWarmed;
-import pro.fessional.meepo.poof.impl.java.JavaEval;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import static pro.fessional.meepo.bind.Const.ARR$EMPTY_OBJECT;
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
+import static pro.fessional.meepo.eval.FunEnv.KEY$PREFIX;
 import static pro.fessional.meepo.poof.impl.map.MapHelper.KIND_FUNC;
 
 /**
@@ -51,14 +52,13 @@ public class MapEngine implements RnaEngine {
             curr = navi;
             obj = MapHelper.get(ctx, navi.expr, navi.getTypedWork());
 
-            if (navi.kind != KIND_FUNC) {
-                if (obj == null) {
-                    obj = System.getProperty(navi.expr);
+            if (navi.kind == KIND_FUNC) {
+                if (!(obj instanceof JavaEval || obj instanceof Function) && !navi.expr.startsWith(KEY$PREFIX)) {
+                    obj = MapHelper.get(ctx, KEY$PREFIX + navi.expr, navi.getTypedWork());
                 }
-
-                if (obj == null) {
-                    obj = System.getenv(navi.expr);
-                }
+            } else {
+                if (obj == null) obj = System.getProperty(navi.expr);
+                if (obj == null) obj = System.getenv(navi.expr);
             }
 
             if (obj instanceof Supplier) {
@@ -69,23 +69,34 @@ public class MapEngine implements RnaEngine {
             } else if (obj instanceof Function) {
                 @SuppressWarnings("unchecked")
                 Function<Object, Object> fun = (Function<Object, Object>) obj;
-                obj = fun.apply(null);
+                Object arg = navi.kind == KIND_FUNC ? navi.getTypedWork() : null;
+                obj = fun.apply(arg);
             }
 
-            while (wit.hasNext()) {
+            while (wit.hasNext()) { // function
                 RnaWarmed pip = wit.next();
                 curr = pip;
-                Object cmd = ctx.get(pip.expr);
                 Object[] arg = pip.getTypedWork();
-                if (cmd instanceof JavaEval) {
-                    obj = ((JavaEval) cmd).eval(ctx, obj, arg);
-                } else if (cmd instanceof Function) {
-                    @SuppressWarnings("unchecked")
-                    Function<Object, Object> fun = (Function<Object, Object>) cmd;
-                    obj = fun.apply(obj);
-                } else {
-                    ie = true;
-                    throw new IllegalStateException("failed to get cmd, expr=" + pip);
+                String key = pip.expr;
+                // 自定义或简化模式，function 可能不带前缀'fun:'
+                while (true) {
+                    Object cmd = ctx.get(key);
+                    if (cmd instanceof JavaEval) {
+                        obj = ((JavaEval) cmd).eval(ctx, obj, arg);
+                    } else if (cmd instanceof Function) {
+                        @SuppressWarnings("unchecked")
+                        Function<Object, Object> fun = (Function<Object, Object>) cmd;
+                        obj = fun.apply(obj);
+                    } else {
+                        if (key.startsWith(KEY$PREFIX)) {
+                            ie = true;
+                            throw new IllegalStateException("failed to get cmd, expr=" + pip);
+                        } else {
+                            key = KEY$PREFIX + key;
+                            continue;
+                        }
+                    }
+                    break;
                 }
             }
         } catch (Throwable t) {

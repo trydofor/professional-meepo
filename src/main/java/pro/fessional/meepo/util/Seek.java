@@ -202,9 +202,11 @@ public class Seek {
 
     /**
      * 右侧包含`\n`，index为end
+     *
      * @param txt 文本
      * @param off 开始，含
-     * @return 边缘位置    */
+     * @return 边缘位置
+     */
     public static int seekNextEdge(CharSequence txt, int off) {
         int len = txt.length();
         for (int i = off; i < len; i++) {
@@ -240,5 +242,69 @@ public class Seek {
         if (end <= 0) return 0;
         int eg = Seek.seekPrevEdge(text, end);
         return eg >= 0 ? end - eg : 0;
+    }
+
+    //////
+
+    /**
+     * 特征字符的次数
+     *
+     * @param txt 源
+     * @param off 开始位置，包含
+     * @param tkn 特征字符
+     * @return 特征字符的次数
+     */
+    public static int countPreToken(String txt, int off, String tkn) {
+        if (tkn == null || tkn.isEmpty()) return 0;
+        int cnt = 0;
+        for (int ln = tkn.length(), i = off - ln; i >= 0; i -= ln) {
+            if (txt.regionMatches(i, tkn, 0, ln)) {
+                cnt++;
+            } else {
+                break;
+            }
+        }
+        return cnt;
+    }
+
+    /**
+     * 向前找特征字符（未被转义）及转义数量
+     *
+     * @param txt 源
+     * @param off 开始位置，包含
+     * @param end 结束位置，不包含
+     * @param tkn 特征字符
+     * @param esc 转义字符
+     * @return 特征字符的offset及转义数量
+     */
+    public static int[] seekPrevToken(String txt, int off, int end, String tkn, String esc) {
+        for (int ln = tkn.length(), i = end - 1; i >= off; i--) {
+            if (txt.regionMatches(i, tkn, 0, ln)) {
+                int ct = countPreToken(txt, i, esc);
+                return new int[]{i, ct};
+            }
+        }
+
+        return new int[]{-1, 0};
+    }
+
+    /**
+     * 向后找特征字符（未被转义）及转义数量
+     *
+     * @param txt 源
+     * @param off 开始位置，包含
+     * @param end 结束位置，不包含
+     * @param tkn 特征字符
+     * @param esc 转义字符
+     * @return 特征字符的offset及转义数量
+     */
+    public static int[] seekNextToken(String txt, int off, int end, String tkn, String esc) {
+        for (int ln = tkn.length(), i = off; i < end; i++) {
+            if (txt.regionMatches(i, tkn, 0, ln)) {
+                int ct = countPreToken(txt, i, esc);
+                return new int[]{i, ct};
+            }
+        }
+        return new int[]{-1, 0};
     }
 }

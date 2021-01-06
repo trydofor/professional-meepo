@@ -11,6 +11,7 @@
  * 从`java`生成`*.java`，模板和目标文件都是可编译
  * 从`sql`生成`*.sql`，模板和目标文件都可以执行
  * 从`htm`生成`*.htm`，模板和目标文件都可以预览
+ * 占位符模板，支持自定义变量边界和变量转义(spring痛点)
 
 ## 1.模板特性
 
@@ -21,6 +22,7 @@
  * `模板语法` - 底层模板的语法，如 FreeMarker, Velocity
  * `目标语法` - `母版语法`，有自己语法的目标文件，如java，html
  * `米波语法` - 利用母版语法的注释，做的简单标记指令，完成翻译
+ * 文字语序均为从左至右，不支持从右至左语言。
 
 在`母版`中通过`注释`做语法标记，逐行处理规则替换，以输出`底层模板(backend)`。  
 母版的处理分为`解析parse`和`合并merge`两个过程，解析时的查找依赖正则表达式。  
@@ -303,7 +305,7 @@ return ldt.format(fmt);
 java-output
 ```
 
-### 2.12.替换的界定符，不想用`/`
+### 2.12.替换默认界定符，不想用斜杆
 
 `界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。  
 所以只要避免和指令中内容重复即可，但是，像👹这种的3,4字节不可以，getChar会分裂。
@@ -356,6 +358,16 @@ abs
 ```
 以上模板，通过`RNA:PUT`和`fun`引擎，在context中，put一个名为`fun:abs`的`函数`，
 在合并时，context.put("number",-1)，模板输出为`1`，详见`testFunAbs`。
+
+### 2.15.占位符模板
+
+不用作为整块Meepo模板，只处理模板变量替换和函数处理，以下2行分别是输入和输出。
+其中 `{{moilion-circle|PascalCase}}` 为，模板定义的变量及函数替换。
+
+```
+"this is {{moilion-circle|PascalCase}} simple template"
+"this is MoilionCircle simple template"
+```
 
 ## 3.如何使用
 
@@ -447,7 +459,7 @@ TODO
  * x Pattern.COMMENTS 忽略空白，支持行注释，默认关闭
  * U Pattern.UNICODE_CHARACTER_CLASS，默认关闭
 
-### 4.1.HI-MEEPO 嗨！米波
+### 4.1.HI-MEEPO 嗨，米波
 
 语法：`注释头` `空白`+ `HI-MEEPO` `!`? `空白`+ `注释尾`?
 
@@ -784,7 +796,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 执行中的引擎环境，在每次eval时，可以被context覆盖，也可以不覆盖，依赖于引擎实现。
 
-### 7.1.字典引擎(map)
+### 7.1.字典引擎 map
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
@@ -794,7 +806,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * `key`中的引号`'"`作为变量边界，或使用`\`转义。
  * 转义如`\t`,`\r`,`\n`，此外仅保留`\`后字符。
 
-#### 01.以`.`分隔`导航类`对象
+#### 01.以句点分隔的导航类对象
 
 支持简单的`导航类`对象，即key中以`.`分隔对象，会存在以下干扰情况，
  * java的System中有大量`.`型变量，如`os.name`，`user.home`
@@ -817,7 +829,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
     - 其他类型，通过反射取值，以Getter命名规则和Field查找。
  * 递归中的最终对象，以`name`为key取值（map或反射）
 
-#### 02.管道符`|`函数，链式处理
+#### 02.管道符链接函数，链式处理
 
 可以用`|`分隔多个处理函数，第一个为key，其后的都是`函数`，格式下。
 
@@ -826,15 +838,15 @@ console.log('<div>result='+count+'/'+total+'</div>')
 以上等同于调用链，`funB(ctx, funA(ctx.get("key")), "arg1", "arg 2")`
 
  * `key` - 字符串key，可以是`.`的对象导航格式。
-   - key对应的值可以是`Object`或`Supplier<Object>`。
- * `fun` - 管道内的第一个字符串
+   - key对应的值可以是`Object`，`Supplier<Object>`或`fun arg`。
+ * `fun` - 管道语法的第一个字符串
    - 必须`Function`或`JavaEval`类型
    - 函数名字，不用使用`.`，建议以`fun:`开头
-   - Function.apply(obj)，obj是上一个管道的输出或key
+   - Function.apply(obj)，obj为管道输出或`key`或`arg`
    - JavaEval.eval(ctx, obj, arg...);
- * `arg` - 管道内的第二个起字符串。
+ * `arg` - 用户定义的变量，即管道语法的第二个参数其。
    - 若arg中有空格，使用`"`或`'`括起来，其内使用`\`转义。
-   - arg默认为字符串，尤其使用引号括起来
+   - arg默认为字符串，可使用引号括起来
    - 自动解析数值，格式为`,`,`_`分隔的数字，可以`D`和`L`结尾（double和long）
    - `1,000`,`1_0000`,`1_0000L`,`1_0000.00D`,`1_0000.0`
 
@@ -843,7 +855,9 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * merger时存入context中，如java编码
  * 可以通过`RNA:PUT`指令`fun`引擎设置
 
-#### 03.内置以下`变量`
+内置函数列表，参考[function.md](./function.md)
+
+#### 03.内置以下变量
 
 米波内置了很少侧变量和方法，以下是java system.property和env的举例
 
@@ -855,25 +869,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
  * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
 
-以下是，内置的函数，均以`fun:`为前缀
-
- * `fun:now pattern?` - String:javaEval, 动态计算，`pattern`格式化
-   - obj，若是`java.util.Date`或`TemporalAccessor`，则格式化
-   - 若是null或其他，则为`LocalDateTime.now()`
-   - pattern，为`DateTimeFormatter`格式，
-   - 若是null，则为`yyyy-MM-dd HH:mm:ss`
- * `fun:mod arg...` -String:javaEval，根据数字对args取余获得args值
-   - obj, 需要是Number，取intValue，对arg.length取余
-   - arg，必须有值，可为字符串或数字
- * `fun:fmt pattern` - String:javaEval, printf格式化对象
-   - obj，为任意对象
-   - pattern，为java格式化，，调用String.format(pattern,obj)
-
-### 7.2.来啥回啥(raw)
+### 7.2.来啥回啥 raw
 
 `nothing`级，直接把`功能体`当字符串返回，但mute时返回`字符串空`。
 
-### 7.3.内容引入(uri)
+### 7.3.内容引入 uri
 
 `nothing`级，把uri的内容以UTF8输出为字符串。首次读入，后续缓存。
 
@@ -883,27 +883,28 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * 其他，以URLConnection读取，超时为3秒
  * 读入的内容，会以uri为key，缓存到context中
 
-### 7.4.直接执行(exe)
+### 7.4.直接执行 exe
 
 `nothing`级，直接执行命令，解析引号块和转义，捕获std_out输出。  
 注意的是，每次eval时，engine会用context覆盖环境变量。
 
-### 7.5.win下命令(cmd)
+### 7.5.win下命令 cmd
 
 在window系，以`cmd /c`执行的exe。
 
-### 7.6.unx下命令(sh)
+### 7.6.unx下命令 sh
 
 在bash系，以`bash -c`执行的exe。
 
-### 7.7.执行js脚本(js)
+### 7.7.执行js脚本 js
 
 `session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
 对于在context读入和写入`导航类`对象，参考map引擎的规则。
+注意，java8特有，后续java11以后会移除
 
-### 7.8.执行java代码(java)
+### 7.8.执行java代码 java
 
 `session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
@@ -911,17 +912,33 @@ console.log('<div>result='+count+'/'+total+'</div>')
  * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
  * 尾部以`return obj`返回，`;`可以省略。
  * 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
- * 编译的java实现了`JavaEval`接口，位于`pro.fessional.meepo.poof.impl.java`
+ * 编译的java实现了`pro.fessional.meepo.eval.JavaEval`接口
  * 传入`RngContext ctx`，可读取context
  * 已经import的class有，
     - org.jetbrains.annotations.NotNull;
     - pro.fessional.meepo.poof.impl.JavaEngine;
     - java.util.Map;
 
-### 7.9.设置java函数(fun)
+### 7.9.设置java函数 fun
 
 通过米波模板动态编译java代码，并以被PUT到context中作为`函数`，供`USE`执行。
 
+
+## 8.占位符模板
+
+简化模板，只进行表达式级的变量替换或函数处理，而非完整的Meppo模板语法。
+比如，配置文件中的占位符，通常需要简单的替换或字符转换。
+
+使用时，自定义变量的前后界定符即可，默认是`{{`和`}}`，界定符可以是多组。
+
+定义`转义符`可转义界定符，默认是`空`，不转义。转义有以下特点，以`\`为例，
+
+ * 只对`界定符`有效，如 `\{{`和`\}}`，解析后为`{{`和`}}`
+ * 界定符前的自身转义，如`\\{{var}}`，解析后为`\`+`var`变量值
+ * 占位符，从左到右配对最相邻，不匹配内容做普通字符处理。
+ * 其他情况无效，如`\n`
+ * 不支持占位符嵌套
+ * 变量名不能有空格，否则会按函数解析
 
 ## 9.常见问题
 
@@ -932,6 +949,9 @@ console.log('<div>result='+count+'/'+total+'</div>')
 需要把设置`pro.fessional.meepo`的级别为`trace`。
 
 如果通过日志，不能调试到位，可以通过继承Parser，调用protected方法。
+
+如果发生 Class path contains multiple SLF4J bindings等错误提示，
+直接exclude meepo工程对slf4j的依赖即可。
 
 ### 02.有关性能和线程安全
 
@@ -989,7 +1009,7 @@ profiler.sh -d 30 -f meepo-profile.svg $pid
  * 基本类型的toString
  * buffer类，避免扩容，线程安全下尽量复用
 
-### 04.米波语法解析非`lexer`
+### 04.米波语法解析非lexer
 
 正统的语法解析，一般分为词法和语法分析两步。
 
