@@ -46,8 +46,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), false);
-            return sb.toString();
+            return camelCase(obj.toString());
         }
     };
 
@@ -65,8 +64,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), true);
-            return sb.toString();
+            return pascalCase(obj.toString());
         }
     };
 
@@ -84,8 +82,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), caseType(arg), '_');
-            return sb.toString();
+            return snakeCase(obj.toString(), caseType(arg));
         }
     };
 
@@ -103,8 +100,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), 1, '_');
-            return sb.toString();
+            return snakeCase(obj.toString(), Type.Upper);
         }
     };
 
@@ -122,8 +118,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), caseType(arg), '-');
-            return sb.toString();
+            return kebabCase(obj.toString(), caseType(arg));
         }
     };
 
@@ -141,8 +136,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), 1, '-');
-            return sb.toString();
+            return kebabCase(obj.toString(), Type.Upper);
         }
     };
 
@@ -160,8 +154,7 @@ public class Case {
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
             if (obj == null) return "";
-            StringBuilder sb = wordCase(obj.toString(), caseType(arg), '.');
-            return sb.toString();
+            return dotCase(obj.toString(), caseType(arg));
         }
     };
 
@@ -214,20 +207,73 @@ public class Case {
         }
     };
 
-    //
-    private static int caseType(Object[] arg) {
-        if (arg != null && arg.length > 0 && arg[0] != null) {
-            String str = arg[0].toString();
-            if ("upper".equalsIgnoreCase(str)) {
-                return 1;
-            } else if ("keep".equalsIgnoreCase(str)) {
-                return 0;
-            }
-        }
-        return -1;
+    // /////////
+    /**
+     * 首字小写，驼峰法
+     *
+     * @param str 字符串
+     * @return 驼峰
+     */
+    public static String camelCase(String str) {
+        return wordCase(str, false);
     }
 
-    private static StringBuilder wordCase(String str, int type, char split) {
+    /**
+     * 首字大写，驼峰法
+     *
+     * @param str 字符串
+     * @return 驼峰
+     */
+    public static String pascalCase(String str) {
+        return wordCase(str, true);
+    }
+
+    /**
+     * 下划线分隔
+     *
+     * @param str  字符串
+     * @param type 全大写，小写，或原样不变
+     * @return 分隔
+     */
+    private static String snakeCase(String str, Type type) {
+        return wordCase(str, type, '_');
+    }
+
+    /**
+     * 中划线分隔
+     *
+     * @param str  字符串
+     * @param type 全大写，小写，或原样不变
+     * @return 分隔
+     */
+    private static String kebabCase(String str, Type type) {
+        return wordCase(str, type, '-');
+    }
+
+    /**
+     * 句点分隔
+     *
+     * @param str  字符串
+     * @param type 全大写，小写，或原样不变
+     * @return 分隔
+     */
+    private static String dotCase(String str, Type type) {
+        return wordCase(str, type, '.');
+    }
+
+    public enum Type {
+        Upper, Lower, Keep
+    }
+
+    /**
+     * 分割法，分隔符分隔
+     *
+     * @param str   字符串
+     * @param type  大小写及维持不变
+     * @param split 分隔符
+     * @return 格式
+     */
+    public static String wordCase(String str, Type type, char split) {
         StringBuilder sb = new StringBuilder(str.length() + 16);
         int flag = 0;
         char last = 0;
@@ -238,9 +284,9 @@ public class Case {
                     flag = 1;
                 } else {
                     final char c1;
-                    if (type > 0) {
+                    if (type == Type.Upper) {
                         c1 = toUpperCase(c);
-                    } else if (type < 0) {
+                    } else if (type == Type.Lower) {
                         c1 = toLowerCase(c);
                     } else {
                         c1 = c;
@@ -264,10 +310,17 @@ public class Case {
             last = c;
         }
 
-        return sb;
+        return sb.toString();
     }
 
-    private static StringBuilder wordCase(String str, boolean up1st) {
+    /**
+     * 驼峰法，camelCase和PascalCase转换
+     *
+     * @param str    字符串
+     * @param pascal 首字母大写
+     * @return 格式化
+     */
+    public static String wordCase(String str, boolean pascal) {
         StringBuilder sb = new StringBuilder(str.length() + 16);
         int flag = 0;
         char last = 0;
@@ -278,7 +331,7 @@ public class Case {
                     flag = 1;
                 } else {
                     if (flag == 0) {
-                        sb.append(up1st ? toUpperCase(c) : toLowerCase(c));
+                        sb.append(pascal ? toUpperCase(c) : toLowerCase(c));
                     } else if (flag == 1) {
                         sb.append(toUpperCase(c));
                     } else {
@@ -296,6 +349,19 @@ public class Case {
             last = c;
         }
 
-        return sb;
+        return sb.toString();
+    }
+
+    ///////
+    private static Type caseType(Object[] arg) {
+        if (arg != null && arg.length > 0 && arg[0] != null) {
+            String str = arg[0].toString();
+            if ("upper".equalsIgnoreCase(str)) {
+                return Type.Upper;
+            } else if ("keep".equalsIgnoreCase(str)) {
+                return Type.Keep;
+            }
+        }
+        return Type.Lower;
     }
 }
