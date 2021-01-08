@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +45,7 @@ public class RnaManagerTest {
 
     @Test
     public void testFunNow() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         JavaEval fun = RnaManager.getFunction("fun:now");
         Map<String, Object> ctx = new HashMap<>();
         {
