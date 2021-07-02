@@ -64,8 +64,8 @@ public class RnaUse extends Tick implements Bar, Prc {
         if (o == null || getClass() != o.getClass()) return false;
         RnaUse rnaUse = (RnaUse) o;
         return find.pattern().equals(rnaUse.find.pattern()) &&
-                para.equals(rnaUse.para) &&
-                life.equals(rnaUse.life);
+               para.equals(rnaUse.para) &&
+               life.equals(rnaUse.life);
     }
 
     @Override
@@ -92,7 +92,8 @@ public class RnaUse extends Tick implements Bar, Prc {
             edge.toString(buff);
             buff.append("; ");
             life.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -61,8 +61,8 @@ public class TxtRnaRun extends Exon implements Rng {
         if (o == null || getClass() != o.getClass()) return false;
         TxtRnaRun txtRnaRun = (TxtRnaRun) o;
         return mute == txtRnaRun.mute &&
-                type.equals(txtRnaRun.type) &&
-                expr.equals(txtRnaRun.expr);
+               type.equals(txtRnaRun.type) &&
+               expr.equals(txtRnaRun.expr);
     }
 
     @Override
@@ -89,7 +89,8 @@ public class TxtRnaRun extends Exon implements Rng {
             buff.append("}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

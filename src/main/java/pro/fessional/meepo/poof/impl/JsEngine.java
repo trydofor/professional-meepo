@@ -39,10 +39,12 @@ public class JsEngine implements RnaEngine {
         try {
             engine.put(CTX_NAME, ctx);
             obj = engine.eval(expr.expr);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
-            } else {
+            }
+            else {
                 throw new IllegalStateException(expr.toString(), t);
             }
         }

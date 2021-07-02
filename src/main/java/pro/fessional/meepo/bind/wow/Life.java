@@ -57,7 +57,8 @@ public class Life {
         final State st;
         if (page.length == 2) {
             st = count >= page[0] && count <= page[1] ? State.Live : State.Skip;
-        } else {
+        }
+        else {
             st = count == page[0] ? State.Live : State.Skip;
         }
 
@@ -92,9 +93,9 @@ public class Life {
         if (o == null || getClass() != o.getClass()) return false;
         Life life = (Life) o;
         if (count == life.count &&
-                index == life.index &&
-                book.size() == life.book.size() &&
-                Objects.equals(name, life.name)) {
+            index == life.index &&
+            book.size() == life.book.size() &&
+            Objects.equals(name, life.name)) {
             Iterator<int[]> it0 = book.iterator();
             Iterator<int[]> it1 = life.book.iterator();
             while (it0.hasNext()) {
@@ -108,7 +109,8 @@ public class Life {
                 }
             }
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -123,7 +125,8 @@ public class Life {
             if (arr.length == 1) {
                 objs[off++] = arr[0];
                 objs[off++] = arr[0];
-            } else {
+            }
+            else {
                 objs[off++] = arr[0];
                 objs[off++] = arr[1];
             }
@@ -151,7 +154,8 @@ public class Life {
                 buff.append(Arrays.toString(ints));
             }
             buff.append("]}");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -178,14 +182,17 @@ public class Life {
             if (m < 0) {
                 int p = Integer.parseInt(s);
                 books.add(new int[]{p});
-            } else {
+            }
+            else {
                 int p1 = Integer.parseInt(s.substring(0, m));
                 int p2 = Integer.parseInt(s.substring(m + 1));
                 if (p1 == p2) {
                     books.add(new int[]{p1});
-                } else if (p1 < p2) {
+                }
+                else if (p1 < p2) {
                     books.add(new int[]{p1, p2});
-                } else {
+                }
+                else {
                     books.add(new int[]{p2, p1});
                 }
             }
@@ -200,16 +207,20 @@ public class Life {
 
             if (aa.length == 1 && bb.length == 1) {
                 if (aa[0] == bb[0]) it.remove();
-            } else if (aa.length == 2 && bb.length == 2) {
+            }
+            else if (aa.length == 2 && bb.length == 2) {
                 if (bb[1] <= aa[1]) {
                     it.remove();
-                } else if (bb[0] <= aa[1]) {
+                }
+                else if (bb[0] <= aa[1]) {
                     it.remove();
                     aa[1] = bb[1];
                 }
-            } else if (aa.length == 2 && bb.length == 1) {
+            }
+            else if (aa.length == 2 && bb.length == 1) {
                 if (aa[1] >= bb[0]) it.remove();
-            } else {
+            }
+            else {
                 // aa.length == 1 && bb.length == 2 包含于此
                 aa = bb;
             }

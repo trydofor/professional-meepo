@@ -74,7 +74,8 @@ public class Clop implements Comparable<Clop> {
             buff.append(", line0=").write(String.valueOf(line0));
             buff.append(", line1=").write(String.valueOf(line1));
             buff.write("}");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

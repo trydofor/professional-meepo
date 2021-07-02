@@ -38,15 +38,18 @@ public class Read {
         try {
             if (uri.regionMatches(true, 0, CLAS, 0, CLAS.length())) {
                 is = Read.class.getResourceAsStream(uri.substring(CLAS.length()));
-            } else if (uri.regionMatches(true, 0, FILE, 0, FILE.length())) {
+            }
+            else if (uri.regionMatches(true, 0, FILE, 0, FILE.length())) {
                 is = new FileInputStream(uri.substring(FILE.length()));
-            } else {
+            }
+            else {
                 if (uri.indexOf(':') < 0) {
                     is = Read.class.getResourceAsStream(uri);
                     if (is == null) {
                         try {
                             is = new FileInputStream(uri);
-                        } catch (FileNotFoundException e) {
+                        }
+                        catch (FileNotFoundException e) {
                             // ignore
                         }
                     }
@@ -61,7 +64,8 @@ public class Read {
                 }
             }
             str = Read.read(is, cs);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(uri, e);
         }
         return str;
@@ -99,7 +103,8 @@ public class Read {
             while ((len = r0.read(buf)) != -1) {
                 sb.append(buf, 0, len);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException(e);
         }
         return sb.toString();

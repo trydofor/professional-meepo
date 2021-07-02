@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DnaBkbTest extends TraceTest {
 
-    DnaBkb d1 = new DnaBkb("// DNA:BKB 黑皇杖", new Clop(0,14,1,1), "黑皇杖");
-    DnaBkb d2 = new DnaBkb(" // DNA:BKB 黑皇杖", new Clop(1,15,1,1), "黑皇杖");
+    DnaBkb d1 = new DnaBkb("// DNA:BKB 黑皇杖", new Clop(0, 14, 1, 1), "黑皇杖");
+    DnaBkb d2 = new DnaBkb(" // DNA:BKB 黑皇杖", new Clop(1, 15, 1, 1), "黑皇杖");
 
     @Test
     public void testEquals() {

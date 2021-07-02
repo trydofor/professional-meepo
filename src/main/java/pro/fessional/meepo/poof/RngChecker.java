@@ -95,7 +95,7 @@ public class RngChecker {
             if (o == null || getClass() != o.getClass()) return false;
             Key key = (Key) o;
             return Objects.equals(type, key.type) &&
-                    Objects.equals(expr, key.expr);
+                   Objects.equals(expr, key.expr);
         }
 
         @Override

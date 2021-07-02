@@ -70,10 +70,10 @@ public class RnaRun extends Tick implements Bar, Prc {
         if (o == null || getClass() != o.getClass()) return false;
         RnaRun rnaRun = (RnaRun) o;
         return type.equals(rnaRun.type) &&
-                find.pattern().equals(rnaRun.find.pattern()) &&
-                expr.equals(rnaRun.expr) &&
-                mute == rnaRun.mute &&
-                life.equals(rnaRun.life);
+               find.pattern().equals(rnaRun.find.pattern()) &&
+               expr.equals(rnaRun.expr) &&
+               mute == rnaRun.mute &&
+               life.equals(rnaRun.life);
     }
 
     @Override
@@ -104,7 +104,8 @@ public class RnaRun extends Tick implements Bar, Prc {
             edge.toString(buff);
             buff.append("; ");
             life.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

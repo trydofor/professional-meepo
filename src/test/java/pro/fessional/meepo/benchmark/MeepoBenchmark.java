@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class MeepoBenchmark {
 
     private Gene template;
-    private Map<String,Object> context;
+    private Map<String, Object> context;
 
     @Setup
     public void setup() throws PebbleException {

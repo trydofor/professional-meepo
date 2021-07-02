@@ -56,7 +56,8 @@ public class DnaSet extends Tick implements Prc {
     public @NotNull List<Exon> apply(Clop pos, String txt, int bar) {
         if (pos.length > 0) {
             return Collections.singletonList(new TxtDnaSet(txt, pos, repl));
-        } else {
+        }
+        else {
             return Collections.emptyList();
         }
     }
@@ -67,8 +68,8 @@ public class DnaSet extends Tick implements Prc {
         if (o == null || getClass() != o.getClass()) return false;
         DnaSet dnaSet = (DnaSet) o;
         return Objects.equals(find.pattern(), dnaSet.find.pattern()) &&
-                Objects.equals(repl, dnaSet.repl) &&
-                Objects.equals(life, dnaSet.life);
+               Objects.equals(repl, dnaSet.repl) &&
+               Objects.equals(life, dnaSet.life);
     }
 
     @Override
@@ -95,7 +96,8 @@ public class DnaSet extends Tick implements Prc {
             edge.toString(buff);
             buff.append("; ");
             life.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -74,7 +74,8 @@ public class ParserTest extends TraceTest {
             assertTrue(exon instanceof TxtSimple);
             exon.build(buf);
             assertEquals(txt, buf.toString());
-        } else {
+        }
+        else {
             assertNotNull(meepo);
             assertEquals(pre, meepo.head);
             assertEquals(suf, meepo.tail);
@@ -159,7 +160,8 @@ public class ParserTest extends TraceTest {
         System.out.println(exon);
         if (name == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             assertEquals(name, ((Tick) exon).life.name);
             exon.merge(newAcid(ctx), buf);
@@ -200,7 +202,8 @@ public class ParserTest extends TraceTest {
 
         if (name == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             DnaEnd dna = (DnaEnd) exon;
             String[] nms = name.split("[, ]+");
@@ -247,7 +250,8 @@ public class ParserTest extends TraceTest {
 
         if (life == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             DnaSet dna = (DnaSet) exon;
             assertEquals(find, dna.find.pattern());
@@ -302,7 +306,8 @@ public class ParserTest extends TraceTest {
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaRun rna = (RnaRun) exon;
             assertEquals(type, rna.type);
@@ -364,7 +369,8 @@ public class ParserTest extends TraceTest {
 
         if (life == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaUse rna = (RnaUse) exon;
             assertEquals(find, rna.find.pattern());
@@ -422,7 +428,8 @@ public class ParserTest extends TraceTest {
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaPut rna = (RnaPut) exon;
             assertEquals(type, rna.type);
@@ -481,7 +488,8 @@ public class ParserTest extends TraceTest {
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaWhen rna = (RnaWhen) exon;
             assertEquals(type, rna.type);
@@ -526,7 +534,8 @@ public class ParserTest extends TraceTest {
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaEach rna = (RnaEach) exon;
             assertEquals(type, rna.type);
@@ -569,7 +578,8 @@ public class ParserTest extends TraceTest {
 
         if (tock == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaElse rna = (RnaElse) exon;
             assertEquals(tock, rna.tock);
@@ -604,7 +614,8 @@ public class ParserTest extends TraceTest {
 
         if (name == null) {
             assertEquals(0, exon.edge.until);
-        } else {
+        }
+        else {
             CharArrayWriter buf = new CharArrayWriter();
             RnaDone rna = (RnaDone) exon;
             String[] nms = name.split("[, ]+");

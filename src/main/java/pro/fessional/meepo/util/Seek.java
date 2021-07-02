@@ -24,7 +24,8 @@ public class Seek {
                 if (!echo) {
                     return i;
                 }
-            } else {
+            }
+            else {
                 if (fd) {
                     return i - 1;
                 }
@@ -39,7 +40,8 @@ public class Seek {
             if (notWhite(txt.charAt(i))) {
                 if (txt.regionMatches(true, i, tkn, 0, tln)) {
                     return i;
-                } else {
+                }
+                else {
                     return -1;
                 }
             }
@@ -53,7 +55,8 @@ public class Seek {
             char c = txt.charAt(i);
             if (c == '\n') {
                 break;
-            } else if (notWhite(c)) {
+            }
+            else if (notWhite(c)) {
                 return i;
             }
         }
@@ -66,7 +69,8 @@ public class Seek {
             char c = txt.charAt(i);
             if (c == '\n') {
                 break;
-            } else if (notWhite(c)) {
+            }
+            else if (notWhite(c)) {
                 return i;
             }
         }
@@ -79,7 +83,8 @@ public class Seek {
             char c = txt.charAt(i);
             if (c == '\n') {
                 break;
-            } else if (isWhite(c)) {
+            }
+            else if (isWhite(c)) {
                 return i;
             }
         }
@@ -92,7 +97,8 @@ public class Seek {
             char c = txt.charAt(i);
             if (c == '\n') {
                 break;
-            } else if (isWhite(c)) {
+            }
+            else if (isWhite(c)) {
                 return i;
             }
         }
@@ -260,7 +266,8 @@ public class Seek {
         for (int ln = tkn.length(), i = off - ln; i >= 0; i -= ln) {
             if (txt.regionMatches(i, tkn, 0, ln)) {
                 cnt++;
-            } else {
+            }
+            else {
                 break;
             }
         }

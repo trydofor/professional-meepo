@@ -79,15 +79,18 @@ public class RnaEach extends Tock implements Rng {
         final int size;
         if (obj instanceof Collection) {
             size = ((Collection<?>) obj).size();
-        } else if (obj != null && obj.getClass().isArray()) {
+        }
+        else if (obj != null && obj.getClass().isArray()) {
             size = Array.getLength(obj);
-        } else {
+        }
+        else {
             size = 0;
         }
 
         if (size == 0) {
             logger.trace("[👹Merge:tock] skip RNA:EACH tock={}, size={}, step={}, type={}, expr={}", tock, size, step, type, expr);
-        } else {
+        }
+        else {
             logger.trace("[👹Merge:tock] deal RNA:EACH tock={}, size={}, step={}, type={}, expr={}", tock, size, step, type, expr);
             acid.execute.put(tock, this);
 
@@ -114,7 +117,8 @@ public class RnaEach extends Tock implements Rng {
                         exon.merge(acid, buf);
                     }
                 }
-            } else {
+            }
+            else {
                 for (int i = size - 1; i >= 0; i += step) {
                     ctx.put(keyRefer, list.get(i));
                     ctx.put(keyCount, count++);
@@ -140,7 +144,8 @@ public class RnaEach extends Tock implements Rng {
                     count++;
                 }
                 return;
-            } else {
+            }
+            else {
                 if (obj instanceof Deque) {
                     for (Iterator<?> rit = ((Deque<?>) obj).descendingIterator(); rit.hasNext(); ) {
                         Object it = rit.next();
@@ -153,7 +158,8 @@ public class RnaEach extends Tock implements Rng {
                         count++;
                     }
                     return;
-                } else {
+                }
+                else {
                     obj = col.toArray();
                 }
             }
@@ -169,7 +175,8 @@ public class RnaEach extends Tock implements Rng {
                         exon.merge(acid, buf);
                     }
                 }
-            } else {
+            }
+            else {
                 for (int i = size - 1; i >= 0; i += step) {
                     ctx.put(keyRefer, Array.get(obj, i));
                     ctx.put(keyCount, count++);
@@ -188,10 +195,10 @@ public class RnaEach extends Tock implements Rng {
         if (o == null || getClass() != o.getClass()) return false;
         RnaEach rnaEach = (RnaEach) o;
         return mute == rnaEach.mute &&
-                step == rnaEach.step &&
-                tock.equals(rnaEach.tock) &&
-                type.equals(rnaEach.type) &&
-                expr.equals(rnaEach.expr);
+               step == rnaEach.step &&
+               tock.equals(rnaEach.tock) &&
+               type.equals(rnaEach.type) &&
+               expr.equals(rnaEach.expr);
     }
 
     @Override
@@ -222,7 +229,8 @@ public class RnaEach extends Tock implements Rng {
             buff.append("}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -58,10 +58,12 @@ public class Meepo {
     public static Gene parse(final String uri, final int ttl) {
         if (ttl == 0) {
             return parse0(uri);
-        } else if (ttl < 0) {
+        }
+        else if (ttl < 0) {
             return cache.computeIfAbsent(uri, Meepo::parse0);
-        } else {
-            final long line = System.currentTimeMillis() - ttl * 1000;
+        }
+        else {
+            final long line = System.currentTimeMillis() - ttl * 1000L;
             Gene gene = cache.compute(uri, (s, e) -> (e == null || line <= e.born) ? e : parse0(s));
             return Objects.requireNonNull(gene);
         }
@@ -91,10 +93,12 @@ public class Meepo {
     public static Gene parse(final String key, final String txt, final int ttl) {
         if (ttl == 0) {
             return Parser.parse(txt);
-        } else if (ttl < 0) {
+        }
+        else if (ttl < 0) {
             return cache.computeIfAbsent(key, s -> Parser.parse(txt));
-        } else {
-            final long line = System.currentTimeMillis() - ttl * 1000;
+        }
+        else {
+            final long line = System.currentTimeMillis() - ttl * 1000L;
             Gene gene = cache.compute(key, (s, e) -> (e == null || line <= e.born) ? e : Parser.parse(txt));
             return Objects.requireNonNull(gene);
         }
@@ -127,8 +131,9 @@ public class Meepo {
         String key = file.getAbsolutePath();
         if (ttl < 0) {
             return cache.computeIfAbsent(key, s -> parse0(file));
-        } else {
-            final long line = System.currentTimeMillis() - ttl * 1000;
+        }
+        else {
+            final long line = System.currentTimeMillis() - ttl * 1000L;
             Gene gene = cache.compute(key, (s, e) -> (e == null || line <= e.born) ? e : parse0(file));
             return Objects.requireNonNull(gene);
         }
@@ -158,10 +163,12 @@ public class Meepo {
     public static Gene parse(final String key, final InputStream ins, final int ttl) {
         if (ttl == 0) {
             return parse0(ins);
-        } else if (ttl < 0) {
+        }
+        else if (ttl < 0) {
             return cache.computeIfAbsent(key, s -> parse0(ins));
-        } else {
-            final long line = System.currentTimeMillis() - ttl * 1000;
+        }
+        else {
+            final long line = System.currentTimeMillis() - ttl * 1000L;
             Gene gene = cache.compute(key, (s, e) -> (e == null || line <= e.born) ? e : parse0(ins));
             return Objects.requireNonNull(gene);
         }
@@ -442,7 +449,8 @@ public class Meepo {
         try {
             String txt = Read.read(new FileInputStream(file));
             return Parser.parse(txt);
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new IllegalStateException("failed to load file=" + file, e);
         }
     }
