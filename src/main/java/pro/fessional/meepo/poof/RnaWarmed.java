@@ -42,6 +42,7 @@ public class RnaWarmed {
         this.work = work;
         this.kind = -1;
     }
+
     public RnaWarmed(@NotNull String type, @NotNull String expr, Object work, int kind) {
         this.type = type;
         this.expr = expr;
@@ -64,8 +65,8 @@ public class RnaWarmed {
         if (o == null || getClass() != o.getClass()) return false;
         RnaWarmed warmed = (RnaWarmed) o;
         return kind == warmed.kind &&
-                type.equals(warmed.type) &&
-                expr.equals(warmed.expr);
+               type.equals(warmed.type) &&
+               expr.equals(warmed.expr);
     }
 
     @Override
@@ -76,10 +77,10 @@ public class RnaWarmed {
     @Override
     public String toString() {
         return "RnaWarmed{" +
-                "type='" + type + '\'' +
-                ", expr='" + expr + '\'' +
-                ", kind=" + kind +
-                ", info='" + info + '\'' +
-                '}';
+               "type='" + type + '\'' +
+               ", expr='" + expr + '\'' +
+               ", kind=" + kind +
+               ", info='" + info + '\'' +
+               '}';
     }
 }

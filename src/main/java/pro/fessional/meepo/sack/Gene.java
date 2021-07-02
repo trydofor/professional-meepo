@@ -76,7 +76,8 @@ public class Gene {
         final char[] str = text9;
         if (rngs.isEmpty() && str != null) {
             Dent.write(out, str);
-        } else {
+        }
+        else {
             Acid acid = new Acid(ctx, rngs);
             for (Exon exon : exon) {
                 exon.merge(acid, out);
@@ -128,20 +129,23 @@ public class Gene {
             Clop edge = ex.edge;
             if (edge.start != start) {
                 Dent.treeIt(buff, -level);
-            } else {
+            }
+            else {
                 Dent.treeIt(buff, level);
             }
             try {
                 buff.append(ex.toString());
                 buff.append('\n');
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new IllegalStateException(e);
             }
 
             if (ex instanceof Tock) {
                 Tock tock = (Tock) ex;
                 start = graph(buff, tock.gene, level + 1, edge.until);
-            } else {
+            }
+            else {
                 start = edge.until;
             }
         }

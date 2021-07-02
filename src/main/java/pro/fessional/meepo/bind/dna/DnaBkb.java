@@ -68,7 +68,8 @@ public class DnaBkb extends Tick {
             edge.toString(buff);
             buff.append("; ");
             life.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

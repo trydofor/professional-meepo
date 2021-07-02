@@ -42,12 +42,14 @@ public class Tick extends Exon {
                 if (m.groupCount() > 0) {
                     p0 = m.start(1);
                     p1 = m.end(1);
-                } else {
+                }
+                else {
                     p0 = m.start();
                     p1 = m.end();
                 }
                 lst.add(new N(p0, p1, this));
-            } else if (st == Dead) {
+            }
+            else if (st == Dead) {
                 break;
             }
         }

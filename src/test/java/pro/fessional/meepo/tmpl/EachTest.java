@@ -14,8 +14,7 @@ import java.util.Map;
  */
 public class EachTest extends TraceTest {
 
-    private final Map<String, Object> ctx = new HashMap<String, Object>()
-    {{
+    private final Map<String, Object> ctx = new HashMap<String, Object>() {{
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             Map<String, Object> it = new HashMap<>();
@@ -24,7 +23,8 @@ public class EachTest extends TraceTest {
             int c = i % 3;
             if (c == 0) {
                 it.put("rem0", true);
-            } else if (c == 1) {
+            }
+            else if (c == 1) {
                 it.put("rem1", true);
             }
             list.add(it);

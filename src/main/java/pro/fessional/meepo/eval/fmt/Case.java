@@ -177,7 +177,8 @@ public class Case {
             if (arg.length > 1) {
                 Locale loc = Locale.forLanguageTag((String) arg[0]);
                 return txt.toUpperCase(loc);
-            } else {
+            }
+            else {
                 return txt.toUpperCase();
             }
         }
@@ -201,13 +202,15 @@ public class Case {
             if (arg.length > 1) {
                 Locale loc = Locale.forLanguageTag((String) arg[0]);
                 return txt.toLowerCase(loc);
-            } else {
+            }
+            else {
                 return txt.toLowerCase();
             }
         }
     };
 
     // /////////
+
     /**
      * 首字小写，驼峰法
      *
@@ -262,7 +265,9 @@ public class Case {
     }
 
     public enum Type {
-        Upper, Lower, Keep
+        Upper,
+        Lower,
+        Keep
     }
 
     /**
@@ -282,21 +287,26 @@ public class Case {
             if (isJavaIdentifierPart(c)) {
                 if (c == '_' || c == '-') {
                     flag = 1;
-                } else {
+                }
+                else {
                     final char c1;
                     if (type == Type.Upper) {
                         c1 = toUpperCase(c);
-                    } else if (type == Type.Lower) {
+                    }
+                    else if (type == Type.Lower) {
                         c1 = toLowerCase(c);
-                    } else {
+                    }
+                    else {
                         c1 = c;
                     }
                     if (flag == 0) {
                         sb.append(c1);
-                    } else if (flag == 1) {
+                    }
+                    else if (flag == 1) {
                         sb.append(split);
                         sb.append(c1);
-                    } else {
+                    }
+                    else {
                         if (isUpperCase(c) && isLowerCase(last)) {
                             sb.append(split);
                         }
@@ -304,7 +314,8 @@ public class Case {
                     }
                     flag = -1;
                 }
-            } else {
+            }
+            else {
                 if (flag != 0) flag = 1;
             }
             last = c;
@@ -329,21 +340,26 @@ public class Case {
             if (isJavaIdentifierPart(c)) {
                 if (c == '_' || c == '-') {
                     flag = 1;
-                } else {
+                }
+                else {
                     if (flag == 0) {
                         sb.append(pascal ? toUpperCase(c) : toLowerCase(c));
-                    } else if (flag == 1) {
+                    }
+                    else if (flag == 1) {
                         sb.append(toUpperCase(c));
-                    } else {
+                    }
+                    else {
                         if (isUpperCase(last)) {
                             sb.append(toLowerCase(c));
-                        } else {
+                        }
+                        else {
                             sb.append(c);
                         }
                     }
                     flag = -1;
                 }
-            } else {
+            }
+            else {
                 if (flag != 0) flag = 1;
             }
             last = c;
@@ -358,7 +374,8 @@ public class Case {
             String str = arg[0].toString();
             if ("upper".equalsIgnoreCase(str)) {
                 return Type.Upper;
-            } else if ("keep".equalsIgnoreCase(str)) {
+            }
+            else if ("keep".equalsIgnoreCase(str)) {
                 return Type.Keep;
             }
         }

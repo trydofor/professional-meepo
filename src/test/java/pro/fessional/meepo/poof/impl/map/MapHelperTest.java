@@ -96,7 +96,8 @@ public class MapHelperTest {
             Method md = cache.computeIfAbsent("code", s -> {
                 try {
                     return bean.getClass().getMethod(getName("code"));
-                } catch (NoSuchMethodException e) {
+                }
+                catch (NoSuchMethodException e) {
                     throw new IllegalStateException(e);
                 }
             });

@@ -73,9 +73,9 @@ public class RnaPut extends Exon implements Rng {
         if (o == null || getClass() != o.getClass()) return false;
         RnaPut rnaPut = (RnaPut) o;
         return type.equals(rnaPut.type) &&
-                para.equals(rnaPut.para) &&
-                expr.equals(rnaPut.expr) &&
-                mute == rnaPut.mute;
+               para.equals(rnaPut.para) &&
+               expr.equals(rnaPut.expr) &&
+               mute == rnaPut.mute;
     }
 
     @Override
@@ -104,7 +104,8 @@ public class RnaPut extends Exon implements Rng {
             buff.append("}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -38,7 +38,8 @@ public class DnaEnd extends Exon {
         super(text, edge);
         if (name instanceof Set) {
             this.name = Collections.unmodifiableSet((Set<String>) name);
-        } else {
+        }
+        else {
             Set<String> set = new HashSet<>(name);
             this.name = Collections.unmodifiableSet(set);
         }
@@ -72,7 +73,8 @@ public class DnaEnd extends Exon {
             buff.append("]}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

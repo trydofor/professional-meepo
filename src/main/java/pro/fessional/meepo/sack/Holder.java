@@ -122,10 +122,12 @@ public class Holder {
             if (txt.regionMatches(off, pre, 0, pln)) {
                 logger.trace("[👹Holder:parse:origin] find prefix at {}", off);
                 ipe = 0;
-            } else if (txt.regionMatches(off, suf, 0, sln)) {
+            }
+            else if (txt.regionMatches(off, suf, 0, sln)) {
                 logger.trace("[👹Holder:parse:origin] find suffix at {}", off);
                 ipe = 1;
-            } else {
+            }
+            else {
                 buff.append(txt.charAt(off));
                 off++;
                 continue;
@@ -147,7 +149,8 @@ public class Holder {
             if (ipe == 0) {
                 buff.append(pre);
                 off += pln;
-            } else {
+            }
+            else {
                 buff.append(suf);
                 off += sln;
             }
@@ -171,14 +174,17 @@ public class Holder {
                     addText(exon, rst, 0, ed[0]);
                     off = ed[0];
                     es = ed;
-                } else {
+                }
+                else {
                     if (lax) {
                         logger.warn("[👹Holder:parse:escape] drop unmatched suffix at origin text pos=" + ed[2]);
-                    } else {
+                    }
+                    else {
                         throw new IllegalStateException("find unmatched suffix at origin text pos=" + ed[2]);
                     }
                 }
-            } else if (es[1] == 0) { // 前
+            }
+            else if (es[1] == 0) { // 前
                 if (ed[1] == 1) {
                     int p1s = es[0] + pln;
                     int p2e = ed[0] + sln;
@@ -189,22 +195,27 @@ public class Holder {
                     use.check(buff, rngs);
                     off = p2e;
                     es = ed;
-                } else {
+                }
+                else {
                     if (lax) {
                         logger.warn("[👹Holder:parse:escape] drop nested prefix at origin text pos=" + ed[2]);
-                    } else {
+                    }
+                    else {
                         throw new IllegalStateException("find nested prefix at origin text pos=" + ed[2]);
                     }
                 }
-            } else { // 后
+            }
+            else { // 后
                 if (ed[1] == 0) {
                     addText(exon, rst, es[0] + sln, ed[0]);
                     off = ed[0];
                     es = ed;
-                } else {
+                }
+                else {
                     if (lax) {
                         logger.warn("[👹Holder:parse:escape] drop nested suffix at origin text pos=" + ed[2]);
-                    } else {
+                    }
+                    else {
                         throw new IllegalStateException("find nested suffix at origin text pos=" + ed[2]);
                     }
                 }
@@ -213,8 +224,9 @@ public class Holder {
 
         if (buff.length() > 0) {
             if (lax) {
-                logger.warn("[👹Holder:parse:escape]" + buff.toString());
-            } else {
+                logger.warn("[👹Holder:parse:escape]" + buff);
+            }
+            else {
                 throw new IllegalStateException(buff.toString());
             }
         }

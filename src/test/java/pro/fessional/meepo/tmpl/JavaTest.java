@@ -30,8 +30,8 @@ public class JavaTest extends TraceTest {
         HashMap<String, Object> c = new HashMap<>();
         String name = "JavaOut";
         c.put("import", "import java.time.LocalTime;\nimport java.time.LocalDate;\n" +
-                "import java.time.LocalDateTime;\n" +
-                "import java.time.format.DateTimeFormatter;\n");
+                        "import java.time.LocalDateTime;\n" +
+                        "import java.time.format.DateTimeFormatter;\n");
         c.put("class", name);
         c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");\n",
                 "LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));\n",
@@ -41,6 +41,6 @@ public class JavaTest extends TraceTest {
         String code = gene.merge(c);
 
         String out = Read.read(JavaEngine.class.getResourceAsStream("/pro/fessional/meepo/poof/impl/java/JavaOut.java"));
-        assertEquals(out,code);
+        assertEquals(out, code);
     }
 }

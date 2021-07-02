@@ -48,15 +48,18 @@ public class JavaEngine implements RnaEngine {
         Object obj = null;
         try {
             JavaEval java = expr.getTypedWork();
-            if (expr.kind == KIND_JAVA){
+            if (expr.kind == KIND_JAVA) {
                 obj = java.eval(ctx, null);
-            }else{
+            }
+            else {
                 obj = java;
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
-            } else {
+            }
+            else {
                 throw new IllegalStateException(expr.toString(), t);
             }
         }
@@ -91,14 +94,16 @@ public class JavaEngine implements RnaEngine {
                     char c = expr.charAt(i);
                     if (c == ',') {
                         buf.append(";\nimport ");
-                    } else {
+                    }
+                    else {
                         buf.append(c);
                     }
                 }
             } while (m.find());
             imps = buf.toString();
             body = expr.substring(end);
-        } else {
+        }
+        else {
             imps = TXT$EMPTY;
             body = expr;
         }
@@ -124,7 +129,8 @@ public class JavaEngine implements RnaEngine {
             JavaEval java = Java.create(clz);
             logger.info("cost {}ms to compile {}", System.currentTimeMillis() - s, expr);
             return java;
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             logger.error("failed to create java-code=\n" + code + "\n", e);
             throw e;
         }

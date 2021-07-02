@@ -70,10 +70,10 @@ public class HiMeepo extends Exon {
         if (o == null || getClass() != o.getClass()) return false;
         HiMeepo hiMeepo = (HiMeepo) o;
         return echo == hiMeepo.echo &&
-                trim == hiMeepo.trim &&
-                crlf == hiMeepo.crlf &&
-                head.equals(hiMeepo.head) &&
-                tail.equals(hiMeepo.tail);
+               trim == hiMeepo.trim &&
+               crlf == hiMeepo.crlf &&
+               head.equals(hiMeepo.head) &&
+               tail.equals(hiMeepo.tail);
     }
 
     @Override
@@ -104,7 +104,8 @@ public class HiMeepo extends Exon {
             buff.append('}');
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

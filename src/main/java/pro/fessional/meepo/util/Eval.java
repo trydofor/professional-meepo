@@ -3,6 +3,7 @@ package pro.fessional.meepo.util;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,20 +29,27 @@ public class Eval {
         final boolean f;
         if (obj == null) {
             f = true;
-        } else if (obj instanceof Boolean) {
+        }
+        else if (obj instanceof Boolean) {
             f = !((Boolean) obj);
-        } else if (obj instanceof CharSequence) {
+        }
+        else if (obj instanceof CharSequence) {
             f = ((CharSequence) obj).length() == 0;
-        } else if (obj instanceof Number) {
+        }
+        else if (obj instanceof Number) {
             double dv = ((Number) obj).doubleValue();
             f = Double.isNaN(dv) || (dv > -0.000000001D && dv < 0.000000001D);
-        } else if (obj instanceof Map) {
+        }
+        else if (obj instanceof Map) {
             f = ((Map<?, ?>) obj).isEmpty();
-        } else if (obj instanceof Collection) {
+        }
+        else if (obj instanceof Collection) {
             f = ((Collection<?>) obj).isEmpty();
-        } else if (obj.getClass().isArray()) {
+        }
+        else if (obj.getClass().isArray()) {
             f = Array.getLength(obj) == 0;
-        } else {
+        }
+        else {
             f = false;
         }
         return f;
@@ -49,45 +57,82 @@ public class Eval {
 
 
     public abstract static class ArgType<T> {
+        /**
+         * 自动解析字符串或Number
+         */
         public static final ArgType<Object> Obj = new ArgType<Object>() {
             @Override
             public Object transform(String str) {
+                final int ed = str.length() - 1;
+                char ce = str.charAt(ed);
+                final boolean di = ce >= '0' && ce <= '9';
+                final boolean df = isFloat(ce);
+                final boolean db = isDouble(ce);
+                final boolean lg = isLong(ce);
+                final boolean dm = isDecimal(ce);
+
+                if (!di && !df && !db && !lg && !dm) {
+                    return str;
+                }
+
                 StringBuilder num = new StringBuilder(str.length());
-                boolean hasDot = false;
-                int p1 = str.length() - 1;
-                char lt = str.charAt(p1);
-                for (int i = 0, len = str.length(); i < len; i++) {
+                final char c0 = str.charAt(0);
+                if (c0 != '+') num.append(c0);
+
+                int dc = 0;
+                int nc = 0;
+                for (int i = 1; i < ed; i++) {
                     char c = str.charAt(i);
                     if (c == '.') {
-                        hasDot = true;
-                        num.append(c);
-                    } else if (c == '-' || c >= '0' && c <= '9') {
-                        num.append(c);
-                    } else if (c == '+') {
-                        // skip
-                    } else {
-                        if (p1 == i && c != 'D' && c != 'd' && c != 'L' && c != 'l') {
-                            num.setLength(0);
-                        }
-                        break;
+                        dc++;
                     }
+                    else if (c == '_' || c == ',') {
+                        continue;
+                    }
+                    else if (c < '0' || c > '9') {
+                        nc++;
+                    }
+                    num.append(c);
                 }
 
-                if (num.length() > 0) {
-                    if (lt == 'D' || lt == 'd') {
-                        return Double.valueOf(num.toString());
-                    } else if (lt == 'L' || lt == 'l') {
-                        return Long.valueOf(num.toString());
-                    } else {
-                        if (hasDot) {
-                            return Float.valueOf(num.toString());
-                        } else {
-                            return Integer.valueOf(num.toString());
-                        }
+                if (nc > 0 || dc > 1) return str;
+
+                if (di) num.append(ce);
+
+                final String s = num.toString();
+
+                try {
+                    if (df) return Float.valueOf(s);
+                    if (db) return Double.valueOf(s);
+                    if (lg) return Long.valueOf(s);
+                    if (dm) return new BigDecimal(s);
+
+                    if (dc > 0) {
+                        return Float.valueOf(s);
+                    }
+                    else {
+                        return Integer.valueOf(s);
                     }
                 }
+                catch (NumberFormatException e) {
+                    return str;
+                }
+            }
 
-                return str;
+            public boolean isDouble(char c) {
+                return c == 'D' || c == 'd';
+            }
+
+            public boolean isFloat(char c) {
+                return c == 'F' || c == 'f';
+            }
+
+            public boolean isLong(char c) {
+                return c == 'L' || c == 'l';
+            }
+
+            public boolean isDecimal(char c) {
+                return c == 'N' || c == 'n';
             }
 
             @Override
@@ -122,7 +167,7 @@ public class Eval {
      *
      * @param line 参数行
      * @param type 解析类型
-     * @param <T> 命令行结果类型
+     * @param <T>  命令行结果类型
      * @return 解析后命令行
      */
     @NotNull
@@ -140,36 +185,44 @@ public class Eval {
                 if (esc) {
                     buff.append(c);
                     esc = false;
-                } else {
+                }
+                else {
                     esc = true;
                 }
-            } else if (c == '"' || c == '\'') {
+            }
+            else if (c == '"' || c == '\'') {
                 if (esc) {
                     buff.append(c);
                     esc = false;
-                } else {
+                }
+                else {
                     if (qto == 0) {
                         qto = c;
-                    } else {
+                    }
+                    else {
                         if (qto == c) {
                             typedAdd(args, buff, type.forceStr());
                             buff.setLength(0);
                             qto = 0;
-                        } else {
+                        }
+                        else {
                             buff.append(c);
                         }
                     }
                 }
-            } else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+            }
+            else if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
                 if (qto > 0) {
                     buff.append(c);
-                } else {
+                }
+                else {
                     if (buff.length() > 0) {
                         typedAdd(args, buff, type);
                         buff.setLength(0);
                     }
                 }
-            } else {
+            }
+            else {
                 if (esc) {
                     buff.append('\\');
                     esc = false;
@@ -202,16 +255,19 @@ public class Eval {
             if (c == esc) {
                 cnt++;
                 buf.append(c);
-            } else {
+            }
+            else {
                 if (c == spt) {
                     if (cnt % 2 == 0) {
                         buf.setCharAt(buf.length() - 1, c);
-                    } else {
+                    }
+                    else {
                         typedAdd(arr, buf, typ);
                         buf.setLength(0);
                         cnt = 1;
                     }
-                } else {
+                }
+                else {
                     cnt = 1;
                     buf.append(c);
                 }

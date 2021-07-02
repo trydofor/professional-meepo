@@ -34,7 +34,8 @@ public class RnaElse extends Tock implements Rng {
             for (Exon exon : gene) {
                 exon.merge(acid, buff);
             }
-        } else {
+        }
+        else {
             logger.trace("[👹Merge:tock] skip RNA:ELSE tock={}", tock);
         }
     }
@@ -67,7 +68,8 @@ public class RnaElse extends Tock implements Rng {
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class RnaRunTest extends TraceTest {
 
-    RnaRun d1 = new RnaRun("// DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(0, 35,1,1), Life.parse("1-3"), "os", Pattern.compile("rand"), "echo $RANDOM", false);
-    RnaRun d2 = new RnaRun(" // DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(1, 36,1,1), Life.parse("1-3"), "os", Pattern.compile("rand"), "echo $RANDOM", false);
+    RnaRun d1 = new RnaRun("// DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(0, 35, 1, 1), Life.parse("1-3"), "os", Pattern.compile("rand"), "echo $RANDOM", false);
+    RnaRun d2 = new RnaRun(" // DNA:RUN os/rand/echo $RANDOM/1-3", new Clop(1, 36, 1, 1), Life.parse("1-3"), "os", Pattern.compile("rand"), "echo $RANDOM", false);
 
     @Test
     public void testEquals() {

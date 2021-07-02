@@ -72,7 +72,8 @@ public class Now {
         TemporalAccessor tm;
         if (obj instanceof TemporalAccessor) {
             tm = (TemporalAccessor) obj;
-        } else {
+        }
+        else {
             tm = LocalDateTime.now();
         }
         return fmt.format(tm);

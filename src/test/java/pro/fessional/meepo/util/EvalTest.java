@@ -59,14 +59,19 @@ public class EvalTest extends TraceTest {
         assertEquals(Collections.singletonList("12"), Eval.parseArgs("12", Eval.ArgType.Str));
         assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\\", Eval.ArgType.Obj));
         assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\"\\", Eval.ArgType.Obj));
-        assertEquals(Arrays.asList(12, 34L), Eval.parseArgs("12 34L", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(12, 34D), Eval.parseArgs("12 34D", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(-12, 34L), Eval.parseArgs("-12 +34L", Eval.ArgType.Obj));
         assertEquals(Arrays.asList("12", "34L"), Eval.parseArgs("12 34L", Eval.ArgType.Str));
-        assertEquals(Arrays.asList(12, 34L), Eval.parseArgs(" 12 34L ", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(12, 34F), Eval.parseArgs(" 12 34F ", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(12, 34L), Eval.parseArgs(" 1_2 3,4L ", Eval.ArgType.Obj));
         assertEquals(Arrays.asList(12, 34L), Eval.parseArgs("\n 12 \n34L ", Eval.ArgType.Obj));
         assertEquals(Arrays.asList(12D, "3 4"), Eval.parseArgs(" 12D '3 4' ", Eval.ArgType.Obj));
-        assertEquals(Arrays.asList(12, "3' 4"), Eval.parseArgs(" 12 '3\\' 4' ", Eval.ArgType.Obj));
-        assertEquals(Arrays.asList(12, "3' 4"), Eval.parseArgs(" 12 \"3' 4\" ", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(12F, "3' 4"), Eval.parseArgs(" 12F '3\\' 4' ", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList(new BigDecimal("12"), "3' 4"), Eval.parseArgs(" 12N \"3' 4\" ", Eval.ArgType.Obj));
         assertEquals(Arrays.asList(12, "3\" 4"), Eval.parseArgs(" 12 '3\" 4' ", Eval.ArgType.Obj));
+
+        assertEquals(Arrays.asList("0.1.2", "34FF"), Eval.parseArgs(" 0.1.2 34FF ", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList("-1,2-", "34DF"), Eval.parseArgs(" -1,2- 34DF ", Eval.ArgType.Obj));
     }
 
     @Test

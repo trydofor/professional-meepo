@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RnaPutTest extends TraceTest {
 
 
-    RnaPut d1 = new RnaPut("// DNA:PUT os/who/basename $(pwd)/", new Clop(0, 34,1,1), "os", "who", "basename $(pwd)", false);
-    RnaPut d2 = new RnaPut(" // DNA:PUT os/who/basename $(pwd)/", new Clop(1, 35,1,1), "os", "who", "basename $(pwd)", false);
+    RnaPut d1 = new RnaPut("// DNA:PUT os/who/basename $(pwd)/", new Clop(0, 34, 1, 1), "os", "who", "basename $(pwd)", false);
+    RnaPut d2 = new RnaPut(" // DNA:PUT os/who/basename $(pwd)/", new Clop(1, 35, 1, 1), "os", "who", "basename $(pwd)", false);
 
     @Test
     public void testEquals() {

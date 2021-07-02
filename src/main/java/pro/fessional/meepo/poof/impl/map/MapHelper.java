@@ -43,13 +43,15 @@ public class MapHelper {
         ArrayList<String> navi = Eval.split(key, Const.OBJ$NAVI_DOT);
         if (navi.size() > 1) {
             work.add(new RnaWarmed(type, key, navi.toArray(ARR$EMPTY_STRING), KIND_NAVI));
-        } else {
+        }
+        else {
             List<String> args = Eval.parseArgs(key, ArgType.Str);
             if (args.size() > 1) {
                 String cmd = args.get(0);
                 String[] arg = args.subList(1, args.size()).toArray(ARR$EMPTY_STRING);
                 work.add(new RnaWarmed(type, cmd, arg, KIND_FUNC));
-            } else {
+            }
+            else {
                 work.add(new RnaWarmed(type, key, ARR$EMPTY_STRING, KIND_PURE));
             }
         }
@@ -85,7 +87,8 @@ public class MapHelper {
                 }
                 if (obj == null) {
                     return null;
-                } else {
+                }
+                else {
                     ctx = obj;
                 }
             }
@@ -107,7 +110,8 @@ public class MapHelper {
         if (ctx instanceof Map) {
             Map<?, ?> map = (Map<?, ?>) ctx;
             obj = map.get(key);
-        } else {
+        }
+        else {
             obj = null;
         }
         return obj;
@@ -123,9 +127,9 @@ public class MapHelper {
 
                 final String nm = md.getName();
                 if (nm.equals(key)
-                        || isGetter(nm, "get", key)
-                        || isGetter(nm, "is", key)
-                        || isGetter(nm, "has", key)
+                    || isGetter(nm, "get", key)
+                    || isGetter(nm, "is", key)
+                    || isGetter(nm, "has", key)
                 ) {
                     return md;
                 }
@@ -141,12 +145,15 @@ public class MapHelper {
         try {
             if (ref instanceof Method) {
                 obj = ((Method) ref).invoke(ctx);
-            } else if (ref instanceof Field) {
+            }
+            else if (ref instanceof Field) {
                 obj = ((Field) ref).get(ctx);
-            } else {
+            }
+            else {
                 obj = null;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new IllegalStateException("failed to reflect ok=" + key, e);
         }
         return obj;
@@ -155,9 +162,9 @@ public class MapHelper {
     private static boolean isGetter(String name, String pref, String prop) {
         final int of = pref.length(), pl = prop.length(), ln = name.length();
         return ln - of == pl
-                && name.startsWith(pref)
-                && name.charAt(of) == Character.toUpperCase(prop.charAt(0))
-                && name.regionMatches(of + 1, prop, 1, pl - 1);
+               && name.startsWith(pref)
+               && name.charAt(of) == Character.toUpperCase(prop.charAt(0))
+               && name.regionMatches(of + 1, prop, 1, pl - 1);
     }
 
     private static class Key {

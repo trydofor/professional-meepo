@@ -33,10 +33,12 @@ public class UriEngine implements RnaEngine {
         Object obj = null;
         try {
             obj = ctx.computeIfAbsent(expr.expr, Read::read);
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
-            } else {
+            }
+            else {
                 throw new IllegalStateException(expr.toString(), t);
             }
         }

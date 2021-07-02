@@ -66,7 +66,8 @@ public class DnaRaw extends Exon {
             buff.append("'}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

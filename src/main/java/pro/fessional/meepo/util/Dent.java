@@ -34,7 +34,8 @@ public class Dent {
     public static void write(Writer out, char[] str) {
         try {
             out.write(str);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -56,7 +57,8 @@ public class Dent {
             for (int i = 0; i < s; i++) {
                 if (ng) {
                     sb.append("#-");
-                } else {
+                }
+                else {
                     sb.append("|-");
                 }
             }
@@ -74,7 +76,8 @@ public class Dent {
             for (char c : str) {
                 lineIt(out, c);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -89,7 +92,8 @@ public class Dent {
             for (int i = off; i < end; i++) {
                 lineIt(out, str.charAt(i));
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -97,13 +101,17 @@ public class Dent {
     private static void lineIt(Writer out, char c) throws IOException {
         if (c == '\\') {
             out.append("\\\\");
-        } else if (c == '\r') {
+        }
+        else if (c == '\r') {
             out.append("\\r");
-        } else if (c == '\n') {
+        }
+        else if (c == '\n') {
             out.append("\\n");
-        } else if (c == '\t') {
+        }
+        else if (c == '\t') {
             out.append("\\t");
-        } else {
+        }
+        else {
             out.append(c);
         }
     }
@@ -120,11 +128,13 @@ public class Dent {
             for (int i = lft; i > 0; i -= LEFT.length) {
                 if (i >= LEFT.length) {
                     out.write(LEFT);
-                } else {
+                }
+                else {
                     out.write(LEFT, 0, i);
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -139,12 +149,14 @@ public class Dent {
                 if (o == null) continue;
                 if (f) {
                     indent(out, lft);
-                } else {
+                }
+                else {
                     f = true;
                 }
                 toString(out, o);
             }
-        } else if (clz.isArray()) {
+        }
+        else if (clz.isArray()) {
             boolean f = false;
             for (int i = 0, len = Array.getLength(val); i < len; i++) {
                 Object o = Array.get(val, i);
@@ -152,12 +164,14 @@ public class Dent {
 
                 if (f) {
                     indent(out, lft);
-                } else {
+                }
+                else {
                     f = true;
                 }
                 toString(out, o);
             }
-        } else {
+        }
+        else {
             toString(out, val);
         }
     }
@@ -169,43 +183,60 @@ public class Dent {
             StringBuffer buf = ((StringWriter) out).getBuffer();
             if (val instanceof CharSequence) {
                 buf.append((CharSequence) val);
-            } else if (val instanceof Integer) {
-                buf.append(((Integer) val).intValue());
-            } else if (val instanceof Long) {
-                buf.append(((Long) val).longValue());
-            } else if (val instanceof Double) {
-                buf.append(((Double) val).doubleValue());
-            } else if (val instanceof Float) {
-                buf.append(((Float) val).floatValue());
-            } else if (val instanceof Boolean) {
-                buf.append(((Boolean) val).booleanValue());
-            } else if (val instanceof Short) {
-                buf.append(((Short) val).shortValue());
-            } else if (val instanceof Byte) {
-                buf.append(((Byte) val).byteValue());
-            } else if (val instanceof Character) {
-                buf.append(((Character) val).charValue());
-            } else if (val instanceof BigDecimal) {
-                buf.append(((BigDecimal) val).toPlainString());
-            } else if (val instanceof char[]) {
-                buf.append((char[]) val);
-            } else {
-                buf.append(val.toString());
             }
-        } else {
+            else if (val instanceof Integer) {
+                buf.append(((Integer) val).intValue());
+            }
+            else if (val instanceof Long) {
+                buf.append(((Long) val).longValue());
+            }
+            else if (val instanceof Double) {
+                buf.append(((Double) val).doubleValue());
+            }
+            else if (val instanceof Float) {
+                buf.append(((Float) val).floatValue());
+            }
+            else if (val instanceof Boolean) {
+                buf.append(((Boolean) val).booleanValue());
+            }
+            else if (val instanceof Short) {
+                buf.append(((Short) val).shortValue());
+            }
+            else if (val instanceof Byte) {
+                buf.append(((Byte) val).byteValue());
+            }
+            else if (val instanceof Character) {
+                buf.append(((Character) val).charValue());
+            }
+            else if (val instanceof BigDecimal) {
+                buf.append(((BigDecimal) val).toPlainString());
+            }
+            else if (val instanceof char[]) {
+                buf.append((char[]) val);
+            }
+            else {
+                buf.append(val);
+            }
+        }
+        else {
             try {
                 if (val instanceof String) {
                     out.write((String) val);
-                } else if (val instanceof Character) {
+                }
+                else if (val instanceof Character) {
                     out.write((Character) val);
-                } else if (val instanceof BigDecimal) {
+                }
+                else if (val instanceof BigDecimal) {
                     out.write(((BigDecimal) val).toPlainString());
-                } else if (val instanceof char[]) {
+                }
+                else if (val instanceof char[]) {
                     out.write((char[]) val);
-                } else {
+                }
+                else {
                     out.write(val.toString());
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new IllegalStateException(e);
             }
         }

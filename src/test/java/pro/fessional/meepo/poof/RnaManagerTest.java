@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,11 +90,26 @@ public class RnaManagerTest {
     @Test
     public void testFunAbs() {
         String meepo = "/* hi-meepo */\n" +
-                "/* RNA:put fun/fun:abs/return Math.abs(((Number)obj).intValue())/ */\n" +
-                "/* rna:use /now/number|fun:abs/*/now";
-        Gene gene = Parser.parse(meepo);
+                       "/* RNA:put fun/fun:abs/return Math.abs(((Number)obj).intValue())/ */\n" +
+                       "/* rna:use /now/number|fun:abs/*/now";
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("number", -1);
+        Gene gene = Parser.parse(meepo);
+        String out = gene.merge(ctx);
+        System.out.println(out);
+        assertEquals("1", out);
+    }
+
+    @Test
+    public void testFunCtx() {
+        String meepo = "/* hi-meepo */\n" +
+                       "/* rna:use /now/number|abs/*/now";
+        Map<String, Object> ctx = new HashMap<>();
+        Function<Number, Integer> abs = number -> Math.abs(number.intValue());
+        ctx.put("fun:abs", abs);
+        ctx.put("number", -1);
+
+        Gene gene = Parser.parse(meepo);
         String out = gene.merge(ctx);
         System.out.println(out);
         assertEquals("1", out);

@@ -13,9 +13,9 @@ class NowTest {
 
     @Test
     void now() {
-        final String s1 = Now.now(new Date(),null);
-        final String s2 = Now.now(LocalDateTime.now(),null);
-        final String s3 = Now.now(null,null);
+        final String s1 = Now.now(new Date(), null);
+        final String s2 = Now.now(LocalDateTime.now(), null);
+        final String s3 = Now.now(null, null);
         System.out.println(s1);
         System.out.println(s2);
         System.out.println(s3);

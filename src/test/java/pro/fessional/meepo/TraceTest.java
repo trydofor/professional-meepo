@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 public class TraceTest {
 
     @BeforeAll
-    public static void setTrace(){
-        System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo","trace");
+    public static void setTrace() {
+        System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", "trace");
     }
 }

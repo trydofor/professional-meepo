@@ -56,17 +56,20 @@ public class MapEngine implements RnaEngine {
                 if (!(obj instanceof JavaEval || obj instanceof Function) && !navi.expr.startsWith(KEY$PREFIX)) {
                     obj = MapHelper.get(ctx, KEY$PREFIX + navi.expr, navi.getTypedWork());
                 }
-            } else {
+            }
+            else {
                 if (obj == null) obj = System.getProperty(navi.expr);
                 if (obj == null) obj = System.getenv(navi.expr);
             }
 
             if (obj instanceof Supplier) {
                 obj = ((Supplier<?>) obj).get();
-            } else if (obj instanceof JavaEval) {
+            }
+            else if (obj instanceof JavaEval) {
                 Object[] args = navi.kind == KIND_FUNC ? navi.getTypedWork() : ARR$EMPTY_OBJECT;
                 obj = ((JavaEval) obj).eval(ctx, null, args);
-            } else if (obj instanceof Function) {
+            }
+            else if (obj instanceof Function) {
                 @SuppressWarnings("unchecked")
                 Function<Object, Object> fun = (Function<Object, Object>) obj;
                 Object arg = navi.kind == KIND_FUNC ? navi.getTypedWork() : null;
@@ -83,15 +86,18 @@ public class MapEngine implements RnaEngine {
                     Object cmd = ctx.get(key);
                     if (cmd instanceof JavaEval) {
                         obj = ((JavaEval) cmd).eval(ctx, obj, arg);
-                    } else if (cmd instanceof Function) {
+                    }
+                    else if (cmd instanceof Function) {
                         @SuppressWarnings("unchecked")
                         Function<Object, Object> fun = (Function<Object, Object>) cmd;
                         obj = fun.apply(obj);
-                    } else {
+                    }
+                    else {
                         if (key.startsWith(KEY$PREFIX)) {
                             ie = true;
                             throw new IllegalStateException("failed to get cmd, expr=" + pip);
-                        } else {
+                        }
+                        else {
                             key = KEY$PREFIX + key;
                             continue;
                         }
@@ -99,13 +105,16 @@ public class MapEngine implements RnaEngine {
                     break;
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
-            } else {
+            }
+            else {
                 if (ie) {
                     throw t;
-                } else {
+                }
+                else {
                     throw new IllegalStateException(expr + ", current=" + curr, t);
                 }
             }

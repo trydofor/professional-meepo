@@ -37,7 +37,8 @@ public class RnaDone extends Tock {
         super(text9, edge, tock);
         if (name instanceof Set) {
             this.name = Collections.unmodifiableSet((Set<String>) name);
-        } else {
+        }
+        else {
             Set<String> set = new HashSet<>(name);
             this.name = Collections.unmodifiableSet(set);
         }
@@ -51,7 +52,8 @@ public class RnaDone extends Tock {
     public void merge(Acid acid, Writer buff) {
         if (tock.isEmpty()) {
             logger.trace("[👹Merge:tock] skip RNA:DONE tock is empty");
-        } else {
+        }
+        else {
             logger.trace("[👹Merge:tock] deal RNA:DONE tock={}", tock);
             acid.execute.remove(tock);
         }
@@ -63,7 +65,7 @@ public class RnaDone extends Tock {
         if (o == null || getClass() != o.getClass()) return false;
         RnaDone rnaDone = (RnaDone) o;
         return name.equals(rnaDone.name) &&
-                tock.equals(rnaDone.tock);
+               tock.equals(rnaDone.tock);
     }
 
     @Override
@@ -88,7 +90,8 @@ public class RnaDone extends Tock {
             buff.append("]}");
             buff.append("; ");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

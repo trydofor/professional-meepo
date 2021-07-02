@@ -95,9 +95,11 @@ public class RnaManager {
                 RnaEngine old = engines.put(t, engine);
                 if (old == null) {
                     logger.info("register new engine for type={}, clz={}", t, clz);
-                } else if (old == engine) {
+                }
+                else if (old == engine) {
                     logger.info("skip same engine for type={}", t);
-                } else {
+                }
+                else {
                     logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
                 }
             }
@@ -166,9 +168,11 @@ public class RnaManager {
         Object old = functions.put(key, fun);
         if (old == null) {
             logger.info("register function for key={}, info={}", key, info);
-        } else if (fun == old) {
+        }
+        else if (fun == old) {
             logger.warn("skip same function for key={}, info={}", key, info);
-        } else {
+        }
+        else {
             logger.warn("replace function for key={}, info={}", key, info);
         }
         funCount = functions.size();

@@ -70,7 +70,8 @@ public class RnaWhen extends Tock implements Rng {
 
             if (nope == af) {
                 return th;
-            } else {
+            }
+            else {
                 return null;
             }
         });
@@ -80,7 +81,8 @@ public class RnaWhen extends Tock implements Rng {
             for (Exon exon : gene) {
                 exon.merge(acid, buff);
             }
-        } else {
+        }
+        else {
             logger.trace("[👹Merge:tock] skip RNA:WHEN tock={}, type={}, expr={}", tock, type, expr);
         }
     }
@@ -91,10 +93,10 @@ public class RnaWhen extends Tock implements Rng {
         if (o == null || getClass() != o.getClass()) return false;
         RnaWhen rnaWhen = (RnaWhen) o;
         return nope == rnaWhen.nope &&
-                mute == rnaWhen.mute &&
-                tock.equals(rnaWhen.tock) &&
-                type.equals(rnaWhen.type) &&
-                expr.equals(rnaWhen.expr);
+               mute == rnaWhen.mute &&
+               tock.equals(rnaWhen.tock) &&
+               type.equals(rnaWhen.type) &&
+               expr.equals(rnaWhen.expr);
     }
 
     @Override
@@ -124,7 +126,8 @@ public class RnaWhen extends Tock implements Rng {
             buff.append(String.valueOf(mute));
             buff.append("}");
             edge.toString(buff);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

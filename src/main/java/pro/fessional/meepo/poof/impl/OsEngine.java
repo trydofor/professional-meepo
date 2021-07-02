@@ -42,11 +42,12 @@ public class OsEngine implements RnaEngine {
         RnaWarmed warmed;
         if (ENGINE$CMD.equalsIgnoreCase(type) || ENGINE$SH.equalsIgnoreCase(type)) {
             warmed = new RnaWarmed(type, expr);
-        } else {
+        }
+        else {
             warmed = new RnaWarmed(type, expr, Eval.parseArgs(expr, ArgType.Str));
             if (!ENGINE$EXE.equalsIgnoreCase(type)) {
                 warmed.info = "\nunsupported type=" +
-                        type + ", expr=" + expr;
+                              type + ", expr=" + expr;
             }
         }
         return warmed;
@@ -66,9 +67,11 @@ public class OsEngine implements RnaEngine {
 
         if (ENGINE$CMD.equalsIgnoreCase(expr.type)) {
             builder.command("cmd", "/c", expr.expr);
-        } else if (ENGINE$SH.equalsIgnoreCase(expr.type)) {
+        }
+        else if (ENGINE$SH.equalsIgnoreCase(expr.type)) {
             builder.command("bash", "-c", expr.expr);
-        } else {
+        }
+        else {
             List<String> args = expr.getTypedWork();
             builder.command(args);
         }
@@ -92,13 +95,16 @@ public class OsEngine implements RnaEngine {
             }
 
             p.waitFor();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             if (mute) {
                 logger.warn("mute failed-eval " + expr, t);
-            } else {
+            }
+            else {
                 throw new IllegalStateException(expr.toString(), t);
             }
-        } finally {
+        }
+        finally {
             if (p != null) p.destroy();
         }
         return out;

@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class RnaUseTest extends TraceTest {
 
-    RnaUse d1 = new RnaUse("// DNA:USE /meepo/who/1-3", new Clop(0, 25,1,1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
-    RnaUse d2 = new RnaUse(" // DNA:USE /meepo/who/1-3", new Clop(1, 26,1,1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
+    RnaUse d1 = new RnaUse("// DNA:USE /meepo/who/1-3", new Clop(0, 25, 1, 1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
+    RnaUse d2 = new RnaUse(" // DNA:USE /meepo/who/1-3", new Clop(1, 26, 1, 1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
 
     @Test
     public void testEquals() {
