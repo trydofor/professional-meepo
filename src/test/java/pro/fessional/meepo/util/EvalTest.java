@@ -55,10 +55,12 @@ public class EvalTest extends TraceTest {
 
     @Test
     public void parseArgs() {
+        assertEquals(Collections.singletonList(""), Eval.parseArgs("\"\"", Eval.ArgType.Str));
         assertEquals(Collections.singletonList(12), Eval.parseArgs("12", Eval.ArgType.Obj));
         assertEquals(Collections.singletonList("12"), Eval.parseArgs("12", Eval.ArgType.Str));
         assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\\", Eval.ArgType.Obj));
         assertEquals(Collections.singletonList("12\\"), Eval.parseArgs("12\"\\", Eval.ArgType.Obj));
+        assertEquals(Arrays.asList("12\"", ""), Eval.parseArgs("12\\\" \"\"", Eval.ArgType.Obj));
         assertEquals(Arrays.asList(12, 34D), Eval.parseArgs("12 34D", Eval.ArgType.Obj));
         assertEquals(Arrays.asList(-12, 34L), Eval.parseArgs("-12 +34L", Eval.ArgType.Obj));
         assertEquals(Arrays.asList("12", "34L"), Eval.parseArgs("12 34L", Eval.ArgType.Str));

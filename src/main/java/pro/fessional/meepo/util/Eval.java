@@ -201,7 +201,7 @@ public class Eval {
                     }
                     else {
                         if (qto == c) {
-                            typedAdd(args, buff, type.forceStr());
+                            typedAdd(args, buff, type.forceStr(), false);
                             buff.setLength(0);
                             qto = 0;
                         }
@@ -280,8 +280,12 @@ public class Eval {
     }
 
     private static <T> void typedAdd(List<? super T> list, StringBuilder buff, ArgType<T> type) {
+        typedAdd(list, buff, type, true);
+    }
+
+    private static <T> void typedAdd(List<? super T> list, StringBuilder buff, ArgType<T> type, boolean plain) {
         int[] ps = Seek.trimBlank(buff, 0, buff.length());
-        if (ps[1] <= ps[0]) return;
+        if (plain && ps[1] <= ps[0]) return;
         String str = buff.substring(ps[0], ps[1]);
         list.add(type.transform(str));
     }

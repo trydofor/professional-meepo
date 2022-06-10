@@ -1,0 +1,21 @@
+<!-- HI-MEEPO -->
+<ul>
+    <!-- RNA:USE /code/it.code/* -->
+    <!-- RNA:EACH map/1/items/it -->
+    <!--    RNA:USE /name/it.name/* -->
+    <!--    RNA:WHEN /yes/it._first/bg -->
+    <li value="code" style="color:green">rem0-name</li>
+    <!--    RNA:WHEN /yes/it._last/bg -->
+    <li value="code" style="color:yellow">rem2-name</li>
+    <!--    RNA:WHEN /yes/it._count | mod y "" /bg -->
+    <li value="code" style="color:red">rem1-name</li>
+    <!--    RNA:ELSE bg -->
+    <li value="code" style="color:blue">rem1-name</li>
+    <!--    RNA:DONE bg -->
+    <!-- RNA:ELSE it -->
+    <li>no item</li>
+    <!-- RNA:DONE it -->
+</ul>
+<!-- RNA:USE /total/it._total/ -->
+<!-- RNA:USE /count/it._count/ -->
+<div>result=count/total</div>

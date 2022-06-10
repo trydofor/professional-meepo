@@ -35,7 +35,7 @@
 ```
 # index = 3; count = 4;
 {{ index | mod even odd }}
-{{ count | mod even odd }}
+{{ count | mod even "" }}
 # 输出 odd even
 ```
 

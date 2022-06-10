@@ -27,7 +27,12 @@ public class Cal {
 
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
-            return arg[((Number) obj).intValue() % arg.length];
+            final Object rc = arg[((Number) obj).intValue() % arg.length];
+            if (rc instanceof String) {
+                final Object vl = ctx.get(rc);
+                if (vl != null) return vl;
+            }
+            return rc;
         }
     };
 

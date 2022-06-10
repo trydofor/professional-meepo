@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.RandomAccess;
 
 import static pro.fessional.meepo.bind.Const.BLT$EACH_COUNT;
+import static pro.fessional.meepo.bind.Const.BLT$EACH_FIRST;
+import static pro.fessional.meepo.bind.Const.BLT$EACH_LAST;
 import static pro.fessional.meepo.bind.Const.BLT$EACH_TOTAL;
 import static pro.fessional.meepo.bind.Const.OBJ$NAVI_DOT;
 
@@ -96,21 +98,28 @@ public class RnaEach extends Tock implements Rng {
 
             final String keyTotal = tock + OBJ$NAVI_DOT + BLT$EACH_TOTAL;
             final String keyCount = tock + OBJ$NAVI_DOT + BLT$EACH_COUNT;
+            final String keyFirst = tock + OBJ$NAVI_DOT + BLT$EACH_FIRST;
+            final String keyLast = tock + OBJ$NAVI_DOT + BLT$EACH_LAST;
 
             ctx.put(keyTotal, size);
             ctx.put(keyCount, 0);
 
-            loop(acid, buff, obj, size, tock, keyCount);
+            loop(acid, buff, obj, size, tock, keyCount, keyFirst, keyLast);
         }
     }
 
-    private void loop(Acid acid, Writer buf, Object obj, int size, String keyRefer, String keyCount) {
+    private void loop(Acid acid, Writer buf, Object obj, int size,
+                      String keyRefer, String keyCount, String keyFirst, String keyLast) {
         final Map<String, Object> ctx = acid.context;
+        final int lastc = (size - 1) / Math.abs(step) + 1;
+
         if (obj instanceof List && obj instanceof RandomAccess) {
             int count = 1;
             List<?> list = (List<?>) obj;
             if (step > 0) {
                 for (int i = 0; i < size; i += step) {
+                    ctx.put(keyFirst, count == 1);
+                    ctx.put(keyLast, count == lastc);
                     ctx.put(keyRefer, list.get(i));
                     ctx.put(keyCount, count++);
                     for (Exon exon : gene) {
@@ -120,6 +129,8 @@ public class RnaEach extends Tock implements Rng {
             }
             else {
                 for (int i = size - 1; i >= 0; i += step) {
+                    ctx.put(keyFirst, count == 1);
+                    ctx.put(keyLast, count == lastc);
                     ctx.put(keyRefer, list.get(i));
                     ctx.put(keyCount, count++);
                     for (Exon exon : gene) {
@@ -136,12 +147,13 @@ public class RnaEach extends Tock implements Rng {
             if (step > 0) {
                 for (Object it : col) {
                     if (count % step != 0) continue;
+                    ctx.put(keyFirst, count == 1);
+                    ctx.put(keyLast, count == lastc);
                     ctx.put(keyRefer, it);
-                    ctx.put(keyCount, count);
+                    ctx.put(keyCount, count++);
                     for (Exon exon : gene) {
                         exon.merge(acid, buf);
                     }
-                    count++;
                 }
                 return;
             }
@@ -150,12 +162,13 @@ public class RnaEach extends Tock implements Rng {
                     for (Iterator<?> rit = ((Deque<?>) obj).descendingIterator(); rit.hasNext(); ) {
                         Object it = rit.next();
                         if (count % step != 0) continue;
+                        ctx.put(keyFirst, count == 1);
+                        ctx.put(keyLast, count == lastc);
                         ctx.put(keyRefer, it);
-                        ctx.put(keyCount, count);
+                        ctx.put(keyCount, count++);
                         for (Exon exon : gene) {
                             exon.merge(acid, buf);
                         }
-                        count++;
                     }
                     return;
                 }
@@ -169,6 +182,8 @@ public class RnaEach extends Tock implements Rng {
             int count = 1;
             if (step > 0) {
                 for (int i = 0; i < size; i += step) {
+                    ctx.put(keyFirst, count == 1);
+                    ctx.put(keyLast, count == lastc);
                     ctx.put(keyRefer, Array.get(obj, i));
                     ctx.put(keyCount, count++);
                     for (Exon exon : gene) {
@@ -178,6 +193,8 @@ public class RnaEach extends Tock implements Rng {
             }
             else {
                 for (int i = size - 1; i >= 0; i += step) {
+                    ctx.put(keyFirst, count == 1);
+                    ctx.put(keyLast, count == lastc);
                     ctx.put(keyRefer, Array.get(obj, i));
                     ctx.put(keyCount, count++);
                     for (Exon exon : gene) {

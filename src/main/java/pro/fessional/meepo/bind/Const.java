@@ -57,4 +57,6 @@ public interface Const {
     // each
     String BLT$EACH_COUNT = "_count";
     String BLT$EACH_TOTAL = "_total";
+    String BLT$EACH_FIRST = "_first";
+    String BLT$EACH_LAST = "_last";
 }

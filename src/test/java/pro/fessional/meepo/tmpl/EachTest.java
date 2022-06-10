@@ -52,4 +52,9 @@ public class EachTest extends TraceTest {
         TmplHelp.assertTmpl("/template/each/each-c7n2f3-o.htm", "/template/each/each-c7n2f3-i.htm", ctx);
     }
 
+    @Test
+    public void eachC7s1f7() {
+        TmplHelp.assertTmpl("/template/each/each-c7s1f7-o.htm", "/template/each/each-c7s1f7-i1.htm", ctx);
+        TmplHelp.assertTmpl("/template/each/each-c7s1f7-o.htm", "/template/each/each-c7s1f7-i2.htm", ctx);
+    }
 }
