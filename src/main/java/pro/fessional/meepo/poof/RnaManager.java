@@ -69,6 +69,7 @@ public class RnaManager {
 
         //
         RnaManager.register(Cal.funMod);
+        RnaManager.register(Cal.funAbs);
     }
 
     /**

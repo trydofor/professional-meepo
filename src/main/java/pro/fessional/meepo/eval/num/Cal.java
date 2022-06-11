@@ -2,9 +2,12 @@ package pro.fessional.meepo.eval.num;
 
 import org.jetbrains.annotations.NotNull;
 import pro.fessional.meepo.eval.NameEval;
+import pro.fessional.meepo.poof.impl.map.MapHelper;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
+import static pro.fessional.meepo.eval.FunEnv.FUN$ABS;
 import static pro.fessional.meepo.eval.FunEnv.FUN$MOD;
 
 
@@ -27,12 +30,51 @@ public class Cal {
 
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
-            final Object rc = arg[((Number) obj).intValue() % arg.length];
-            if (rc instanceof String) {
-                final Object vl = ctx.get(rc);
-                if (vl != null) return vl;
+            final int num;
+            if (obj == null) {
+                num = 0;
             }
-            return rc;
+            else if (obj instanceof Boolean) {
+                num = (Boolean) obj ? 1 : 0;
+            }
+            else if (obj instanceof Number) {
+                num = ((Number) obj).intValue();
+            }
+            else {
+                num = new BigDecimal(obj.toString()).intValue();
+            }
+
+            final String k = (String) arg[num % arg.length];
+            return MapHelper.eval(ctx, k, k);
+        }
+    };
+
+    public static final NameEval funAbs = new NameEval() {
+        @Override
+        public @NotNull String[] name() {
+            return new String[]{FUN$ABS};
+        }
+
+        @Override
+        public @NotNull String info() {
+            return "取数字的绝对值，返回Long或BigDecimal";
+        }
+
+        @Override
+        public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
+            if (obj == null) {
+                return 0L;
+            }
+
+            if (obj instanceof Boolean) {
+                return (Boolean) obj ? 0L : 1L;
+            }
+
+            if (obj instanceof Byte || obj instanceof Short || obj instanceof Integer || obj instanceof Long) {
+                return Math.abs(((Number) obj).longValue());
+            }
+
+            return new BigDecimal(obj.toString()).abs();
         }
     };
 

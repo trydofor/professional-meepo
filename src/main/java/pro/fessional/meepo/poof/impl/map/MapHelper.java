@@ -26,6 +26,7 @@ import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
 public class MapHelper {
 
     private static final ConcurrentHashMap<Key, Member> MEMBER = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String[]> NAVEXP = new ConcurrentHashMap<>();
 
     public static final int KIND_PURE = 1;
     public static final int KIND_NAVI = 2;
@@ -67,6 +68,15 @@ public class MapHelper {
         }
 
         return new RnaWarmed(type, expr, work);
+    }
+
+    public static Object eval(Object ctx, String expr, Object elze) {
+        String[] pts = ARR$EMPTY_STRING;
+        if (expr.indexOf(Const.OBJ$NAVI_DOT) > 0) {
+            pts = NAVEXP.computeIfAbsent(expr, k -> Eval.split(expr, Const.OBJ$NAVI_DOT).toArray(ARR$EMPTY_STRING));
+        }
+        final Object rt = get(ctx, expr, pts);
+        return rt == null ? elze : rt;
     }
 
     public static Object get(Object ctx, String expr, String[] part) {
