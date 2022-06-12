@@ -44,8 +44,13 @@ public class Cal {
                 num = new BigDecimal(obj.toString()).intValue();
             }
 
-            final String k = (String) arg[num % arg.length];
-            return MapHelper.eval(ctx, k, k);
+            final Object k = arg[num % arg.length];
+            if (k instanceof CharSequence) {
+                return MapHelper.arg(ctx, (CharSequence) k);
+            }
+            else {
+                return k;
+            }
         }
     };
 

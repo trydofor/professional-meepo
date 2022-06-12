@@ -175,7 +175,7 @@ public class Case {
             if (obj == null) return "";
             String txt = obj.toString();
             if (arg.length > 1) {
-                Locale loc = Locale.forLanguageTag((String) arg[0]);
+                Locale loc = Locale.forLanguageTag(arg[0].toString());
                 return txt.toUpperCase(loc);
             }
             else {
@@ -200,7 +200,7 @@ public class Case {
             if (obj == null) return "";
             String txt = obj.toString();
             if (arg.length > 1) {
-                Locale loc = Locale.forLanguageTag((String) arg[0]);
+                Locale loc = Locale.forLanguageTag(arg[0].toString());
                 return txt.toLowerCase(loc);
             }
             else {

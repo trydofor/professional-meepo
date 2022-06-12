@@ -59,7 +59,7 @@ public class MapHelper {
 
         while (it.hasNext()) {
             List<Object> pipe = Eval.parseArgs(it.next(), ArgType.Obj);
-            String cmd = (String) pipe.get(0);
+            String cmd = pipe.get(0).toString();
             Object[] arg = ARR$EMPTY_OBJECT;
             if (pipe.size() > 1) {
                 arg = pipe.subList(1, pipe.size()).toArray();
@@ -70,13 +70,18 @@ public class MapHelper {
         return new RnaWarmed(type, expr, work);
     }
 
-    public static Object eval(Object ctx, String expr, Object elze) {
-        String[] pts = ARR$EMPTY_STRING;
-        if (expr.indexOf(Const.OBJ$NAVI_DOT) > 0) {
-            pts = NAVEXP.computeIfAbsent(expr, k -> Eval.split(expr, Const.OBJ$NAVI_DOT).toArray(ARR$EMPTY_STRING));
+    public static Object arg(Object ctx, CharSequence expr) {
+        if (expr instanceof String) {
+            return expr;
         }
-        final Object rt = get(ctx, expr, pts);
-        return rt == null ? elze : rt;
+
+        final String refs = expr.toString();
+        String[] pts = ARR$EMPTY_STRING;
+        if (refs.indexOf(Const.OBJ$NAVI_DOT) > 0) {
+            pts = NAVEXP.computeIfAbsent(refs, k -> Eval.split(refs, Const.OBJ$NAVI_DOT).toArray(ARR$EMPTY_STRING));
+        }
+        final Object rt = get(ctx, refs, pts);
+        return rt == null ? refs : rt;
     }
 
     public static Object get(Object ctx, String expr, String[] part) {

@@ -1,11 +1,9 @@
 package pro.fessional.meepo.eval.num;
 
 import org.junit.jupiter.api.Test;
-import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Holder;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,84 +57,5 @@ class CalTest {
         ctx.put("index", null);
         String s3 = gene.merge(ctx);
         assertEquals("0", s3);
-    }
-
-    private final JavaEval type = (ctx, obj, arg) -> arg[0].getClass().getSimpleName();
-
-    private void checkType(String v, Class<?> t) {
-        Map<String, Object> ctx = new HashMap<>();
-        String hd = "{{ index | type " + v + "}}";
-        final Gene gene = Holder.parse(hd);
-        ctx.put("index", 3);
-        ctx.put("fun:type", type);
-        String s4 = gene.merge(ctx);
-        assertEquals(t.getSimpleName(), s4);
-    }
-
-    @Test
-    void testArgType() {
-        checkType("1000", Integer.class);
-        checkType("1000L", Long.class);
-        checkType("1,000", Integer.class);
-        checkType("1,000L", Long.class);
-        checkType("1_000", Integer.class);
-        checkType("1_000L", Long.class);
-        checkType("-1000", Integer.class);
-        checkType("-1000L", Long.class);
-        checkType("-1,000", Integer.class);
-        checkType("-1,000L", Long.class);
-        checkType("-1_000", Integer.class);
-        checkType("-1_000L", Long.class);
-        checkType("+1000", Integer.class);
-        checkType("+1000L", Long.class);
-        checkType("+1,000", Integer.class);
-        checkType("+1,000L", Long.class);
-        checkType("+1_000", Integer.class);
-        checkType("+1_000L", Long.class);
-
-        checkType("1000.0", Float.class);
-        checkType("1000.0F", Float.class);
-        checkType("1000.0D", Double.class);
-        checkType("1,000.0", Float.class);
-        checkType("1,000.0D", Double.class);
-        checkType("1_000.0", Float.class);
-        checkType("1_000.0D", Double.class);
-        checkType("-1000.0", Float.class);
-        checkType("-1000.0D", Double.class);
-        checkType("-1,000.0", Float.class);
-        checkType("-1,000.0D", Double.class);
-        checkType("-1_000.0", Float.class);
-        checkType("-1_000.0D", Double.class);
-        checkType("+1000.0", Float.class);
-        checkType("+1000.0D", Double.class);
-        checkType("+1,000.0", Float.class);
-        checkType("+1,000.0D", Double.class);
-        checkType("+1_000.0", Float.class);
-        checkType("+1_000.0D", Double.class);
-
-        checkType("1000N", BigDecimal.class);
-        checkType("1,000N", BigDecimal.class);
-        checkType("1_000N", BigDecimal.class);
-        checkType("1000.0N", BigDecimal.class);
-        checkType("1,000.0N", BigDecimal.class);
-        checkType("1_000.0N", BigDecimal.class);
-        checkType("-1000N", BigDecimal.class);
-        checkType("-1,000N", BigDecimal.class);
-        checkType("-1_000N", BigDecimal.class);
-        checkType("-1000.0N", BigDecimal.class);
-        checkType("-1,000.0N", BigDecimal.class);
-        checkType("-1_000.0N", BigDecimal.class);
-        checkType("+1000N", BigDecimal.class);
-        checkType("+1,000N", BigDecimal.class);
-        checkType("+1_000N", BigDecimal.class);
-        checkType("+1000.0N", BigDecimal.class);
-        checkType("+1,000.0N", BigDecimal.class);
-        checkType("+1_000.0N", BigDecimal.class);
-
-        checkType("DNF", String.class);
-        checkType("D,N,F", String.class);
-        checkType("D_N,F", String.class);
-        checkType("-D_N,F", String.class);
-        checkType("+D_N,F", String.class);
     }
 }

@@ -9,6 +9,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+
+import static pro.fessional.meepo.bind.Const.ARG$BOOL_FALSE;
+import static pro.fessional.meepo.bind.Const.ARG$BOOL_TRUE;
+import static pro.fessional.meepo.bind.Const.ARG$NUMBER_DSUF;
+import static pro.fessional.meepo.bind.Const.ARG$NUMBER_FSUF;
+import static pro.fessional.meepo.bind.Const.ARG$NUMBER_LSUF;
+import static pro.fessional.meepo.bind.Const.ARG$NUMBER_NSUF;
+import static pro.fessional.meepo.bind.Const.ARG$NUMBER_REGEX;
 
 /**
  * @author trydofor
@@ -55,89 +64,103 @@ public class Eval {
         return f;
     }
 
+    public static class RefStr implements CharSequence {
+
+        private final String string;
+
+        public RefStr(String string) {
+            this.string = string;
+        }
+
+        @Override public int length() {
+            return string.length();
+        }
+
+        @Override public char charAt(int index) {
+            return string.charAt(index);
+        }
+
+        @Override public CharSequence subSequence(int start, int end) {
+            return string.subSequence(start, end);
+        }
+
+        @NotNull
+        @Override public String toString() {
+            return string;
+        }
+    }
 
     public abstract static class ArgType<T> {
+
         /**
-         * 自动解析字符串或Number
+         * 自动解析成可以识别的对象：Number, Boolean, RefStr
          */
         public static final ArgType<Object> Obj = new ArgType<Object>() {
             @Override
             public Object transform(String str) {
-                final int ed = str.length() - 1;
-                char ce = str.charAt(ed);
-                final boolean di = ce >= '0' && ce <= '9';
-                final boolean df = isFloat(ce);
-                final boolean db = isDouble(ce);
-                final boolean lg = isLong(ce);
-                final boolean dm = isDecimal(ce);
+                // boolean
+                Boolean bol = parseBoolean(str);
+                if (bol != null) return bol;
 
-                if (!di && !df && !db && !lg && !dm) {
-                    return str;
-                }
+                Number num = parseNumber(str);
+                if (num != null) return num;
 
-                StringBuilder num = new StringBuilder(str.length());
-                final char c0 = str.charAt(0);
-                if (c0 != '+') num.append(c0);
-
-                int dc = 0;
-                int nc = 0;
-                for (int i = 1; i < ed; i++) {
-                    char c = str.charAt(i);
-                    if (c == '.') {
-                        dc++;
-                    }
-                    else if (c == '_' || c == ',') {
-                        continue;
-                    }
-                    else if (c < '0' || c > '9') {
-                        nc++;
-                    }
-                    num.append(c);
-                }
-
-                if (nc > 0 || dc > 1) return str;
-
-                if (di) num.append(ce);
-
-                final String s = num.toString();
-
-                try {
-                    if (df) return Float.valueOf(s);
-                    if (db) return Double.valueOf(s);
-                    if (lg) return Long.valueOf(s);
-                    if (dm) return new BigDecimal(s);
-
-                    if (dc > 0) {
-                        return Float.valueOf(s);
-                    }
-                    else {
-                        return Integer.valueOf(s);
-                    }
-                }
-                catch (NumberFormatException e) {
-                    return str;
-                }
-            }
-
-            public boolean isDouble(char c) {
-                return c == 'D' || c == 'd';
-            }
-
-            public boolean isFloat(char c) {
-                return c == 'F' || c == 'f';
-            }
-
-            public boolean isLong(char c) {
-                return c == 'L' || c == 'l';
-            }
-
-            public boolean isDecimal(char c) {
-                return c == 'N' || c == 'n';
+                //
+                return Ref.transform(str);
             }
 
             @Override
-            public ArgType<? extends String> forceStr() {
+            public ArgType<? extends CharSequence> forceStr() {
                 return Str;
+            }
+
+            private Boolean parseBoolean(String str) {
+                if (ARG$BOOL_TRUE.equals(str)) return Boolean.TRUE;
+                if (ARG$BOOL_FALSE.equals(str)) return Boolean.FALSE;
+                return null;
+            }
+
+            private Number parseNumber(String str) {
+                final Matcher mtc = ARG$NUMBER_REGEX.matcher(str);
+                if (!mtc.find()) return null;
+
+                final String bd = mtc.group(2);
+                final StringBuilder sb = new StringBuilder(bd.length() + 1);
+                if ("-".equals(mtc.group(1))) sb.append("-");
+                for (int i = 0, len = bd.length(); i < len; i++) {
+                    char c = bd.charAt(i);
+                    if (c != ',' && c != '_') {
+                        sb.append(c);
+                    }
+                }
+
+                final String body = sb.toString();
+                final String type = mtc.group(3);
+
+                try {
+                    if (ARG$NUMBER_FSUF.equalsIgnoreCase(type)) {
+                        return Float.valueOf(body);
+                    }
+                    if (ARG$NUMBER_DSUF.equalsIgnoreCase(type)) {
+                        return Double.valueOf(body);
+                    }
+                    if (ARG$NUMBER_LSUF.equalsIgnoreCase(type)) {
+                        return Long.valueOf(body);
+                    }
+                    if (ARG$NUMBER_NSUF.equalsIgnoreCase(type)) {
+                        return new BigDecimal(body);
+                    }
+
+                    if (body.contains(".")) {
+                        return Float.valueOf(body);
+                    }
+                    else {
+                        return Integer.valueOf(body);
+                    }
+                }
+                catch (NumberFormatException e) {
+                    return null;
+                }
             }
         };
 
@@ -153,6 +176,18 @@ public class Eval {
             }
         };
 
+        public static final ArgType<RefStr> Ref = new ArgType<RefStr>() {
+            @Override
+            public RefStr transform(String str) {
+                return new RefStr(str);
+            }
+
+            @Override
+            public ArgType<? extends RefStr> forceStr() {
+                return this;
+            }
+        };
+
         private ArgType() {
         }
 
@@ -163,7 +198,7 @@ public class Eval {
 
     /**
      * 按空白解析命令行，支持引号块和转义 "one\" arg"和数字解析。
-     * 支持，String，Long，Integer，Double，Float类型。
+     * 支持，String，Long，Integer，Double，Float, Boolean类型。
      *
      * @param line 参数行
      * @param type 解析类型

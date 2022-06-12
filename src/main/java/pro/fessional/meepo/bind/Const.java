@@ -1,5 +1,7 @@
 package pro.fessional.meepo.bind;
 
+import java.util.regex.Pattern;
+
 /**
  * @author trydofor
  * @since 2020-10-13
@@ -59,4 +61,15 @@ public interface Const {
     String BLT$EACH_TOTAL = "_total";
     String BLT$EACH_FIRST = "_first";
     String BLT$EACH_LAST = "_last";
+
+    // literal
+    String ARG$BOOL_TRUE = "TRUE";
+    String ARG$BOOL_FALSE = "FALSE";
+
+    String ARG$NUMBER_DSUF = "D";
+    String ARG$NUMBER_FSUF = "F";
+    String ARG$NUMBER_NSUF = "N";
+    String ARG$NUMBER_LSUF = "L";
+    Pattern ARG$NUMBER_REGEX = Pattern.compile("^([-+])?([0-9_,.]+)([DFNL]?)$", Pattern.CASE_INSENSITIVE);
+
 }

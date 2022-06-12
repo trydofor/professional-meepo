@@ -101,7 +101,7 @@ public class RnaManager {
                     logger.info("skip same engine for type={}", t);
                 }
                 else {
-                    logger.warn("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
+                    logger.info("replace engine for type={}, old={}, new={}", t, old.getClass().getName(), clz);
                 }
             }
             engCount = engines.size();
@@ -171,10 +171,10 @@ public class RnaManager {
             logger.info("register function for key={}, info={}", key, info);
         }
         else if (fun == old) {
-            logger.warn("skip same function for key={}, info={}", key, info);
+            logger.info("skip same function for key={}, info={}", key, info);
         }
         else {
-            logger.warn("replace function for key={}, info={}", key, info);
+            logger.info("replace function for key={}, info={}", key, info);
         }
         funCount = functions.size();
     }

@@ -26,7 +26,7 @@ public class Fmt {
 
         @Override
         public Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg) {
-            return String.format((String) arg[0], obj);
+            return String.format(arg[0].toString(), obj);
         }
     };
 }
