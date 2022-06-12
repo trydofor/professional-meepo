@@ -4,12 +4,12 @@
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/meepo?server=https%3A%2F%2Foss.sonatype.org)
 [![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.meepo/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.meepo)
 
-米波，地卜师，主身和分身具有同等的技能，一荣俱荣，一损俱损的待遇。  
+米波，地卜师，主身和分身具有同等的技能，一荣俱荣，一损俱损的待遇。
 一个基于`母版`语法注释和标记的不破坏`母版`语法的非专业模板引擎。
 
-![meepo](./meepo_full.png)
+![meepo](meepo_full.png)
 
-解决现代模板引擎自身语法，会破坏其目标文件的语法，预览和编辑的特性的干扰。  
+解决现代模板引擎自身语法，会破坏其目标文件的语法，预览和编辑的特性的干扰。
 米波仅做静态翻译和有限的动态控制（动态编译java），类似C的宏功能，性能高效。
 
 * 从`java`生成`*.java`，模板和目标文件都是可编译
@@ -20,8 +20,8 @@
 
 ## 1.模板特性
 
-在使用模板的场景中，特别希望`模板语法`不要破坏`目标文件`的语法，两者无入侵的共存，  
-如用velocity生成java时，希望模板，同时受velocity和java语法检查和加持。  
+在使用模板的场景中，特别希望`模板语法`不要破坏`目标文件`的语法，两者无入侵的共存，
+如用velocity生成java时，希望模板，同时受velocity和java语法检查和加持。
 如生成html时，也希望模板能够不破坏html语法，能够直接在浏览器中预览。
 
 * `模板语法` - 底层模板的语法，如 FreeMarker, Velocity
@@ -29,8 +29,8 @@
 * `米波语法` - 利用母版语法的注释，做的简单标记指令，完成翻译
 * 文字语序均为从左至右，不支持从右至左语言。
 
-在`母版`中通过`注释`做语法标记，逐行处理规则替换，以输出`底层模板(backend)`。  
-母版的处理分为`解析parse`和`合并merge`两个过程，解析时的查找依赖正则表达式。  
+在`母版`中通过`注释`做语法标记，逐行处理规则替换，以输出`底层模板(backend)`。
+母版的处理分为`解析parse`和`合并merge`两个过程，解析时的查找依赖正则表达式。
 合并时，除了部分`RNA`外，都是直接输出，效能等于`StringBuilder.append`。
 
 在RNA中没有复杂的`流程控制`及`执行函数`的功能，所以一次`解析`后，后续`合并`非常高效，
@@ -44,7 +44,7 @@
 
 米波进行模板翻译，不依赖任何模板，测试和演示时使用pebble，因其benchmark和语法较好。
 
-Pebble，FreeMarker和Velocity此类模板有自己的语法特性，在行业内大量使用。  
+Pebble，FreeMarker和Velocity此类模板有自己的语法特性，在行业内大量使用。
 有些IDE有插件支持，但都是模板语言，而非目标文件的语言的支持，包括语法高亮，纠错等加持。
 
 Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并且应用领域和具体语言特性绑定。
@@ -59,7 +59,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 
 ### 2.1.忽略指令行空白，可读性优先
 
-底层模板的[blog-trim.peb](src/test/resources/template/blog/blog-trim.peb)，
+底层模板的[blog-trim.peb](meepo/src/test/resources/template/blog/blog-trim.peb)，
 不能有效的被html和js语法加持，IDE插件能够识别pebble语法。
 
 ```pebble
@@ -74,8 +74,8 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-同等输出的[blog-trim.htm](src/test/resources/template/blog/blog-trim.htm)，
-保留原本的html和js特性，可以以html编辑。也可以使用pebble插件编辑。  
+同等输出的[blog-trim.htm](meepo/src/test/resources/template/blog/blog-trim.htm)，
+保留原本的html和js特性，可以以html编辑。也可以使用pebble插件编辑。
 没有使用`!`，如果指令行独占一行，且行内全为空白，则不输出此行。第一行故意有个空格。
 
 ```html
@@ -95,7 +95,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 
 ### 2.2.保留指令行空白，一致性优先
 
-底层模板的[blog-pure.peb](src/test/resources/template/blog/blog-pure.peb)，
+底层模板的[blog-pure.peb](meepo/src/test/resources/template/blog/blog-pure.peb)，
 注意`<body>`上有一空行，`var`前共有有4x3=12个空格。
 
 ```pebble
@@ -111,7 +111,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-同等输出的[blog-pure.htm](src/test/resources/template/blog/blog-pure.htm)，
+同等输出的[blog-pure.htm](meepo/src/test/resources/template/blog/blog-pure.htm)，
 使用了`!`，使得米波只处理注释首尾间的内容，保留之外的换行和空白（var前2行各4个空格）。
 
 ```html
@@ -131,7 +131,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 
 ### 2.3.全部替换，使用匿名全局
 
-输出结果的[replace-all-o.htm](src/test/resources/template/repl/replace-all-o.htm)
+输出结果的[replace-all-o.htm](meepo/src/test/resources/template/repl/replace-all-o.htm)
 
 ```html
 <div>
@@ -139,7 +139,7 @@ use anonymous all-life to replace div to div
 </div>
 ```
 
-米波模板的[replace-all-i.htm](src/test/resources/template/repl/replace-all-i.htm)，使用`*`为匿名全局替换。
+米波模板的[replace-all-i.htm](meepo/src/test/resources/template/repl/replace-all-i.htm)，使用`*`为匿名全局替换。
 
 ```html
 <!-- HI-MEEPO -->
@@ -151,7 +151,7 @@ use anonymous all-life to replace body to div
 
 ### 2.4.间隔替换，使用指定范围
 
-输出结果的[replace-1a3-o.htm](src/test/resources/template/repl/replace-1a3-o.htm)
+输出结果的[replace-1a3-o.htm](meepo/src/test/resources/template/repl/replace-1a3-o.htm)
 
 ```html
 <div>
@@ -159,7 +159,7 @@ use ranged-life to replace 1st and 3rd body to div
 </div>
 ```
 
-米波模板的[replace-1a3-i.htm](src/test/resources/template/repl/replace-1a3-i.htm)，使用`1,3`逗号分隔，确认次数。
+米波模板的[replace-1a3-i.htm](meepo/src/test/resources/template/repl/replace-1a3-i.htm)，使用`1,3`逗号分隔，确认次数。
 
 ```html
 <!-- HI-MEEPO -->
@@ -171,7 +171,7 @@ use ranged-life to replace 1st and 3rd body to div
 
 ### 2.5.范围替换，使用命名全局
 
-输出结果的[replace-end-o.htm](src/test/resources/template/repl/replace-end-o.htm)
+输出结果的[replace-end-o.htm](meepo/src/test/resources/template/repl/replace-end-o.htm)
 
 ```html
 <body>
@@ -179,7 +179,7 @@ use named-life to replace scoped div to div
 </body>
 ```
 
-米波模板的[replace-end-i.htm](src/test/resources/template/repl/replace-end-i.htm)，使用`end`和命名生命周期。
+米波模板的[replace-end-i.htm](meepo/src/test/resources/template/repl/replace-end-i.htm)，使用`end`和命名生命周期。
 
 ```html
 <!-- HI-MEEPO -->
@@ -192,7 +192,7 @@ use named-life to replace scoped body to div
 
 ### 2.6.保留原样，使用魔免黑皇杖
 
-输出结果的[black-king-bar-o.htm](src/test/resources/template/bkb/black-king-bar-o.htm)
+输出结果的[black-king-bar-o.htm](meepo/src/test/resources/template/bkb/black-king-bar-o.htm)
 
 ```html
 <!-- DNA:SET /body/div/* -->
@@ -201,7 +201,7 @@ in bkb, all are plain text, including DNA:SET
 </body>
 ```
 
-米波模板的[black-king-bar-i.htm](src/test/resources/template/bkb/black-king-bar-i.htm)，使用`end`和命名生命周期。
+米波模板的[black-king-bar-i.htm](meepo/src/test/resources/template/bkb/black-king-bar-i.htm)，使用`end`和命名生命周期。
 
 ```html
 <!-- HI-MEEPO -->
@@ -215,14 +215,14 @@ in bkb, all are plain text, including DNA:SET
 
 ### 2.7.删除行块，实际是替换为空
 
-输出结果的[delete-1a3-o.htm](src/test/resources/template/del/delete-1a3-o.htm)
+输出结果的[delete-1a3-o.htm](meepo/src/test/resources/template/del/delete-1a3-o.htm)
 
 ```html
 delete all, but this line
 
 ```
 
-米波模板的[delete-1a3-i.htm](src/test/resources/template/del/delete-1a3-i.htm)，删除（替换为空）第1和3匹配行。
+米波模板的[delete-1a3-i.htm](meepo/src/test/resources/template/del/delete-1a3-i.htm)，删除（替换为空）第1和3匹配行。
 
 ```html
 <!-- HI-MEEPO -->
@@ -232,7 +232,7 @@ delete all, but this line
 </body>
 ```
 
-米波模板的[delete-all-i.htm](src/test/resources/template/del/delete-all-i.htm)，删除body及期间所有。
+米波模板的[delete-all-i.htm](meepo/src/test/resources/template/del/delete-all-i.htm)，删除body及期间所有。
 
 ```html
 <!-- HI-MEEPO -->
@@ -244,7 +244,7 @@ delete all, but this line
 
 ### 2.8.单次执行，使用变量，以便后续读取
 
-输出结果的[put-use-o.htm](src/test/resources/template/rna/put-use-o.htm)
+输出结果的[put-use-o.htm](meepo/src/test/resources/template/rna/put-use-o.htm)
 
 ```html
 
@@ -254,7 +254,7 @@ delete all, but this line
 </body>
 ```
 
-米波模板的[put-use-i.htm](src/test/resources/template/rna/put-use-i.htm)，用PUT和USE做单次执行，到处使用。
+米波模板的[put-use-i.htm](meepo/src/test/resources/template/rna/put-use-i.htm)，用PUT和USE做单次执行，到处使用。
 
 ```html
 <!-- HI-MEEPO -->
@@ -268,7 +268,7 @@ delete all, but this line
 
 ### 2.9.每次执行，一个js版的计数器
 
-输出结果的[run-any-o.htm](src/test/resources/template/rna/run-any-o.htm)
+输出结果的[run-any-o.htm](meepo/src/test/resources/template/rna/run-any-o.htm)
 
 ```html
 
@@ -279,7 +279,7 @@ i++ == 1028
 </body>
 ```
 
-米波模板的[run-any-i.htm](src/test/resources/template/rna/run-any-i.htm)，用PUT和USE做单次执行，到处使用。
+米波模板的[run-any-i.htm](meepo/src/test/resources/template/rna/run-any-i.htm)，用PUT和USE做单次执行，到处使用。
 
 ```html
 <!-- HI-MEEPO -->
@@ -296,13 +296,13 @@ i++ == counter
 
 通过uri引擎，可以读取 `file://`,`classpath:`和`http://`等外部资源
 
-输出结果的[import-o.htm](src/test/resources/template/imp/import-o.htm)
+输出结果的[import-o.htm](meepo/src/test/resources/template/imp/import-o.htm)
 
 ```html
 imported text
 ```
 
-米波模板的[import-i.htm](src/test/resources/template/imp/import-i.htm)，读入[import-f.htm](src/test/resources/template/imp/import-f.htm)。
+米波模板的[import-i.htm](meepo/src/test/resources/template/imp/import-i.htm)，读入[import-f.htm](meepo/src/test/resources/template/imp/import-f.htm)。
 
 ```html
 <!-- HI-MEEPO -->
@@ -312,13 +312,13 @@ import-here
 
 ### 2.11.执行java代码，java引擎
 
-输出结果的[compile-java-o.htm](src/test/resources/template/java/compile-java-o.htm)
+输出结果的[compile-java-o.htm](meepo/src/test/resources/template/java/compile-java-o.htm)
 
 ```html
 2020-07-09 00:00:00
 ```
 
-米波模板的[compile-java-i.htm](src/test/resources/template/java/compile-java-i.htm)
+米波模板的[compile-java-i.htm](meepo/src/test/resources/template/java/compile-java-i.htm)
 
 ```html
 <!-- HI-MEEPO -->
@@ -337,7 +337,7 @@ java-output
 
 ### 2.12.替换默认界定符，不想用斜杆
 
-`界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。  
+`界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。
 所以只要避免和指令中内容重复即可，但是，像👹这种的3,4字节不可以，getChar会分裂。
 
 ```js
@@ -349,7 +349,7 @@ java-output
 
 ### 2.13.自动缩排多行代码，美观易读
 
-参加测试[JavaTest.java](src/test/java/pro/fessional/meepo/tmpl/JavaTest.java)，`变量`为集合类，其元素自带换行
+参加测试[JavaTest.java](meepo/src/test/java/pro/fessional/meepo/tmpl/JavaTest.java)，`变量`为集合类，其元素自带换行
 
 ```txt
 c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");\n",
@@ -358,7 +358,7 @@ c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");
                 "return ldt.format(fmt);"));
 ```
 
-会输出有了缩排的[JavaOut.java](src/test/resources/pro/fessional/meepo/poof/impl/java/JavaOut.java)
+会输出有了缩排的[JavaOut.java](meepo/src/test/resources/pro/fessional/meepo/poof/impl/java/JavaOut.java)
 
 ```java
     public Object eval(@NotNull Map<String, Object> ctx) {
@@ -403,7 +403,7 @@ ctx.put("number",-1);
 以上是运行时，通过java编码做到同等效果，详细参考
 
 * [管道符链接函数，链式处理](#02管道符链接函数链式处理)
-* [设置java函数 fun](#79设置java函数-fun)
+* [动态java函数 fun](#77动态java函数fun)
 
 ### 2.15.占位符模板
 
@@ -425,7 +425,7 @@ ctx.put("number",-1);
 <dependency>
     <groupId>pro.fessional</groupId>
     <artifactId>meepo</artifactId>
-    <version>1.0.0</version>
+    <version>${meepo.version}</version>
 </dependency>
 ```
 
@@ -445,17 +445,37 @@ ctx.put("number",-1);
 
 ### 3.1.独立编码使用
 
-Meepo封装了parse，merge方法和缓存机制。能够满足一般的场景需求。
+Meepo封装了常用方法和缓存机制。能够满足一般的场景需求。
+
+* 文件模板 - 以Meepo为入口, #parse, #merge
+* 占位模板 - 以Holder为入口，#piece
+* 解析字串 - 以Parser构造Gene #parse
 
 如果有定制需要，可以自定义使用Parser和Gene来组合出需要的工具类。
 
 ### 3.2.集成其他模板
 
-TODO
+spring-mvc子工程，集成SpringMvc，可独立使用，也可预处理其他模板
+
+```xml
+<dependency>
+    <groupId>pro.fessional.meepo</groupId>
+    <artifactId>spring-mvc</artifactId>
+    <version>${meepo.version}</version>
+</dependency>
+```
 
 ### 3.3.集成Spring
 
-在SpringMvc和SpringBoot体系中，View层的输出，有以下约定， TODO
+spring-spel子工程，注册`spel`引擎，提供Bean和SpEL能力
+
+```xml
+<dependency>
+    <groupId>pro.fessional.meepo</groupId>
+    <artifactId>spring-spel</artifactId>
+    <version>${meepo.version}</version>
+</dependency>
+```
 
 ## 4.语法概要
 
@@ -486,7 +506,7 @@ TODO
 * `RNA:ELSE` 否则条件，对`WHEN`和`EACH`执行否则分支。
 * `RNA:DONE` 结束执行，结束`WHEN`和`EACH`的作用域。
 
-在处理`行符`时，以`\n`断行，window的`\r\n`也做`\n`处理。  
+在处理`行符`时，以`\n`断行，window的`\r\n`也做`\n`处理。
 单行注释型，若结尾有`\n`，会作为语法的结束符，即合并时不会输出。
 
 因为解析时使用了java的RegExp作为底层实现，所以需要一定的基础。
@@ -517,7 +537,7 @@ TODO
 * `!` - 如果存在`!`，表示保留指令前后的`空白`，后详述。
 * `注释尾` - 多行注释的结尾，后一个非`空白`字符串
 
-`嗨！米波`必须独占一行，最好有`空白`分割，以便阅读时清晰。  
+`嗨！米波`必须独占一行，最好有`空白`分割，以便阅读时清晰。
 类似sql的`DELIMITER`定义结束符的用法和作用，举例如下，
 
 * java - `// HI-MEEPO`，以`//`为注释
@@ -565,7 +585,7 @@ DNA好比一个厂长，定义替换指令，在parse时，进行高效的静态
 * `替换`为空时，表示删除，即替换成空。
 * `作用` - 生效的作用次数，即到何时结束作用，非`空白`。
 
-`分组引用`指查找时有`()`的group或替换时使用`\1`的反向引用的情况。  
+`分组引用`指查找时有`()`的group或替换时使用`\1`的反向引用的情况。
 这会对特征字符串的边界有影响，也要避开书写复杂的表达式，约定规则如下，
 
 * 如果`查找`中无group，在使用group(0)，即全部匹配。
@@ -631,8 +651,8 @@ SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
 
 语法：`DNA:RAW` `空白`+ `原生模板`
 
-用注释的语法定义一个`模板`，用以弥补`母版`语法不支持的情况。  
-使用单行注释表意清晰，多行注释时，只保留头尾直接的内容。  
+用注释的语法定义一个`模板`，用以弥补`母版`语法不支持的情况。
+使用单行注释表意清晰，多行注释时，只保留头尾直接的内容。
 效果是，删除`注释头`,`DNA:RAW` 和`注释尾`及之间的`空白`。
 
 ```js
@@ -661,7 +681,7 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 
 语法：`RNA:USE` `空白`+ `界定` `查找` `界定` `变量` `界定` `作用`?
 
-`SET`的`RNA`版本，区别在于从`map`引擎中取得`变量`值，而非底层模板的字面量替换。  
+`SET`的`RNA`版本，区别在于从`map`引擎中取得`变量`值，而非底层模板的字面量替换。
 变量获取规则（如，导航类对象，管道处理函数），详见map引擎说明。
 
 在`变量`合并时，会根据`变量值`的类型进行自动`多段缩排`支持，同时满足，
@@ -678,7 +698,7 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 // DNA:USE /meepo/user.home/
 var userHome = "meepo";
 /* 读取System.getProperty("user.home")。底层模板输出为:
-var userHome = "/home/trydofor"; 
+var userHome = "/home/trydofor";
 */
 ```
 
@@ -846,7 +866,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 执行中的引擎环境，在每次eval时，可以被context覆盖，也可以不覆盖，依赖于引擎实现。
 
-### 7.1.字典引擎 map
+### 7.1.字典引擎`map`
 
 `session`级，每次eval共享context，context不覆盖引擎环境。
 
@@ -913,7 +933,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 * 注册的方法名，必须以`fun:`为前缀，以避免与其他变量冲突
 * 使用事，`fun:`可以省略，也建议省略。
 
-内置函数列表，参考[function.md](./function.md)
+内置函数列表，参考[function.md](function.md)
 
 #### 03.内置以下变量
 
@@ -927,11 +947,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
 * `now.date` - String:Supplier, 动态计算，系统日期 `yyyy-MM-dd`
 * `now.time` - String:Supplier, 动态计算，系统时间 `HH:mm:ss`
 
-### 7.2.来啥回啥 raw
+### 7.2.来啥回啥`raw`
 
 `nothing`级，直接把`功能体`当字符串返回，但mute时返回`字符串空`。
 
-### 7.3.内容引入 uri
+### 7.3.内容引入`uri`
 
 `nothing`级，把uri的内容以UTF8输出为字符串。首次读入，后续缓存。
 
@@ -941,36 +961,32 @@ console.log('<div>result='+count+'/'+total+'</div>')
 * 其他，以URLConnection读取，超时为3秒
 * 读入的内容，会以uri为key，缓存到context中
 
-### 7.4.直接执行 exe
+### 7.4.直接执行`exe`
 
-`nothing`级，直接执行命令，解析引号块和转义，捕获std_out输出。  
+`nothing`级，解析引号块和转义，捕获std_out输出。
 注意的是，每次eval时，engine会用context覆盖环境变量。
 
-### 7.5.win下命令 cmd
+* `exe` - 直接执行命令。
+* `cmd` - 在window系，以`cmd /c`执行。
+* `sh` - 在unx系，以`bash -c`执行。
 
-在window系，以`cmd /c`执行的exe。
+### 7.5.执行js脚本`js`
 
-### 7.6.unx下命令 sh
-
-在bash系，以`bash -c`执行的exe。
-
-### 7.7.执行js脚本 js
-
-`session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
+`session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。
 执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
 对于在context读入和写入`导航类`对象，参考map引擎的规则。
 
 **注意：** Java 15 removed Nashorn JavaScript Engine
 
-### 7.8.执行java代码 java
+### 7.6.动态java代码`java`
 
 `session`级，通过米波模板动态编译java代码，并以context为参加执行。
 
 * 头部`import java.util.*,java.util.Map;`，可以`,`分隔多个
 * 简单方法体单行（java不能简单），复杂的多行，以增加可读性。
 * 尾部以`return obj`返回，`;`可以省略。
-* 通过[模板](src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
+* 通过[模板](meepo/src/main/resources/pro/fessional/meepo/poof/impl/java/JavaName.java)动态编译java。
 * 编译的java实现了`pro.fessional.meepo.eval.JavaEval`接口
 * 传入`RngContext ctx`，可读取context
 * 已经import的class有，
@@ -978,11 +994,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
   - pro.fessional.meepo.poof.impl.JavaEngine;
   - java.util.Map;
 
-### 7.9.设置java函数 fun
+### 7.7.动态java函数`fun`
 
 可以通过以下方式，灵活的将自定义java函数注册到模板引擎。但不建议在模板中使用函数，模板应该只负责显示。
 
-* 模板内动态编译java代码，并以被PUT到context中作为`函数`，供`USE`执行。
+* 模板内动态编译java代码，并`PUT fun/`，供`USE`执行。
 * 通过`RnaManager.register` 全局注册函数
 * 在context的Map中，put以`fun:`前缀的java函数
 * 运行时注册的函数，一般是Function或JavaEval类型的lambda，
@@ -1020,10 +1036,10 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 模板引擎都是，一次解析，多次使用的，并增加了预编译或缓存。
 
-米波解析时，Parse本身基于字符串分析，仅在有`查找`的指令中使用正则，  
+米波解析时，Parse本身基于字符串分析，仅在有`查找`的指令中使用正则，
 通常建议，解析的过程需要在单线程内进行，多次解析或竞争毫无意义。
 
-合并使用时，如果不存在`Rng`类指令，是静态字符串拼接，首次拼接，后续缓存。  
+合并使用时，如果不存在`Rng`类指令，是静态字符串拼接，首次拼接，后续缓存。
 拼接过程中，预分配刚好够的buff，避免扩容。性能高于多次的原生String拼接。
 
 无`Rng`指令时，线程安全且碎片极少，可以放心使用。当存在`Rng`指令时，
@@ -1048,7 +1064,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 ```bash
 mvn clean
-mvn -Dmaven.test.skip=false test 
+mvn -Dmaven.test.skip=false test
 mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/lib
 
 # 启动一个大循环，也可以在IDE中直接运行
@@ -1104,8 +1120,8 @@ Meepo的出发点是模板只负责显示，不负责计算，逻辑部因果在
 
 * 直接在model中生成好样式
 * 自定义引擎，计算style
-* 使用 USE it._count|mod，如 [each-c7s1f7-i1.htm](src/test/resources/template/each/each-c7s1f7-i1.htm)
-* 使用 WHEN it._count|mod，如 [each-c7s1f7-i2.htm](src/test/resources/template/each/each-c7s1f7-i2.htm)
+* 使用 USE it._count|mod，如 [each-c7s1f7-i1.htm](meepo/src/test/resources/template/each/each-c7s1f7-i1.htm)
+* 使用 WHEN it._count|mod，如 [each-c7s1f7-i2.htm](meepo/src/test/resources/template/each/each-c7s1f7-i2.htm)
 
 ### 08.字面量表示数字和Boolean
 
