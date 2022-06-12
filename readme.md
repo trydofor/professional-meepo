@@ -53,13 +53,16 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 * [pebble template](https://pebbletemplates.io/)
 * [template-benchmark](https://github.com/trydofor/template-benchmark)
 
-米波的初衷不是模板的动态控制能力，但使用`执行引擎`（如js和java）可以做很复杂的功能操作。 尽管从benchmark上看，其性能远高于`Freemarker`和`Velocity`，是`thymeleaf`的3倍， 但并不建议使用米波做工程上的view层渲染，它适合做模板中间层，或叫模板翻译器。
+米波的初衷不是模板的动态控制能力，但使用`执行引擎`（如js和java）可以做很复杂的功能操作。
+尽管从benchmark上看，其性能远高于`Freemarker`和`Velocity`，是`thymeleaf`的3倍，
+但并不建议使用米波做工程上的view层渲染，它适合做模板中间层，或叫模板翻译器。
 
 ### 2.1.忽略指令行空白，可读性优先
 
-底层模板的[blog-trim.peb](src/test/resources/template/blog/blog-trim.peb)， 不能有效的被html和js语法加持，IDE插件能够识别pebble语法。
+底层模板的[blog-trim.peb](src/test/resources/template/blog/blog-trim.peb)，
+不能有效的被html和js语法加持，IDE插件能够识别pebble语法。
 
-``` pebble
+```pebble
 <body>
   {% for article in articles %}
   <h3>{{ article.title }}</h3>
@@ -71,10 +74,11 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-同等输出的[blog-trim.htm](src/test/resources/template/blog/blog-trim.htm)， 保留原本的html和js特性，可以以html编辑。也可以使用pebble插件编辑。  
+同等输出的[blog-trim.htm](src/test/resources/template/blog/blog-trim.htm)，
+保留原本的html和js特性，可以以html编辑。也可以使用pebble插件编辑。  
 没有使用`!`，如果指令行独占一行，且行内全为空白，则不输出此行。第一行故意有个空格。
 
-``` html
+```html
  <!-- HI-MEEPO -->
 <body>
   <!-- DNA:RAW {% for article in articles %} -->
@@ -91,9 +95,10 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 
 ### 2.2.保留指令行空白，一致性优先
 
-底层模板的[blog-pure.peb](src/test/resources/template/blog/blog-pure.peb)， 注意`<body>`上有一空行，`var`前共有有4x3=12个空格。
+底层模板的[blog-pure.peb](src/test/resources/template/blog/blog-pure.peb)，
+注意`<body>`上有一空行，`var`前共有有4x3=12个空格。
 
-``` pebble
+```pebble
 
 <body>
   {% for article in articles %}
@@ -106,9 +111,10 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-同等输出的[blog-pure.htm](src/test/resources/template/blog/blog-pure.htm)， 使用了`!`，使得米波只处理注释首尾间的内容，保留之外的换行和空白（var前2行各4个空格）。
+同等输出的[blog-pure.htm](src/test/resources/template/blog/blog-pure.htm)，
+使用了`!`，使得米波只处理注释首尾间的内容，保留之外的换行和空白（var前2行各4个空格）。
 
-``` html
+```html
 <!-- HI-MEEPO! -->
 <body>
   <!-- DNA:RAW {% for article in articles %} -->
@@ -127,7 +133,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 
 输出结果的[replace-all-o.htm](src/test/resources/template/repl/replace-all-o.htm)
 
-``` html
+```html
 <div>
 use anonymous all-life to replace div to div
 </div>
@@ -135,7 +141,7 @@ use anonymous all-life to replace div to div
 
 米波模板的[replace-all-i.htm](src/test/resources/template/repl/replace-all-i.htm)，使用`*`为匿名全局替换。
 
-``` html
+```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET /body/div/* -->
 <body>
@@ -147,7 +153,7 @@ use anonymous all-life to replace body to div
 
 输出结果的[replace-1a3-o.htm](src/test/resources/template/repl/replace-1a3-o.htm)
 
-``` html
+```html
 <div>
 use ranged-life to replace 1st and 3rd body to div
 </div>
@@ -155,7 +161,7 @@ use ranged-life to replace 1st and 3rd body to div
 
 米波模板的[replace-1a3-i.htm](src/test/resources/template/repl/replace-1a3-i.htm)，使用`1,3`逗号分隔，确认次数。
 
-``` html
+```html
 <!-- HI-MEEPO -->
 <!-- DNA:SET /body/div/1,3 -->
 <body>
@@ -167,7 +173,7 @@ use ranged-life to replace 1st and 3rd body to div
 
 输出结果的[replace-end-o.htm](src/test/resources/template/repl/replace-end-o.htm)
 
-``` html
+```html
 <body>
 use named-life to replace scoped div to div
 </body>
@@ -175,7 +181,7 @@ use named-life to replace scoped div to div
 
 米波模板的[replace-end-i.htm](src/test/resources/template/repl/replace-end-i.htm)，使用`end`和命名生命周期。
 
-``` html
+```html
 <!-- HI-MEEPO -->
 <body>
 <!-- DNA:SET /body/div/body -->
@@ -188,7 +194,7 @@ use named-life to replace scoped body to div
 
 输出结果的[black-king-bar-o.htm](src/test/resources/template/bkb/black-king-bar-o.htm)
 
-``` html
+```html
 <!-- DNA:SET /body/div/* -->
 <body>
 in bkb, all are plain text, including DNA:SET
@@ -197,7 +203,7 @@ in bkb, all are plain text, including DNA:SET
 
 米波模板的[black-king-bar-i.htm](src/test/resources/template/bkb/black-king-bar-i.htm)，使用`end`和命名生命周期。
 
-``` html
+```html
 <!-- HI-MEEPO -->
 <!-- DNA:BKB bkb -->
 <!-- DNA:SET /body/div/* -->
@@ -211,7 +217,7 @@ in bkb, all are plain text, including DNA:SET
 
 输出结果的[delete-1a3-o.htm](src/test/resources/template/del/delete-1a3-o.htm)
 
-``` html
+```html
 delete all, but this line
 
 ```
@@ -334,7 +340,7 @@ java-output
 `界定符`是第1个非(`空白`,`!`,`英数`)1-2字节char，常用的如`/`，汉字。  
 所以只要避免和指令中内容重复即可，但是，像👹这种的3,4字节不可以，getChar会分裂。
 
-``` js
+```js
 // RNA:RUN js/counter/i++;i.toFixed()/
 // RNA:RUN js:counter:i++;i.toFixed():
 // RNA:RUN js|counter|i++;i.toFixed()|
@@ -345,7 +351,7 @@ java-output
 
 参加测试[JavaTest.java](src/test/java/pro/fessional/meepo/tmpl/JavaTest.java)，`变量`为集合类，其元素自带换行
 
-``` txt
+```txt
 c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");\n",
                 "LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));\n",
                 "DateTimeFormatter fmt = DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\");\n",
@@ -354,7 +360,7 @@ c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");
 
 会输出有了缩排的[JavaOut.java](src/test/resources/pro/fessional/meepo/poof/impl/java/JavaOut.java)
 
-``` java
+```java
     public Object eval(@NotNull Map<String, Object> ctx) {
         LocalDate date = LocalDate.parse("2020-07-09");
         LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
@@ -365,7 +371,7 @@ c.put("method", Arrays.asList("LocalDate date = LocalDate.parse(\"2020-07-09\");
 
 如果，`变量`不是集合类，而是带有`\n`的字符串，那么会这样的呲牙效果
 
-``` java
+```java
     public Object eval(@NotNull Map<String, Object> ctx) {
         LocalDate date = LocalDate.parse("2020-07-09");
 LocalDateTime ldt = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
@@ -376,16 +382,17 @@ return ldt.format(fmt);
 
 ### 2.14.如何自定义函数
 
-```
+```text
 /* HI-MEEPO */
 /* RNA:PUT fun/fun:abs/return Math.abs(((Number)obj).intValue())/ */
 /* RNA:USE /abs/number|fun:abs/*/
 abs
 ```
 
-以上模板，通过`RNA:PUT`和`fun`引擎，在context中，put一个名为`fun:abs`的`函数`， 在合并时，context.put("number",-1)，模板输出为`1`，详见`testFunAbs`。
+以上模板，通过`RNA:PUT`和`fun`引擎，在context中，put一个名为`fun:abs`的`函数`，
+在合并时，context.put("number",-1)，模板输出为`1`，详见`testFunAbs`。
 
-``` java
+```java
 Map<String, Object> ctx=new HashMap<>();
 Function<Number, Integer> abs=number->Math.abs(number.intValue());
 ctx.put("fun:abs",abs);
@@ -395,14 +402,15 @@ ctx.put("number",-1);
 
 以上是运行时，通过java编码做到同等效果，详细参考
 
-* `管道符链接函数，链式处理`
-* `设置java函数 fun`
+* [管道符链接函数，链式处理](#02管道符链接函数链式处理)
+* [设置java函数 fun](#79设置java函数-fun)
 
 ### 2.15.占位符模板
 
-不用作为整块Meepo模板，只处理模板变量替换和函数处理，以下2行分别是输入和输出。 其中 `{{moilion-circle|PascalCase}}` 为，模板定义的变量及函数替换。
+不用作为整块Meepo模板，只处理模板变量替换和函数处理，以下2行分别是输入和输出。
+其中 `{{moilion-circle|PascalCase}}` 为，模板定义的变量及函数替换。
 
-```
+```text
 "this is {{moilion-circle|PascalCase}} simple template"
 "this is MoilionCircle simple template"
 ```
@@ -413,7 +421,7 @@ ctx.put("number",-1);
 
 ② 使用 maven central 比较稳妥。
 
-``` xml
+```xml
 <dependency>
     <groupId>pro.fessional</groupId>
     <artifactId>meepo</artifactId>
@@ -423,7 +431,7 @@ ctx.put("number",-1);
 
 ③ 使用 SNAPSHOT 与时俱进。
 
-``` xml
+```xml
 <!-- 1.0.0-SNAPSHOT -->
 <repository>
     <id>oss-sonatype</id>
@@ -573,7 +581,7 @@ DNA好比一个厂长，定义替换指令，在parse时，进行高效的静态
 * `次数`，以`,`分隔的单次或`-`连接的闭区间，如`1-3,15`。
 * `命名`的无限次作用，可被`END`结束。
 
-``` js
+```js
 // DNA:SET /false/{{user.male}}/
 var isMale = false;
 /* 只把此行的false替换为user.male模板变量。底层模板输出为:
@@ -587,7 +595,7 @@ var isMale = {{user.male}};
 
 结束多个指令产生的`作用`的作用域，如`SET`的命名作用域。
 
-``` js
+```js
 // DNA:SET /1010100/{{id}}/id
 // DNA:SET /"(性别)"/{{desc}}/1
 // DNA:SET /性别/{{info}}/2
@@ -608,7 +616,7 @@ SUPER({{id}}, "ConstantEnumTemplate", "{{desc}}", "{{info}}")
 * 指令 - 除了当前生效的BKB对应的END外，都视为文本处理。
 * 当前只能有一个生效的BKB
 
-``` js
+```js
 // DNA:BKB 黑皇杖
 // DNA:SET /"(性别)"/desc/1
 SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
@@ -627,7 +635,7 @@ SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
 使用单行注释表意清晰，多行注释时，只保留头尾直接的内容。  
 效果是，删除`注释头`,`DNA:RAW` 和`注释尾`及之间的`空白`。
 
-``` js
+```js
 /* 以下两行具有相同的输出效果，即删除了`// DNA:RAW ` */
 SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
 // DNA:RAW SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
@@ -666,7 +674,7 @@ RNA中默认的`引擎`默认为`map`。用户可以通过RnaManager注册引擎
 * 缩排的对象，没有`\n`结尾，不换行，出现斑马线效果。
 * 未缩排对象，包含`\n`，换行了，出现呲牙的效果。
 
-``` js
+```js
 // DNA:USE /meepo/user.home/
 var userHome = "meepo";
 /* 读取System.getProperty("user.home")。底层模板输出为:
@@ -687,7 +695,7 @@ var userHome = "/home/trydofor";
 * `功能体`由具体的执行引擎执行，如spring，则可当做SpEL执行。
 * `变量`或`功能体`为空时，不进行任何操作。
 
-``` js
+```js
 // DNA:PUT os/who/basename $(pwd)/
 /* 把结果`pro.fessional.meepo`放入米波的执行环境 */
 ```
@@ -702,7 +710,7 @@ var userHome = "/home/trydofor";
 * `功能体`执行结果立即使用，不存入`变量`
 * 每次都执行，类似计数器功能，每次调用都会自增，无缓存。
 
-``` js
+```js
 // DNA:RUN os/rand/echo $RANDOM/1-3
 var userName = "meepo-rand";
 var userPass = "rand-rand";
@@ -729,7 +737,7 @@ var userPass = "16345-31415";
 * Number的double值是`NaN`或在正负`0.000000001`间（9位）
 * `empty`  空字符串，空数组，空Collection，空Map
 
-``` html
+```html
 <!-- RNA:WHEN /yes/it.rem0/bg -->
 <li value="code">rem0-name</li>
 <!-- RNA:WHEN /not/it.rem1/bg -->
@@ -741,7 +749,7 @@ var userPass = "16345-31415";
 
 等同于以下js的伪代码的`if(a){}else if(!b){}else{}` 分支逻辑
 
-``` js
+```js
 if (it.rem0){
     console.log('<li value="code">rem0-name</li>')
 } else if (!it.rem1){
@@ -764,7 +772,7 @@ if (it.rem0){
 根据不同的数据类型，执行不同的循环处理，空或null跳过，可被`ELSE`执行。
 
 * Array - Class.isArray()
-* Collection<E> - instance of Collection
+* `Collection<E>` - instance of Collection
 * 其他类型，不做任何循环
 * 倒序循环时，非RandomAccess和ReverseIterator，会toArray
 
@@ -781,10 +789,10 @@ if (it.rem0){
 因为米波是`专业`的`非专业`模板引擎，所以此`for-each`十分低级，
 
 * 支持有限的对象导航，使用`.`分隔对象，详见`map`引擎。
-* 集合内元素仅支持Map<String,?>和JavaBean的Getter取值。
+* 集合内元素仅支持`Map<String,?>`和JavaBean的Getter取值。
 * 没有作用域隔离，`归组`的名称，会造成context内变量覆盖。
 
-``` html
+```html
 <!-- RNA:EACH map/2/items/it -->
 <!-- RNA:USE /name/it.name/* -->
 <li value="code">rem0-name</li>
@@ -798,7 +806,7 @@ if (it.rem0){
 
 等同于以下js的伪代码的`for(;;)`或`for-in`循环逻辑，依`集合`类型和`步长`正负而定
 
-``` js
+```js
 let step=2 // 循环步长，负数为倒序，不可为0
 let index=0 // 过程量
 let it = null, count=0, total=items.length; // 内置变量
@@ -890,10 +898,11 @@ console.log('<div>result='+count+'/'+total+'</div>')
 * `arg` - 用户定义的变量，即管道语法的第二个参数起。
   - arg默认类型为字符串，可使用引号（`"`或`'`）括起来
   - 若arg中需要保留空格，需要引号括起来，其内的引号用`\`转义。
-  - 数值类型，格式为`,`,`_`分隔的数字（含正负号和小数点）
+  - 数值类型，可`,_`分隔数字，`^([-+])?([0-9_,.]+)([DFNL]?)$`
   - `1,000`,`1_0000`,`10,000.0`,`1_0000.00`（Integer和Float）
   - 可分别使用后缀，表示具体类型BigDecimal(N)，Double(D), Float(F)，Long(L)
   - `1,000.00D`,`1_0000.00F`,`1_0000N`,`1_0000L`
+  - `TRUE`和`FALSE`表示boolean行，要表达字符串需要引号括起来
   - 不支持科学记数法
 
 函数，可以通过以下3中方式设置，
@@ -950,7 +959,9 @@ console.log('<div>result='+count+'/'+total+'</div>')
 `session`级，以java的ScriptEngine执行js脚本，捕获最后一个求值。  
 执行context，以`ctx`对象存在于js环境，可以通过`ctx.xxx`获得环境变量。
 
-对于在context读入和写入`导航类`对象，参考map引擎的规则。 注意，java8特有，后续java11以后会移除
+对于在context读入和写入`导航类`对象，参考map引擎的规则。
+
+**注意：** Java 15 removed Nashorn JavaScript Engine
 
 ### 7.8.执行java代码 java
 
@@ -978,7 +989,8 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 ## 8.占位符模板
 
-简化模板，只进行表达式级的变量替换或函数处理，而非完整的Meppo模板语法。 比如，配置文件中的占位符，通常需要简单的替换或字符转换。
+简化模板，只进行表达式级的变量替换或函数处理，而非完整的Meepo模板语法。
+比如，配置文件中的占位符，通常需要简单的替换或字符转换。
 
 使用时，自定义变量的前后界定符即可，默认是`{{`和`}}`，界定符可以是多组。
 
@@ -995,11 +1007,14 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 ### 01.如何调试，debug解析
 
-调试主要集中在Parse和RnaEngine执行上，因此logger只在此2处存在。 米波工程本身的test中，slf4j的日志基本是trace，因此在其他工程引入时， 需要把设置`pro.fessional.meepo`的级别为`trace`。
+调试主要集中在Parse和RnaEngine执行上，因此logger只在此2处存在。
+米波工程本身的test中，slf4j的日志基本是trace，因此在其他工程引入时，
+需要把设置`pro.fessional.meepo`的级别为`trace`。
 
 如果通过日志，不能调试到位，可以通过继承Parser，调用protected方法。
 
-如果发生 Class path contains multiple SLF4J bindings等错误提示， 直接exclude meepo工程对slf4j的依赖即可。
+如果发生 Class path contains multiple SLF4J bindings等错误提示，
+直接exclude meepo工程对slf4j的依赖即可。
 
 ### 02.有关性能和线程安全
 
@@ -1011,7 +1026,8 @@ console.log('<div>result='+count+'/'+total+'</div>')
 合并使用时，如果不存在`Rng`类指令，是静态字符串拼接，首次拼接，后续缓存。  
 拼接过程中，预分配刚好够的buff，避免扩容。性能高于多次的原生String拼接。
 
-无`Rng`指令时，线程安全且碎片极少，可以放心使用。当存在`Rng`指令时， 性能和线程安全，取决于执行引擎和传入的context。
+无`Rng`指令时，线程安全且碎片极少，可以放心使用。当存在`Rng`指令时，
+性能和线程安全，取决于执行引擎和传入的context。
 
 根据benchmark的测试（for+if+function）结果，meepo的性能远高于`Freemarker`
 
@@ -1030,7 +1046,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 
 远行MeepoAsyncProfile的main，然后使用`async-profiler`
 
-``` bash
+```bash
 mvn clean
 mvn -Dmaven.test.skip=false test 
 mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/lib
@@ -1088,5 +1104,15 @@ Meepo的出发点是模板只负责显示，不负责计算，逻辑部因果在
 
 * 直接在model中生成好样式
 * 自定义引擎，计算style
-* 使用 USE it._count|mod，如each-c7s1f7-i1.htm 
-* 使用 WHEN it._count|mod，如 each-c7s1f7-i2.htm
+* 使用 USE it._count|mod，如 [each-c7s1f7-i1.htm](src/test/resources/template/each/each-c7s1f7-i1.htm)
+* 使用 WHEN it._count|mod，如 [each-c7s1f7-i2.htm](src/test/resources/template/each/each-c7s1f7-i2.htm)
+
+### 08.字面量表示数字和Boolean
+
+引擎中，DNA都是静态的字符串替换，RNA都是从内部获取数据。
+仅在管道符链式处理时，需从模板读入数据，需要类型支持。
+
+* Number型 - 详见[管道符链接函数，链式处理](#02管道符链接函数链式处理)
+* Boolean型, TRUE,FALSE - 同上
+* 字符串形态需要双引号，如`"TRUE"`,`"3.14"`
+* 以上之外，都为`RefStr`，即先从环境内取值，null时返回此字符串。

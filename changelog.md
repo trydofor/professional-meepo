@@ -1,8 +1,18 @@
 # meepo changelog
 
-https://keepachangelog.com
+<https://keepachangelog.com>
 
-## [1.4.0] - Unreleased
+## [1.4.1] - Unreleased
+
+### Added
+
+- 支持BigDecimal,Double,Float,Long的字面量
+- EACH增加first,last属性
+- 增加fun:abs
+- 字面量支持 Boolean 型: TRUE:FALSE
+- 字面量支持 Number 型: 整形，浮点，BigDecimal
+
+## [1.4.0] - 2021-01-06
 
 ### Added
 
@@ -24,18 +34,6 @@ https://keepachangelog.com
 - 内存碎片，线程及性能优化
 
 ## [master]
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 [master]: https://github.com/trydofor/pro.fessional.meepo
 [1.0.0]: https://github.com/trydofor/pro.fessional.meepo/releases/tag/1.0.0

@@ -4,76 +4,120 @@
 函数全名和别名均以`fun:`为前缀。在不冲突时使用，前缀可省略。
 
 示例说明，在函数描述中，存在以下约定，
+
 * `obj`，特指管道输出，没有时为null
 * `arg...`表示，arg为可变参数。
 * `arg?`表示，arg可以null，
 * `&opt`表示 opt选项是默认值
 * `String:javaEval`返回类型String，函数类型是javaEval
 
-## 当前日时 now
+## 时间类型
+
+以日期和时间为核心
+
+### 01.当前日时 now
 
 类型用途：String:javaEval，输出指定格式的当前日期时间  
 用法说明：fun:now ptn?
-   - obj，若是`java.util.Date`或`TemporalAccessor`，则格式化
-   - 若是null或其他，则为`LocalDateTime.now()`
-   - ptn，为`DateTimeFormatter`格式，
-   - 若是null，则为`yyyy-MM-dd HH:mm:ss`
 
-```
+* obj，若是`java.util.Date`或`TemporalAccessor`，则格式化
+* 若是null或其他，则为`LocalDateTime.now()`
+* ptn，为`DateTimeFormatter`格式，
+* `now`无参数，则为`yyyy-MM-dd HH:mm:ss`
+* `now.date`无参数，输出`yyyy-MM-dd`
+* `now.time`无参数 输出`HH:mm:ss`
+
+```text
 # ptn含空格，用引号包围
 {{ now 'yyyy-MM-dd HH:mm:ss' }}
 # 输出 2021-01-05 10:01:31
 ```
 
-## 数字取余 mod
+## 数值类型
 
-类型用途：String:javaEval，根据数字对args取余，获得args余数位置的值  
-用法说明：fun:mod arg... 
-   - obj, 需要是Number，取intValue，对arg.length取余
-   - arg，必须有值，可为字符串或数字
+以数值为核心，主要以Long和BigDecimal为核心
 
-```
+### 01.取余 mod
+
+类型用途：String:javaEval，根据数字对args取余(0-based)，获得args余数位置的值  
+用法说明：fun:mod obj arg...
+返回类型：以取模值为key获取context的值或key字符串
+
+* obj, 可转换为Number，取intValue，对arg.length取余
+  - Boolean, false=0, true=1
+  - Number, intValue
+  - Else, toString, BigDecimal
+* arg，必须有值，可为字符串或数字。
+
+```text
 # index = 3; count = 4;
 {{ index | mod even odd }}
 {{ count | mod even "" }}
 # 输出 odd even
 ```
 
-## 字符格式化 fmt
+### 02.绝对值 abs
+
+类型用途：String:javaEval，对数值取绝对值
+用法说明：fun:mod obj
+返回类型：以取模值为key获取context的值或key字符串
+
+* obj, 可转换为Number，返回Long或BigDecimal
+
+```text
+# npi = -3.14; count = 4;
+{{ npi | abs }}
+{{ count | abs }}
+# 输出 3.14 4
+```
+
+## 格式化 fmt
+
+对象格式化为字符串形式
+
+### 01.全格式printf
 
 类型用途：String:javaEval，调用String.printf格式化对象  
-用法说明：fun:fmt ptn 
-   - obj，为任意对象
-   - ptn，为java格式化，调用String.format(ptn,obj)
+用法说明：fun:fmt obj ptn
+返回类型：字符串
 
-```
+* obj，为任意对象
+* ptn，为java格式化，调用String.format(ptn,obj)
+
+```text
 # amount = 1000
 {{ amount | fmt '$%,d' }}
 # 输出 $1,000
 ```
 
-## 大小写变换系列
+### 字符串类型
+
+以字符串为核心
+
+### 01.风格变换
 
 类型用途：String:javaEval，调用调整obj大小写格式  
-用法说明：fun:### arg?，其中 ### 为以下函数名和别名
+用法说明：fun:### obj arg?，其中 ### 为以下函数名和别名
+返回类型：字符串
 
- * upperCase 全部大写，支持 locale 参数
- * lowerCase 全部小写，支持 locale 参数
- * dotCase 逗点分隔，可定制大小写，如 try.do.for
- * kebabCase, kebab-case 减号分隔，可定制大小写，如 try-do-for
- * bigKebab, BIG-KEBAB 减号分隔，全大写，如 TRY-DO-FOR
- * camelCase 驼峰首字小写，如 tryDoFor
- * pascalCase, PascalCase 驼峰首字大写，如 TryDoFor
- * snakeCase, snake_case 下划线分隔，可定制大小写，如 try_do_for
- * bigSnake, BIG_SNAKE 下划线分隔，全大写，如 TRY_DO_FOR
+* upperCase 全部大写，支持 locale 参数
+* lowerCase 全部小写，支持 locale 参数
+* dotCase 逗点分隔，可定制大小写，如 try.do.for
+* kebabCase, kebab-case 减号分隔，可定制大小写，如 try-do-for
+* bigKebab, BIG-KEBAB 减号分隔，全大写，如 TRY-DO-FOR
+* camelCase 驼峰首字小写，如 tryDoFor
+* pascalCase, PascalCase 驼峰首字大写，如 TryDoFor
+* snakeCase, snake_case 下划线分隔，可定制大小写，如 try_do_for
+* bigSnake, BIG_SNAKE 下划线分隔，全大写，如 TRY_DO_FOR
 
 参数说明
-  * obj 否则toString，null返回空串
-  * arg在upperCase,lowerCase中为locale格式
-  * arg在dotCase,snakeCase,kebabCase中为&lower,upper,keep
-  * 其余函数无arg，不支持定制大小写
+
+* obj 否则toString，null返回空串
+* arg在upperCase,lowerCase中为locale格式
+* arg在dotCase,snakeCase,kebabCase中为&lower,upper,keep
+* 其余函数无arg，不支持定制大小写
   
- ```
+ ```text
  # author = try&DO&for
  {{ author | upperCase zh-cn }} #输出 TRY&DO&FOR
  {{ author | lowerCase zh-cn }} #输出 try&do&for
@@ -88,4 +132,3 @@
  {{ author | snake_case }}      #输出 try_do_for
  {{ author | BIG_SNAKE }}       #输出 TRY_DO_FOR
  ```
-
