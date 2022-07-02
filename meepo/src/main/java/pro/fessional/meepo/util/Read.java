@@ -32,6 +32,20 @@ public class Read {
     }
 
     @NotNull
+    public static String read(String uri, String pwd) {
+        return read(uri, UTF_8, pwd);
+    }
+
+    @NotNull
+    public static String read(String uri, Charset cs, String pwd) {
+        if (uri.startsWith(".")) {
+            URI u = URI.create(pwd);
+            uri = u.resolve(uri).toString();
+        }
+        return read(uri, cs);
+    }
+
+    @NotNull
     public static String read(String uri, Charset cs) {
         String str;
         InputStream is = null;
@@ -63,6 +77,7 @@ public class Read {
                     is = con.getInputStream();
                 }
             }
+            // auto close Stream
             str = Read.read(is, cs);
         }
         catch (Exception e) {

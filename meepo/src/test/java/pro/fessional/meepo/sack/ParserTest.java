@@ -41,13 +41,13 @@ public class ParserTest extends TraceTest {
 
     private static class TestCtx extends Parser.Ctx {
         public TestCtx(String txt) {
-            super(txt, true);
+            super(txt, null,true);
             edge0 = 0;
             edge1 = txt.length();
         }
 
         public TestCtx(String txt, HiMeepo mp) {
-            super(txt, true);
+            super(txt, null,true);
             edge0 = 0;
             edge1 = txt.length();
             meepo = mp;
@@ -148,6 +148,28 @@ public class ParserTest extends TraceTest {
         checkDnaRaw(single, "/// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
         checkDnaRaw(single, "//// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
         checkDnaRaw(single, "///// DNA:RAW SUPER @@", "SUPER @@", "// DNA:RAW SUPER @@");
+    }
+
+    private void checkDnaSon(HiMeepo meepo, String txt, String build) {
+        TestCtx ctx = new TestCtx(txt, meepo);
+        Parser.markHiMeepo(ctx);
+        Parser.findXnaGrp(ctx, TKN$DNA_);
+
+        Exon exon = Parser.dealDnaSon(ctx);
+        assertNotNull(exon);
+
+        CharArrayWriter buf = new CharArrayWriter();
+        exon.merge(newAcid(ctx), buf);
+        assertEquals("", buf.toString());
+        buf.reset();
+        exon.build(buf);
+        assertEquals(build, buf.toString());
+    }
+
+    @Test
+    public void dealDnaSon() {
+        checkDnaSon(single, "// DNA:SON classpath:/template/son/include-f.txt", "// DNA:SON classpath:/template/son/include-f.txt");
+        checkDnaSon(level5, "@@/* DNA:SON classpath:/template/son/include-a.txt */", "/* DNA:SON classpath:/template/son/include-a.txt */");
     }
 
     private void checkDnaBkb(HiMeepo meepo, String txt, String name, String build) {

@@ -1,0 +1,4 @@
+# HI-MEEPO
+# DNA:SET /name/trydofor/
+# RNA:USE /domain/gmail/
+author = name@domain

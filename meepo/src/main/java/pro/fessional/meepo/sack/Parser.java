@@ -10,6 +10,7 @@ import pro.fessional.meepo.bind.dna.DnaBkb;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaRaw;
 import pro.fessional.meepo.bind.dna.DnaSet;
+import pro.fessional.meepo.bind.dna.DnaSon;
 import pro.fessional.meepo.bind.kin.Bar;
 import pro.fessional.meepo.bind.kin.Prc;
 import pro.fessional.meepo.bind.rna.RnaDone;
@@ -26,6 +27,7 @@ import pro.fessional.meepo.bind.wow.Life;
 import pro.fessional.meepo.bind.wow.Tick;
 import pro.fessional.meepo.bind.wow.Tock;
 import pro.fessional.meepo.poof.RngChecker;
+import pro.fessional.meepo.util.Read;
 import pro.fessional.meepo.util.Seek;
 
 import java.util.ArrayDeque;
@@ -45,6 +47,7 @@ import static pro.fessional.meepo.bind.Const.TKN$DNA_BKB;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_END;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_RAW;
 import static pro.fessional.meepo.bind.Const.TKN$DNA_SET;
+import static pro.fessional.meepo.bind.Const.TKN$DNA_SON;
 import static pro.fessional.meepo.bind.Const.TKN$HIMEEPO;
 import static pro.fessional.meepo.bind.Const.TKN$RNA_;
 import static pro.fessional.meepo.bind.Const.TKN$RNA_DONE;
@@ -90,9 +93,41 @@ public class Parser {
      */
     @Contract("null,_->null;!null,_->!null")
     public static Gene parse(String txt, boolean lax) {
-        if (txt == null) return null;
-        final Ctx ctx = new Ctx(txt, lax);
+        return parse(txt, null, lax);
+    }
 
+    /**
+     * 解析文本，严格模式。设定模板路径，可以以相对路径include。
+     *
+     * @param txt 文本
+     * @param pwd 模板位置
+     * @return 基因
+     */
+    @Contract("null, _->null;!null, _->!null")
+    public static Gene parse(String txt, String pwd) {
+        return parse(txt, pwd, false);
+    }
+
+    /**
+     * 解析文本。发现指令的语法错误时，有放松模式（日志warn，并视为普通文本）和严格模式（抛异常）
+     * 设定模板路径，可以以相对路径include。
+     *
+     * @param txt 文本
+     * @param pwd 模板位置
+     * @param lax 放松模式
+     * @return 基因
+     */
+    @Contract("null,_,_->null;!null,_,_->!null")
+    public static Gene parse(String txt, String pwd, boolean lax) {
+        if (txt == null) return null;
+        final Ctx ctx = new Ctx(txt, pwd, lax);
+
+        parse(ctx);
+
+        return ctx.toGene();
+    }
+
+    protected static void parse(Ctx ctx) {
         for (ctx.edge0 = 0; ctx.edge0 < ctx.end; ctx.edge0 = ctx.edge1) {
 
             // 标记米波，文本分段，找到edge0
@@ -115,11 +150,7 @@ public class Parser {
         }
 
         dealTxtPlain(ctx, ctx.end, DealText); // 处理最后
-
-
-        return ctx.toGene();
     }
-
 
     /**
      * 处理 DNA 组
@@ -139,6 +170,9 @@ public class Parser {
             }
             if (exon == null) {
                 exon = dealDnaRaw(ctx);
+            }
+            if (exon == null) {
+                exon = dealDnaSon(ctx);
             }
         }
         return exon == null ? SkipThis : exon;  // DNA:GROUP
@@ -360,6 +394,25 @@ public class Parser {
         int raw0 = Seek.seekNextGrace(txt, off, ctx.main1);
         DnaRaw dna = new DnaRaw(txt, ctx.toEdge(), Math.max(raw0, off), ctx.main1);
         logger.trace("[👹Parse:dealDnaRaw] find DNA:RAW at token0={}", tkn0);
+        return dna;
+    }
+
+    /**
+     * 处理DNA:SON，并决定是否停止后续处理
+     *
+     * @param ctx 上下文
+     * @return 是否停止后续处理。
+     */
+    protected static Exon dealDnaSon(Ctx ctx) {
+        String txt = ctx.txt;
+        int tkn0 = Seek.seekFollow(txt, ctx.grpx1, ctx.main1, TKN$DNA_SON);
+        if (tkn0 < 0) return null;
+
+        int off = tkn0 + TKN$DNA_SON.length();
+        int raw0 = Seek.seekNextGrace(txt, off, ctx.main1);
+        String path = txt.substring(Math.max(raw0, off), ctx.main1);
+        DnaSon dna = new DnaSon(txt, ctx.toEdge(), path);
+        logger.trace("[👹Parse:dealDnaSon] find DNA:SON at token0={}", tkn0);
         return dna;
     }
 
@@ -989,6 +1042,7 @@ public class Parser {
      */
     protected static class Ctx {
         protected final String txt; // 模板原始文本
+        protected final String pwd; // 模板路径文本
         protected final boolean lax; // 宽松模式
         protected final int end; // 文本的length（不含）
         protected int done1 = 0; // 已解析完毕的位置（不含）
@@ -1008,8 +1062,9 @@ public class Parser {
         protected final StringBuilder errs = new StringBuilder();
         protected final RngChecker rngs = new RngChecker();
 
-        public Ctx(String txt, boolean lax) {
+        public Ctx(String txt, String pwd, boolean lax) {
             this.txt = txt;
+            this.pwd = pwd;
             this.end = txt.length();
             this.lax = lax;
 
@@ -1114,6 +1169,21 @@ public class Parser {
                 }
             }
             // 调整gene栈 - 结束
+            else if (exon instanceof DnaSon) {
+                String clz = exon.getClass().getSimpleName();
+                logger.trace("[👹Parse:procExon] append {}, and parse sons", clz);
+                DnaSon ds = (DnaSon) exon;
+                final String sub = Read.read(ds.path, pwd);
+                Ctx son = new Ctx(sub, ds.path, lax);
+                parse(son);
+                son.okGene();
+                List<Exon> gns = son.getGene();
+                for (Exon gn : gns) {
+                    gn.check(errs, rngs);
+                }
+                ds.gene.addAll(gns);
+                addGene(ds);
+            }
             else {
                 addGene(exon);
             }
@@ -1183,7 +1253,7 @@ public class Parser {
             }
         }
 
-        public Gene toGene() {
+        public void okGene() {
             if (errs.length() > 0) {
                 if (lax) {
                     logger.warn(errs.toString());
@@ -1196,12 +1266,16 @@ public class Parser {
                 StringBuilder sb = new StringBuilder("find UN-DONE RNA's Tock=");
                 for (G g : tree) {
                     sb.append(g.tock);
-                    sb.append(",");
+                    sb.append(',');
                 }
                 throw new IllegalStateException(sb.toString());
             }
+        }
 
+        public Gene toGene() {
+            okGene();
             G g = tree.pollLast();
+            assert g != null;
             return new Gene(g.gene, rngs.getCheckedEngine());
         }
 

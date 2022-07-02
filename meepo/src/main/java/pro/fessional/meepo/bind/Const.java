@@ -26,6 +26,7 @@ public interface Const {
     String TKN$DNA_END = "END";
     String TKN$DNA_BKB = "BKB";
     String TKN$DNA_RAW = "RAW";
+    String TKN$DNA_SON = "SON";
 
     String TKN$RNA_ = "RNA:";
     String TKN$RNA_PUT = "PUT";

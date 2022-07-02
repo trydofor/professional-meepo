@@ -24,12 +24,12 @@ public class TmplHelp {
         String strIn = Read.read(TmplHelp.class.getResourceAsStream(actual));
         String strOut = Read.read(TmplHelp.class.getResourceAsStream(expected));
 
-        Gene gene = Parser.parse(strIn);
+        Gene gene = Parser.parse(strIn, "classpath:" + expected);
         String merge = gene.merge(ctx);
         String build = gene.build();
-        assertEquals(strOut, merge, "merge mismatch");
+        assertEquals(strOut.trim(), merge.trim(), "merge mismatch");
         assertNotSame(strIn, build);
-        assertEquals(strIn, build, "build mismatch");
+        assertEquals(strIn.trim(), build.trim(), "build mismatch");
     }
 
     public static void printGene(String clzPath) {

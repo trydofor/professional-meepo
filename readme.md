@@ -57,7 +57,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 尽管从benchmark上看，其性能远高于`Freemarker`和`Velocity`，是`thymeleaf`的3倍，
 但并不建议使用米波做工程上的view层渲染，它适合做模板中间层，或叫模板翻译器。
 
-### 2.1.忽略指令行空白，可读性优先
+### 2.01.忽略指令行空白，可读性优先
 
 底层模板的[blog-trim.peb](meepo/src/test/resources/template/blog/blog-trim.peb)，
 不能有效的被html和js语法加持，IDE插件能够识别pebble语法。
@@ -93,7 +93,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-### 2.2.保留指令行空白，一致性优先
+### 2.02.保留指令行空白，一致性优先
 
 底层模板的[blog-pure.peb](meepo/src/test/resources/template/blog/blog-pure.peb)，
 注意`<body>`上有一空行，`var`前共有有4x3=12个空格。
@@ -129,7 +129,7 @@ Thymeleaf(近期停止更新了)类的模板不会破坏目标文件语法，并
 </body>
 ```
 
-### 2.3.全部替换，使用匿名全局
+### 2.03.全部替换，使用匿名全局
 
 输出结果的[replace-all-o.htm](meepo/src/test/resources/template/repl/replace-all-o.htm)
 
@@ -149,7 +149,7 @@ use anonymous all-life to replace body to div
 </body>
 ```
 
-### 2.4.间隔替换，使用指定范围
+### 2.04.间隔替换，使用指定范围
 
 输出结果的[replace-1a3-o.htm](meepo/src/test/resources/template/repl/replace-1a3-o.htm)
 
@@ -169,7 +169,7 @@ use ranged-life to replace 1st and 3rd body to div
 </body>
 ```
 
-### 2.5.范围替换，使用命名全局
+### 2.05.范围替换，使用命名全局
 
 输出结果的[replace-end-o.htm](meepo/src/test/resources/template/repl/replace-end-o.htm)
 
@@ -190,7 +190,7 @@ use named-life to replace scoped body to div
 </body>
 ```
 
-### 2.6.保留原样，使用魔免黑皇杖
+### 2.06.保留原样，使用魔免黑皇杖
 
 输出结果的[black-king-bar-o.htm](meepo/src/test/resources/template/bkb/black-king-bar-o.htm)
 
@@ -213,7 +213,7 @@ in bkb, all are plain text, including DNA:SET
 <!-- DNA:END bkb -->
 ```
 
-### 2.7.删除行块，实际是替换为空
+### 2.07.删除行块，实际是替换为空
 
 输出结果的[delete-1a3-o.htm](meepo/src/test/resources/template/del/delete-1a3-o.htm)
 
@@ -242,7 +242,7 @@ delete all, but this line
 </body>
 ```
 
-### 2.8.单次执行，使用变量，以便后续读取
+### 2.08.单次执行，存入Model
 
 输出结果的[put-use-o.htm](meepo/src/test/resources/template/rna/put-use-o.htm)
 
@@ -266,7 +266,7 @@ delete all, but this line
 </body>
 ```
 
-### 2.9.每次执行，一个js版的计数器
+### 2.09.每次执行，js版计数器
 
 输出结果的[run-any-o.htm](meepo/src/test/resources/template/rna/run-any-o.htm)
 
@@ -292,7 +292,7 @@ i++ == counter
 </body>
 ```
 
-### 2.10.导入外部模板，import uri
+### 2.10.运行时import静态文本
 
 通过uri引擎，可以读取 `file://`,`classpath:`和`http://`等外部资源
 
@@ -310,7 +310,7 @@ imported text
 import-here
 ```
 
-### 2.11.执行java代码，java引擎
+### 2.11.执行java代码，动态编译
 
 输出结果的[compile-java-o.htm](meepo/src/test/resources/template/java/compile-java-o.htm)
 
@@ -414,6 +414,19 @@ ctx.put("number",-1);
 "this is {{moilion-circle|PascalCase}} simple template"
 "this is MoilionCircle simple template"
 ```
+
+### 2.16.组件Widget功能
+
+Widget是View和Model的组合，`SON`内`PUT`可以实现组件功能。
+
+如网站的Header通常根据id加载Model，模板引擎渲染View得到输出输出。
+模板引擎支持include功能，但不会加载Model，因为V和M的职责不同，就不应该支持。
+
+实际工作中，我们更希望View层的Header被include时，其所需Model也加载了。
+而不是，View层include一次，Controller层再include一次Model的加载。
+
+Meepo具备了运行时调整context的能力，也就是自己可加载Model，变为组件。
+在本文语境中，import为动态RNA范畴，include为静态DNA范畴。
 
 ## 3.如何使用
 
@@ -661,6 +674,21 @@ SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
 // DNA:RAW SUPER(1010100, "ConstantEnumTemplate", "性别", "性别")
 ```
 
+### 5.5.DNA:SON 子模板
+
+语法：`DNA:SON` `空白`+ `路径`
+
+把路径资源以UTF8读取，并在当前位置展开，作为模板解析。
+路径可包含协议部分，默认classpath。仅支持一下协议。
+
+* `http://`,`https://`时，以GET读取
+* `file://`,`/`或`.`时，从file system读取
+* `classpath:`时，从classloader读入，注意没有`//`
+* 以`.`开始，表示采用父模板为起点的相对路径，但不建议使用。
+
+需要注意，子模板需要单独声明`HI-MEEPO`，属于静态解析，
+在独立的context中解析，之后并入到当前的父模板中。
+
 ## 6.主任RNA
 
 RNA好比车间主任，定义执行指令，在merge时调用`执行引擎`，用其结果做替换。
@@ -717,7 +745,7 @@ var userHome = "/home/trydofor";
 
 ```js
 // DNA:PUT os/who/basename $(pwd)/
-/* 把结果`pro.fessional.meepo`放入米波的执行环境 */
+/* 把`basename $(pwd)`的输出，以`who`为key存入context中 */
 ```
 
 ### 6.3.RNA:RUN 每次执行
@@ -954,6 +982,7 @@ console.log('<div>result='+count+'/'+total+'</div>')
 ### 7.3.内容引入`uri`
 
 `nothing`级，把uri的内容以UTF8输出为字符串。首次读入，后续缓存。
+注意，仅作为String类型，不会做任何解析和动态执行。
 
 * `http://`,`https://`时，以GET读取
 * `file://`,`/`或`.`时，从file system读取

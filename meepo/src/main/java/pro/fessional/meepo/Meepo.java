@@ -441,7 +441,7 @@ public class Meepo {
     @NotNull
     private static Gene parse0(String uri) {
         String txt = Read.read(uri);
-        return Parser.parse(txt);
+        return Parser.parse(txt, uri);
     }
 
 
@@ -455,7 +455,7 @@ public class Meepo {
     private static Gene parse0(File file) {
         try {
             String txt = Read.read(new FileInputStream(file));
-            return Parser.parse(txt);
+            return Parser.parse(txt, file.getAbsolutePath());
         }
         catch (FileNotFoundException e) {
             throw new IllegalStateException("failed to load file=" + file, e);
