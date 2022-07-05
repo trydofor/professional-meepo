@@ -27,9 +27,9 @@ public class TmplHelp {
         Gene gene = Parser.parse(strIn, "classpath:" + expected);
         String merge = gene.merge(ctx);
         String build = gene.build();
-        assertEquals(strOut.trim(), merge.trim(), "merge mismatch");
+        assertEquals(strOut, merge, "merge mismatch");
         assertNotSame(strIn, build);
-        assertEquals(strIn.trim(), build.trim(), "build mismatch");
+        assertEquals(strIn, build, "build mismatch");
     }
 
     public static void printGene(String clzPath) {

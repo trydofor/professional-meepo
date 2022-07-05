@@ -28,25 +28,25 @@ public class Read {
 
     @NotNull
     public static String read(String uri) {
-        return read(uri, UTF_8);
+        return read(uri, null, UTF_8);
     }
 
     @NotNull
-    public static String read(String uri, String pwd) {
-        return read(uri, UTF_8, pwd);
+    public static String read(@NotNull String uri, String pwd) {
+        return read(uri, pwd, UTF_8);
     }
 
     @NotNull
-    public static String read(String uri, Charset cs, String pwd) {
-        if (uri.startsWith(".")) {
-            URI u = URI.create(pwd);
+    public static String read(@NotNull String uri, String pwd, Charset cs) {
+        if ((uri.startsWith(".") || uri.startsWith("/"))) {
+            URI u = URI.create(pwd == null ? "." : pwd);
             uri = u.resolve(uri).toString();
         }
         return read(uri, cs);
     }
 
     @NotNull
-    public static String read(String uri, Charset cs) {
+    private static String read(String uri, Charset cs) {
         String str;
         InputStream is = null;
         try {
