@@ -82,6 +82,6 @@ spring-spel子工程，注册`spel`引擎，提供Bean和SpEL能力
 
 ## 详细文档
 
-* <https://wings.fessional.pro/5-radiant/5b.meepo/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/5-radiant/5b.meepo/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/5-radiant/5b.meepo/>
+* <https://wings.fessional.pro/b-meepo/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
