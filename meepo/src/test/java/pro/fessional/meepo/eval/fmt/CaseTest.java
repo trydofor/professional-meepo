@@ -171,4 +171,12 @@ class CaseTest {
         }
     }
 
+    @Test
+    public void testHolderPipe() {
+        ctx.put("index", 0);
+
+        String hd = "{{ index | mod even odd | BIG_SNAKE }}";
+        String str = Holder.parse(hd).merge(ctx);
+        assertEquals("EVEN", str);
+    }
 }

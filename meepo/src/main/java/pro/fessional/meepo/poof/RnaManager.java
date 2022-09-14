@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.eval.NameEval;
+import pro.fessional.meepo.eval.ctrl.Elv;
 import pro.fessional.meepo.eval.fmt.Case;
 import pro.fessional.meepo.eval.fmt.Fmt;
 import pro.fessional.meepo.eval.num.Cal;
@@ -70,6 +71,10 @@ public class RnaManager {
         //
         RnaManager.register(Cal.funMod);
         RnaManager.register(Cal.funAbs);
+
+        //
+        RnaManager.register(Elv.funSee);
+
     }
 
     /**

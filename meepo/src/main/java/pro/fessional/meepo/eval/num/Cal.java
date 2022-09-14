@@ -46,7 +46,7 @@ public class Cal {
 
             final Object k = arg[num % arg.length];
             if (k instanceof CharSequence) {
-                return MapHelper.arg(ctx, (CharSequence) k);
+                return MapHelper.arg(ctx, (CharSequence) k, false);
             }
             else {
                 return k;

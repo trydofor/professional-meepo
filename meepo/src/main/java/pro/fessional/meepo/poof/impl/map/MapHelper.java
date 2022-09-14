@@ -46,10 +46,10 @@ public class MapHelper {
             work.add(new RnaWarmed(type, key, navi.toArray(ARR$EMPTY_STRING), KIND_NAVI));
         }
         else {
-            List<String> args = Eval.parseArgs(key, ArgType.Str);
+            List<Object> args = Eval.parseArgs(key, ArgType.Obj);
             if (args.size() > 1) {
-                String cmd = args.get(0);
-                String[] arg = args.subList(1, args.size()).toArray(ARR$EMPTY_STRING);
+                String cmd = args.get(0).toString();
+                Object[] arg = args.subList(1, args.size()).toArray();
                 work.add(new RnaWarmed(type, cmd, arg, KIND_FUNC));
             }
             else {
@@ -70,28 +70,38 @@ public class MapHelper {
         return new RnaWarmed(type, expr, work);
     }
 
-    public static Object arg(Object ctx, CharSequence expr) {
+    public static Object arg(Object ctx, CharSequence expr, boolean nil) {
         if (expr instanceof String) {
             return expr;
         }
-
+        // RefStr
         final String refs = expr.toString();
         String[] pts = ARR$EMPTY_STRING;
         if (refs.indexOf(Const.OBJ$NAVI_DOT) > 0) {
             pts = NAVEXP.computeIfAbsent(refs, k -> Eval.split(refs, Const.OBJ$NAVI_DOT).toArray(ARR$EMPTY_STRING));
         }
         final Object rt = get(ctx, refs, pts);
-        return rt == null ? refs : rt;
+        if (rt != null) {
+            return rt;
+        }
+        else {
+            return nil ? null : refs;
+        }
     }
 
-    public static Object get(Object ctx, String expr, String[] part) {
+    public static Object get(Object ctx, String expr, Object[] args) {
 
         // 整取
         Object obj = byMap(ctx, expr);
         if (obj != null) return obj;
 
+        if (!(args instanceof String[])) {
+            return null;
+        }
+
+        String[] part = (String[]) args;
         String k2 = expr;
-        if (part != null && part.length > 0) {
+        if (part.length > 0) {
             int lst = part.length - 1;
 
             for (int i = 0; i < lst; i++) {
@@ -109,9 +119,9 @@ public class MapHelper {
             }
 
             k2 = part[lst];
+            obj = byMap(ctx, k2);
         }
 
-        obj = byMap(ctx, k2);
         if (obj == null) {
             obj = byBean(ctx, k2);
         }

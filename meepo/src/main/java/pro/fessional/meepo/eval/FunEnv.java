@@ -22,7 +22,6 @@ public class FunEnv {
     // fmt
     public static final String FUN$FMT = KEY$PREFIX + "fmt";
 
-    // str
     public static final String FUN$UPPER_CASE = KEY$PREFIX + "upperCase";
     public static final String FUN$LOWER_CASE = KEY$PREFIX + "lowerCase";
     public static final String FUN$DOT_CASE = KEY$PREFIX + "dotCase";
@@ -37,4 +36,8 @@ public class FunEnv {
     public static final String FUN$BIG_SNAKE_1 = KEY$PREFIX + "BIG_SNAKE";
     public static final String FUN$SNAKE_CASE = KEY$PREFIX + "snake_case";
     public static final String FUN$SNAKE_CASE_1 = KEY$PREFIX + "snakeCase";
+
+    // ctrl
+    public static final String FUN$SEE = KEY$PREFIX + "see";
+
 }
