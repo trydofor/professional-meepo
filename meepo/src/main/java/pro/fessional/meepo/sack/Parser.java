@@ -30,6 +30,7 @@ import pro.fessional.meepo.poof.RngChecker;
 import pro.fessional.meepo.util.Read;
 import pro.fessional.meepo.util.Seek;
 
+import java.io.StringWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -436,12 +437,12 @@ public class Parser {
             logger.trace("[👹Parse:dealDnaBkb] find DNA:BKB at token0={}", tkn0);
         }
         else {
+            dna = SkipThis; // DNA:BKB
             if (ctx.lax) {
-                dna = SkipThis; // DNA:BKB
                 logger.warn("[👹Parse:dealDnaBkb] skip bad DNA:BKB without name");
             }
             else {
-                throw new IllegalStateException("DNA:BKB [" + ctx.main0 + "," + ctx.main1 + "], without name");
+                ctx.fail.add(new IllegalStateException("DNA:BKB [" + ctx.main0 + "," + ctx.main1 + "], without name"));
             }
         }
         return dna;
@@ -462,12 +463,12 @@ public class Parser {
 
         final Exon dna;
         if (names.isEmpty()) {
+            dna = SkipThis; // DNA:END
             if (ctx.lax) {
-                dna = SkipThis; // DNA:END
                 logger.warn("[👹Parse:dealDnaEnd] skip bad DNA:END without name");
             }
             else {
-                throw new IllegalStateException("DNA:END [" + ctx.main0 + "," + ctx.main1 + "], without name");
+                ctx.fail.add(new IllegalStateException("DNA:END [" + ctx.main0 + "," + ctx.main1 + "], without name"));
             }
         }
         else {
@@ -512,12 +513,12 @@ public class Parser {
             logger.trace("[👹Parse:dealDnaSet] find DNA:SET at token0={}", tkn0);
         }
         else {
+            dna = SkipThis; // DNA:SET
             if (ctx.lax) {
-                dna = SkipThis; // DNA:SET
                 logger.warn("[👹Parse:dealDnaSet] skip bad DNA:SET {}", note);
             }
             else {
-                throw new IllegalStateException("DNA:SET [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("DNA:SET [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return dna;
@@ -561,12 +562,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaRun] find RNA:RUN at token0={}", tkn0);
         }
         else {
+            rna = SkipThis; // RNA:RUN
             if (ctx.lax) {
-                rna = SkipThis; // RNA:RUN
                 logger.warn("[👹Parse:dealRnaRun] skip bad RNA:RUN {}", note);
             }
             else {
-                throw new IllegalStateException("DNA:RUN [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("DNA:RUN [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return rna;
@@ -605,12 +606,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaUse] find RNA:USE at token0={}", tkn0);
         }
         else {
+            rna = SkipThis; // RNA:USE
             if (ctx.lax) {
-                rna = SkipThis; // RNA:USE
                 logger.warn("[👹Parse:dealRnaUse] skip bad RNA:USE {}", note);
             }
             else {
-                throw new IllegalStateException("RNA:USE [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("RNA:USE [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return rna;
@@ -653,12 +654,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaPut] find RNA:PUT at token0={}", tkn0);
         }
         else {
+            rna = SkipThis; // RNA:PUT
             if (ctx.lax) {
-                rna = SkipThis; // RNA:PUT
                 logger.warn("[👹Parse:dealRnaPut] skip bad RNA:PUT {}", note);
             }
             else {
-                throw new IllegalStateException("RNA:PUT [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("RNA:PUT [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return rna;
@@ -725,12 +726,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaWhen] find RNA:WHEN at token0={}", tkn0);
         }
         else {
+            rna = SkipThis; // RNA:WHEN
             if (ctx.lax) {
-                rna = SkipThis; // RNA:WHEN
                 logger.warn("[👹Parse:dealRnaWhen] skip bad RNA:WHEN {}", note);
             }
             else {
-                throw new IllegalStateException("RNA:WHEN [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("RNA:WHEN [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return rna;
@@ -794,12 +795,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaWhen] find RNA:EACH at token0={}", tkn0);
         }
         else {
+            rna = SkipThis; // RNA:EACH
             if (ctx.lax) {
-                rna = SkipThis; // RNA:EACH
                 logger.warn("[👹Parse:dealRnaWhen] skip bad RNA:EACH {}", note);
             }
             else {
-                throw new IllegalStateException("bad RNA:EACH [" + ctx.main0 + "," + ctx.main1 + "], " + note);
+                ctx.fail.add(new IllegalStateException("bad RNA:EACH [" + ctx.main0 + "," + ctx.main1 + "], " + note));
             }
         }
         return rna;
@@ -825,12 +826,12 @@ public class Parser {
             logger.trace("[👹Parse:dealRnaElse] find RNA:ELSE at token0={}", tkn0);
         }
         else {
+            dna = SkipThis; // RNA:ELSE
             if (ctx.lax) {
-                dna = SkipThis; // RNA:ELSE
                 logger.warn("[👹Parse:dealRnaElse] skip bad RNA:ELSE without name");
             }
             else {
-                throw new IllegalStateException("RNA:ELSE [" + ctx.main0 + "," + ctx.main1 + "], without name");
+                ctx.fail.add(new IllegalStateException("RNA:ELSE [" + ctx.main0 + "," + ctx.main1 + "], without name"));
             }
         }
         return dna;
@@ -851,12 +852,12 @@ public class Parser {
 
         final Exon dna;
         if (names.isEmpty()) {
+            dna = SkipThis; // RNA:DONE
             if (ctx.lax) {
-                dna = SkipThis; // RNA:DONE
                 logger.warn("[👹Parse:dealRnaDone] skip bad RNA:DONE without name");
             }
             else {
-                throw new IllegalStateException("RNA:DONE [" + ctx.main0 + "," + ctx.main1 + "], without name");
+                ctx.fail.add(new IllegalStateException("RNA:DONE [" + ctx.main0 + "," + ctx.main1 + "], without name"));
             }
         }
         else {
@@ -1061,6 +1062,7 @@ public class Parser {
         protected final TreeMap<Integer, Integer> line = new TreeMap<>();
         protected final StringBuilder errs = new StringBuilder();
         protected final RngChecker rngs = new RngChecker();
+        protected final ArrayList<RuntimeException> fail = new ArrayList<>();
 
         public Ctx(String txt, String pwd, boolean lax) {
             this.txt = txt;
@@ -1222,7 +1224,7 @@ public class Parser {
                 for (Exon.N n2 : rst) {
                     if (n1 != n2 && n1.cross(n2)) {
                         String err = "may use DNA:END to fix cross range, n1=" + altClop(n1, done1) + ", n2=" + altClop(n2, done1) + ", text=" + text;
-                        throw new IllegalStateException(err);
+                        fail.add(new IllegalStateException(err));
                     }
                 }
             }
@@ -1259,7 +1261,7 @@ public class Parser {
                     logger.warn(errs.toString());
                 }
                 else {
-                    throw new IllegalStateException(errs.toString());
+                    fail.add(new IllegalStateException(errs.toString()));
                 }
             }
             if (tree.size() != 1) {
@@ -1268,7 +1270,18 @@ public class Parser {
                     sb.append(g.tock);
                     sb.append(',');
                 }
-                throw new IllegalStateException(sb.toString());
+                fail.add(new IllegalStateException(sb.toString()));
+            }
+
+            if (!fail.isEmpty()) {
+                StringWriter buff = new StringWriter();
+                buff.append("\n=== Template Text ===\n");
+                buff.append(txt);
+                for (G g : tree) {
+                    buff.append("\n=== Gene Tree ===\n");
+                    Gene.graph(buff, g.gene, 1, 0);
+                }
+                throw new IllegalStateException(buff.toString(), fail.get(0));
             }
         }
 

@@ -124,7 +124,7 @@ public class Gene {
      * @param start 校验起点（包含），0-base
      * @return 校验终点，不包含
      */
-    public int graph(Writer buff, List<Exon> exon, int level, int start) {
+    public static int graph(Writer buff, List<Exon> exon, int level, int start) {
         for (Exon ex : exon) {
             Clop edge = ex.edge;
             if (edge.start != start) {
