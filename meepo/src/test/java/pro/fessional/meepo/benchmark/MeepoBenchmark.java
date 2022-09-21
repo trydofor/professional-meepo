@@ -17,6 +17,9 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import pro.fessional.meepo.sack.Gene;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -24,9 +27,9 @@ import java.util.concurrent.TimeUnit;
  * @author trydofor
  * @since 2020-10-28
  */
-@Fork(5)
-@Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@Fork(2)
+@Warmup(iterations = 2)
+@Measurement(iterations = 5)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
@@ -42,8 +45,11 @@ public class MeepoBenchmark {
     }
 
     @Benchmark
-    public String benchmark() throws PebbleException {
-        return template.merge(context);
+    public String benchmark() throws PebbleException, IOException {
+        try (Writer writer = new StringWriter(10240)) {
+            template.merge(context, writer);
+            return writer.toString();
+        }
     }
 
     public static void main(String[] args) throws RunnerException {

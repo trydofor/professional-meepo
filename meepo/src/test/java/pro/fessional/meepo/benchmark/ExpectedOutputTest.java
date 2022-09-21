@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExpectedOutputTest extends TraceTest {
 
     @Test
-    public void testMeepoOutput() {
+    public void testMeepoOutput() throws IOException {
         MeepoBenchmark meepo = new MeepoBenchmark();
         meepo.setup();
         String expect = trim(Read.read("classpath:/template/jmh/expected-output.html"));

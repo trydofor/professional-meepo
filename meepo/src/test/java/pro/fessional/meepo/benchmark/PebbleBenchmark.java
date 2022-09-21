@@ -20,6 +20,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +28,9 @@ import java.util.concurrent.TimeUnit;
  * @author trydofor
  * @since 2020-10-28
  */
-@Fork(5)
-@Warmup(iterations = 5)
-@Measurement(iterations = 10)
+@Fork(2)
+@Warmup(iterations = 2)
+@Measurement(iterations = 5)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
@@ -49,9 +50,10 @@ public class PebbleBenchmark {
 
     @Benchmark
     public String benchmark() throws PebbleException, IOException {
-        StringWriter writer = new StringWriter();
-        template.evaluate(writer, context);
-        return writer.toString();
+        try (Writer writer = new StringWriter(10240)) {
+            template.evaluate(writer, context);
+            return writer.toString();
+        }
     }
 
     public static void main(String[] args) throws RunnerException {
