@@ -6,32 +6,31 @@
 
 ### Added
 
-- 支持BigDecimal,Double,Float,Long的字面量
-- EACH增加first,last属性
-- 增加fun:abs
-- 字面量支持 Boolean 型: TRUE:FALSE
-- 字面量支持 Number 型: 整形，浮点，BigDecimal
+- Support literal number `BigDecimal`, `Double`, `Float`, `Long`, `Integer`
+- Added `first` and `last` properties to `EACH`
+- Added `fun:abs` function
+- Support Boolean type `TRUE`/`FALSE`
 
 ## [1.4.0] - 2021-01-06
 
 ### Added
 
-- 丰富内建函数，详细参考 function.md
-- 支持`占位符模板`的解析，使用map引擎合并
+- Rich built-in functions, see docs for details
+- Support for `placeholder template`, merging with map engine
 
 ### Changed
 
-- 内建函数接口JavaEval，移动至eval包
-- MapEngine支持简化版函数，即无前缀
+- Moved `JavaEval` to eval package
+- MapEngine supports functions without a prefix
 
 ## [1.0.0] - 2020-11-24
 
 ### Added
 
-- 静态替换和动态构建，流程，循环
-- 多段缩排功能
-- Java,js,exec引擎
-- 内存碎片，线程及性能优化
+- Static replacement and dynamic construction, flow, loops
+- Multi-paragraph indentation function
+- `java`, `js`, `exec` engines
+- Memory, Thread and Performance Optimization
 
 ## [master]
 

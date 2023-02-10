@@ -12,7 +12,7 @@
     <artifactId>spring-mvc</artifactId>
     <packaging>jar</packaging>
 
-    <description>集成SpringMvc，可独立使用，也可预处理其他模板</description>
+    <description>integrates with SpringMvc can be used independently or pre-processed with other templates</description>
 
     <dependencies>
         <dependency>

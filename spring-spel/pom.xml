@@ -12,7 +12,7 @@
     <artifactId>spring-spel</artifactId>
     <packaging>jar</packaging>
 
-    <description>注册spel引擎，提供Bean和SpEL能力</description>
+    <description>registers the spel engine, provide spring Bean and SpEL</description>
 
     <dependencies>
         <dependency>
