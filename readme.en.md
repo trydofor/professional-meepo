@@ -90,6 +90,6 @@ can be used independently or pre-processed with other templates.
 
 ## Detailed Documents
 
-* <https://wings.fessional.pro/b-meepo/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
+* <https://wings.fessional.pro/en/b-meepo/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/docs/en/b-meepo/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/en/b-meepo/>
