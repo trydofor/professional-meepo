@@ -1,30 +1,35 @@
-# 米波英雄模板 (pro.fessional.meepo)
+# Meepo Hero Template (pro.fessional.meepo)
 
 ![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/meepo?color=00DD00)
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/meepo?server=https%3A%2F%2Foss.sonatype.org)
 [![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.meepo/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.meepo)
 
-> 中文 🇨🇳 | [English 🇺🇸](readme.en.md)
+> English 🇺🇸 | [中文 🇨🇳](readme-zh.md)
 
-米波，地卜师，主身和分身具有同等的技能，一荣俱荣，一损俱损的待遇。
-一个基于`母版`语法注释和标记的不破坏`母版`语法的非专业模板引擎。
+Meepo, Five are stronger than one. Divided they stand, united they fall.
+
+a non-professional template engine that does not break the `master` syntax,
+and is based on the comments and markup of the `master` syntax.
 
 ![meepo](meepo_full.png)
 
-现代模板引擎自身的语法，会破坏目标文件的语法，会干扰目标文件的预览和编辑。
-米波解决以上问题，仅做静态翻译和有限的动态控制，类似C的宏功能，性能高效。
+The syntax of most modern template engines will break the syntax 
+of the target file when previewing and editing.
 
-* 从`java`生成`*.java`，模板和目标文件都是可编译
-* 从`sql`生成`*.sql`，模板和目标文件都可以执行
-* 从`htm`生成`*.htm`，模板和目标文件都可以预览
-* 占位符模板，支持自定义变量边界和变量转义(spring痛点)
-* java体系内，灵活高效的自定义函数（动态，静态，运行时）
+Meepo solves this problem with high performance like C's macro by 
+using only static transformations and limited dynamic control.
 
-## 如何使用
+* Generate `*.java` from `java`, both are compilable.
+* Generate `*.sql` from `sql`, both are executable.
+* Generate `*.htm` from `htm`, both are previewable.
+* `placeholder` supports customizing variable's boundaries and escaping
+* flexible and efficient customizing (dynamic, static, runtime) function using java
 
-① 自己`clone`和`install`最豪横。
+## How to use
 
-② 使用 maven central 比较稳妥。
+① DIY `clone` and `install` is powerful.
+
+② Using Maven Central is stable.
 
 ```xml
 <dependency>
@@ -34,10 +39,9 @@
 </dependency>
 ```
 
-③ 使用 SNAPSHOT 与时俱进。
+③ Using SNAPSHOT is the latest.
 
 ```xml
-<!-- 1.0.0-SNAPSHOT -->
 <repository>
     <id>oss-sonatype</id>
     <name>oss-sonatype</name>
@@ -48,19 +52,21 @@
 </repository>
 ```
 
-## 独立使用
+## Standalone use
 
-`Meepo`封装了常用方法和缓存机制。能够满足一般的场景需求。
+`Meepo` provides common methods and caching 
+that can handle the most common scenarios.
 
-* 文件模板 - 以`Meepo`为入口, `#parse`, `#merge`
-* 占位模板 - 以`Holder`为入口，`#piece`
-* 解析字串 - 以`Parser`构造`Gene`, `#parse`
+* File template - use `Meepo` as entry, `#parse`, `#merge`
+* Placeholder template - use `Holder` as entry, `#piece`
+* String Parsing - use `Parser` to construct `Gene`, `#parse`
 
-如果有定制需要，可以自定义使用`Parser`和`Gene`来组合出需要的工具类。
+you can customize the use of `Parser` and `Gene` to combine the tool as you need.
 
-## 集成Mvc
+## Mvc Integration
 
-`spring-mvc`子工程，集成`SpringMvc`，可独立使用，也可预处理其他模板
+`spring-mvc` module integrates with `SpringMvc`, 
+can be used independently or pre-processed with other templates.
 
 ```xml
 <dependency>
@@ -70,9 +76,9 @@
 </dependency>
 ```
 
-## 集成Spel
+## Spel Integration
 
-`spring-spel`子工程，注册`spel`引擎，提供`Bean`和`SpEL`能力
+`spring-spel` module registers the `spel` engine, provide spring `Bean` and `SpEL`.
 
 ```xml
 <dependency>
@@ -82,8 +88,8 @@
 </dependency>
 ```
 
-## 详细文档
+## Detailed Documents
 
 * <https://wings.fessional.pro/b-meepo/>
-* <https://github.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
-* <https://gitee.com/fessionalpro/wings-doc/tree/main/docs/b-meepo/>
+* <https://github.com/fessionalpro/wings-doc/tree/main/src/b-meepo/>
+* <https://gitee.com/fessionalpro/wings-doc/tree/main/src/b-meepo/>
