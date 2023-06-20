@@ -11,19 +11,13 @@ import java.util.Map;
  */
 public class Stock {
 
-    public String name;
-
-    public String name2;
-
-    public String url;
-
-    public String symbol;
-
-    public double price;
-
-    public double change;
-
-    public double ratio;
+    public final String name;
+    public final String name2;
+    public final String url;
+    public final String symbol;
+    public final double price;
+    public final double change;
+    public final double ratio;
 
     public Stock(String name, String name2, String url, String symbol, double price, double change, double ratio) {
         this.name = name;

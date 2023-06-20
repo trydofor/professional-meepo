@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class UriEngineTest extends TraceTest {
 
-    UriEngine engine = new UriEngine();
-    Map<String, Object> context = new HashMap<>();
+    final UriEngine engine = new UriEngine();
+    final Map<String, Object> context = new HashMap<>();
 
     @Test
     public void evalFile() {

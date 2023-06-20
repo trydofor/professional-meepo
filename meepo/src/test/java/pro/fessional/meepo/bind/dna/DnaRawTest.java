@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DnaRawTest extends TraceTest {
 
-    DnaRaw d1 = new DnaRaw("// DNA:RAW SUPER(1010100", new Clop(0, 24, 1, 1), 11, 24);
-    DnaRaw d2 = new DnaRaw(" // DNA:RAW SUPER(1010100", new Clop(1, 25, 1, 1), 12, 25);
+    final DnaRaw d1 = new DnaRaw("// DNA:RAW SUPER(1010100", new Clop(0, 24, 1, 1), 11, 24);
+    final DnaRaw d2 = new DnaRaw(" // DNA:RAW SUPER(1010100", new Clop(1, 25, 1, 1), 12, 25);
 
     @Test
     public void testEquals() {

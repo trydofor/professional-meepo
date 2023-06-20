@@ -45,14 +45,6 @@ public class MapHelperTest {
     }
 
     @Test
-    public void navTest() {
-//        assertArrayEquals(Const.ARR$EMPTY_STRING, MapHelper.warm("name"));
-//        assertArrayEquals(new String[]{"my", "name"}, MapHelper.warm("my.name"));
-//        assertArrayEquals(new String[]{"my", "name", "is"}, MapHelper.warm("my.name.is"));
-//        assertArrayEquals(new String[]{"it", "name"}, MapHelper.warm("it.name"));
-    }
-
-    @Test
     public void getterSpeed() throws Exception {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "name");
@@ -140,8 +132,8 @@ public class MapHelperTest {
 
     public static class Bean {
         public final String name = "name";
-        private final String code = "code";
-        private final boolean male = true;
+        public final String code = "code";
+        public final boolean male = true;
 
         public String getCode() {
             return code;

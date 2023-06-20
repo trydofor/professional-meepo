@@ -61,7 +61,7 @@ public class HiMeepo extends Exon {
             }
         }
         this.echo = b;
-        this.crlf = tail.equals("\n");
+        this.crlf = "\n".equals(tail);
     }
 
     @Override

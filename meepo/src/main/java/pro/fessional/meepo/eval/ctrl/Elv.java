@@ -44,11 +44,11 @@ public class Elv {
 
     public static boolean canSee(Object obj) {
         if (obj == null) return false;
-        //
+        // empty string
         if (obj instanceof CharSequence && ((CharSequence) obj).length() == 0) {
             return false;
         }
-        //
+        // others
         return true;
     }
 }

@@ -11,6 +11,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -54,7 +56,7 @@ public class Read {
                 is = Read.class.getResourceAsStream(uri.substring(CLAS.length()));
             }
             else if (uri.regionMatches(true, 0, FILE, 0, FILE.length())) {
-                is = new FileInputStream(uri.substring(FILE.length()));
+                is = Files.newInputStream(Paths.get(uri.substring(FILE.length())));
             }
             else {
                 if (uri.indexOf(':') < 0) {
