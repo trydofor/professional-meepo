@@ -41,13 +41,13 @@ public class ParserTest extends TraceTest {
 
     private static class TestCtx extends Parser.Ctx {
         public TestCtx(String txt) {
-            super(txt, null,true);
+            super(txt, null, true);
             edge0 = 0;
             edge1 = txt.length();
         }
 
         public TestCtx(String txt, HiMeepo mp) {
-            super(txt, null,true);
+            super(txt, null, true);
             edge0 = 0;
             edge1 = txt.length();
             meepo = mp;
@@ -61,7 +61,7 @@ public class ParserTest extends TraceTest {
         return new Acid(new HashMap<>(), ctx.rngs.getCheckedEngine());
     }
 
-    private void checkHiMeepo(String txt, String pre, String suf, String edge, String main) {
+    private void checkHiMeepo(String txt, String pre, String suf, String edge) {
         TestCtx ctx = new TestCtx(txt);
         Parser.markHiMeepo(ctx);
         HiMeepo meepo = ctx.meepo;
@@ -90,27 +90,27 @@ public class ParserTest extends TraceTest {
 
     @Test
     public void dealHiMeepo() {
-        checkHiMeepo("//HI-MEEPO", "//", "\n", "//HI-MEEPO", "HI-MEEPO");
-        checkHiMeepo(" //HI-MEEPO!", "//", "\n", "//HI-MEEPO!", "HI-MEEPO!");
-        checkHiMeepo(" // HI-MEEPO", "//", "\n", " // HI-MEEPO", "HI-MEEPO");
-        checkHiMeepo(" // HI-MEEPO ", "//", "\n", " // HI-MEEPO ", "HI-MEEPO");
-        checkHiMeepo(" // HI-MEEPO \n", "//", "\n", " // HI-MEEPO \n", "HI-MEEPO");
-        checkHiMeepo(" // HI-MEEPO \nhaha", "//", "\n", " // HI-MEEPO \n", "HI-MEEPO");
+        checkHiMeepo("//HI-MEEPO", "//", "\n", "//HI-MEEPO");
+        checkHiMeepo(" //HI-MEEPO!", "//", "\n", "//HI-MEEPO!");
+        checkHiMeepo(" // HI-MEEPO", "//", "\n", " // HI-MEEPO");
+        checkHiMeepo(" // HI-MEEPO ", "//", "\n", " // HI-MEEPO ");
+        checkHiMeepo(" // HI-MEEPO \n", "//", "\n", " // HI-MEEPO \n");
+        checkHiMeepo(" // HI-MEEPO \nhaha", "//", "\n", " // HI-MEEPO \n");
 
-        checkHiMeepo("/*HI-MEEPO*/", "/*", "*/", "/*HI-MEEPO*/", "HI-MEEPO");
-        checkHiMeepo("/* HI-MEEPO*/", "/*", "*/", "/* HI-MEEPO*/", "HI-MEEPO");
-        checkHiMeepo("/* HI-MEEPO */", "/*", "*/", "/* HI-MEEPO */", "HI-MEEPO");
-        checkHiMeepo(" /* HI-MEEPO */", "/*", "*/", " /* HI-MEEPO */", "HI-MEEPO");
-        checkHiMeepo(" /* HI-MEEPO */ ", "/*", "*/", " /* HI-MEEPO */ ", "HI-MEEPO");
-        checkHiMeepo(" /* HI-MEEPO! */ \n", "/*", "*/", "/* HI-MEEPO! */", "HI-MEEPO!");
-        checkHiMeepo(" /* HI-MEEPO! */ \nhaha", "/*", "*/", "/* HI-MEEPO! */", "HI-MEEPO!");
-        checkHiMeepo(" /* HI-MEEPO */ \n", "/*", "*/", " /* HI-MEEPO */ \n", "HI-MEEPO");
-        checkHiMeepo(" /* HI-MEEPO */ \nhaha", "/*", "*/", " /* HI-MEEPO */ \n", "HI-MEEPO");
+        checkHiMeepo("/*HI-MEEPO*/", "/*", "*/", "/*HI-MEEPO*/");
+        checkHiMeepo("/* HI-MEEPO*/", "/*", "*/", "/* HI-MEEPO*/");
+        checkHiMeepo("/* HI-MEEPO */", "/*", "*/", "/* HI-MEEPO */");
+        checkHiMeepo(" /* HI-MEEPO */", "/*", "*/", " /* HI-MEEPO */");
+        checkHiMeepo(" /* HI-MEEPO */ ", "/*", "*/", " /* HI-MEEPO */ ");
+        checkHiMeepo(" /* HI-MEEPO! */ \n", "/*", "*/", "/* HI-MEEPO! */");
+        checkHiMeepo(" /* HI-MEEPO! */ \nhaha", "/*", "*/", "/* HI-MEEPO! */");
+        checkHiMeepo(" /* HI-MEEPO */ \n", "/*", "*/", " /* HI-MEEPO */ \n");
+        checkHiMeepo(" /* HI-MEEPO */ \nhaha", "/*", "*/", " /* HI-MEEPO */ \n");
 
-        checkHiMeepo(" HI-MEEPO */ \nhaha", null, null, " HI-MEEPO */ \nhaha", null);
-        checkHiMeepo(" HI-MEEPO ", null, null, " HI-MEEPO ", null);
-        checkHiMeepo("HI-MEEPO", null, null, "HI-MEEPO", null);
-        checkHiMeepo("\nHI-MEEPO\n", null, null, "\nHI-MEEPO\n", null);
+        checkHiMeepo(" HI-MEEPO */ \nhaha", null, null, " HI-MEEPO */ \nhaha");
+        checkHiMeepo(" HI-MEEPO ", null, null, " HI-MEEPO ");
+        checkHiMeepo("HI-MEEPO", null, null, "HI-MEEPO");
+        checkHiMeepo("\nHI-MEEPO\n", null, null, "\nHI-MEEPO\n");
     }
 
     private void checkDnaRaw(HiMeepo meepo, String txt, String merge, String build) {
@@ -196,18 +196,18 @@ public class ParserTest extends TraceTest {
 
     @Test
     public void dealDnaBkb() {
-        checkDnaBkb(single, "// DNA:BKB 黑皇杖", "黑皇杖", "// DNA:BKB 黑皇杖");
-        checkDnaBkb(single, "@@// DNA:BKB 黑皇杖 @@", "黑皇杖", "// DNA:BKB 黑皇杖 @@");
-        checkDnaBkb(single, "@@// DNA:BKB 黑皇杖 @@\n", "黑皇杖", "// DNA:BKB 黑皇杖 @@\n");
+        checkDnaBkb(single, "// DNA:BKB BlackKingBar", "BlackKingBar", "// DNA:BKB BlackKingBar");
+        checkDnaBkb(single, "@@// DNA:BKB BlackKingBar @@", "BlackKingBar", "// DNA:BKB BlackKingBar @@");
+        checkDnaBkb(single, "@@// DNA:BKB BlackKingBar @@\n", "BlackKingBar", "// DNA:BKB BlackKingBar @@\n");
 
         checkDnaBkb(single, "@@// DNA:BKB \n", null, "// DNA:BKB \n");
         checkDnaBkb(single, "@@// DNA:BKB\n", null, "// DNA:BKB\n");
 
-        checkDnaBkb(level5, "/* DNA:BKB 黑皇杖 */", "黑皇杖", "/* DNA:BKB 黑皇杖 */");
-        checkDnaBkb(level5, "@@/* DNA:BKB 黑皇杖 */", "黑皇杖", "/* DNA:BKB 黑皇杖 */");
-        checkDnaBkb(level5, "@@/* DNA:BKB 黑皇杖 */\n", "黑皇杖", "/* DNA:BKB 黑皇杖 */");
-        checkDnaBkb(level5, "@@/* DNA:BKB 黑皇杖 */@@", "黑皇杖", "/* DNA:BKB 黑皇杖 */");
-        checkDnaBkb(level5, "@@/* DNA:BKB 黑皇杖 */\n@@", "黑皇杖", "/* DNA:BKB 黑皇杖 */");
+        checkDnaBkb(level5, "/* DNA:BKB BlackKingBar */", "BlackKingBar", "/* DNA:BKB BlackKingBar */");
+        checkDnaBkb(level5, "@@/* DNA:BKB BlackKingBar */", "BlackKingBar", "/* DNA:BKB BlackKingBar */");
+        checkDnaBkb(level5, "@@/* DNA:BKB BlackKingBar */\n", "BlackKingBar", "/* DNA:BKB BlackKingBar */");
+        checkDnaBkb(level5, "@@/* DNA:BKB BlackKingBar */@@", "BlackKingBar", "/* DNA:BKB BlackKingBar */");
+        checkDnaBkb(level5, "@@/* DNA:BKB BlackKingBar */\n@@", "BlackKingBar", "/* DNA:BKB BlackKingBar */");
 
         checkDnaBkb(level5, "@@/* DNA:BKB */\n@@", null, "/* DNA:BKB */");
         checkDnaBkb(level5, "@@/* DNA:BKB*/\n@@", null, "/* DNA:BKB*/");
@@ -243,18 +243,18 @@ public class ParserTest extends TraceTest {
 
     @Test
     public void dealDnaEnd() {
-        checkDnaEnd(single, "// DNA:END 黑皇杖 id", "黑皇杖,id", "// DNA:END 黑皇杖 id");
-        checkDnaEnd(single, "@@// DNA:END 黑皇杖 id @@", "黑皇杖,id,@@", "// DNA:END 黑皇杖 id @@");
-        checkDnaEnd(single, "@@// DNA:END 黑皇杖 id @@\n", "黑皇杖,id,@@", "// DNA:END 黑皇杖 id @@\n");
+        checkDnaEnd(single, "// DNA:END BlackKingBar id", "BlackKingBar,id", "// DNA:END BlackKingBar id");
+        checkDnaEnd(single, "@@// DNA:END BlackKingBar id @@", "BlackKingBar,id,@@", "// DNA:END BlackKingBar id @@");
+        checkDnaEnd(single, "@@// DNA:END BlackKingBar id @@\n", "BlackKingBar,id,@@", "// DNA:END BlackKingBar id @@\n");
 
         checkDnaEnd(single, "@@// DNA:END \n", null, "// DNA:END \n");
         checkDnaEnd(single, "@@// DNA:END\n", null, "// DNA:END\n");
 
-        checkDnaEnd(level5, "/* DNA:END 黑皇杖 id */", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
-        checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
-        checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */\n", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
-        checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */@@", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
-        checkDnaEnd(level5, "@@/* DNA:END 黑皇杖 id */\n@@", "黑皇杖,id", "/* DNA:END 黑皇杖 id */");
+        checkDnaEnd(level5, "/* DNA:END BlackKingBar id */", "BlackKingBar,id", "/* DNA:END BlackKingBar id */");
+        checkDnaEnd(level5, "@@/* DNA:END BlackKingBar id */", "BlackKingBar,id", "/* DNA:END BlackKingBar id */");
+        checkDnaEnd(level5, "@@/* DNA:END BlackKingBar id */\n", "BlackKingBar,id", "/* DNA:END BlackKingBar id */");
+        checkDnaEnd(level5, "@@/* DNA:END BlackKingBar id */@@", "BlackKingBar,id", "/* DNA:END BlackKingBar id */");
+        checkDnaEnd(level5, "@@/* DNA:END BlackKingBar id */\n@@", "BlackKingBar,id", "/* DNA:END BlackKingBar id */");
 
         checkDnaEnd(level5, "@@/* DNA:END */\n", null, "/* DNA:END */\n");
         checkDnaEnd(level5, "@@/* DNA:END*/\n", null, "/* DNA:END*/\n");
@@ -300,7 +300,8 @@ public class ParserTest extends TraceTest {
         checkDnaSet(single, "@@// DNA:SET :false:{{user.male}}: @@", one, "false", "{{user.male}}", "// DNA:SET :false:{{user.male}}: @@");
         checkDnaSet(single, "@@// DNA:SET ⑨false⑨{{user.male}}⑨ @@\n", one, "false", "{{user.male}}", "// DNA:SET ⑨false⑨{{user.male}}⑨ @@\n");
         checkDnaSet(single, "@@// DNA:SET |false|{{user.male}}|1,3-5,9 @@\n", num, "false", "{{user.male}}", "// DNA:SET |false|{{user.male}}|1,3-5,9 @@\n");
-        checkDnaSet(single, "@@// DNA:SET 汉false汉{{user.male}}汉mail @@\n", name, "false", "{{user.male}}", "// DNA:SET 汉false汉{{user.male}}汉mail @@\n");
+        // do not use utf8-mb4 ❤️
+        checkDnaSet(single, "@@// DNA:SET ❤false❤{{user.male}}❤mail @@\n", name, "false", "{{user.male}}", "// DNA:SET ❤false❤{{user.male}}❤mail @@\n");
 
         checkDnaSet(single, "@@// DNA:SET false/{{user.male}}/mail @@\n", null, null, null, "// DNA:SET false/{{user.male}}/mail @@\n");
         checkDnaSet(single, "@@// DNA:SET /false/mail @@\n", null, null, null, "// DNA:SET /false/mail @@\n");
@@ -655,18 +656,18 @@ public class ParserTest extends TraceTest {
 
     @Test
     public void dealRnaDone() {
-        checkRnaDone(single, "// RNA:DONE 黑皇杖 id", "黑皇杖,id", "// RNA:DONE 黑皇杖 id");
-        checkRnaDone(single, "@@// RNA:DONE 黑皇杖 id @@", "黑皇杖,id,@@", "// RNA:DONE 黑皇杖 id @@");
-        checkRnaDone(single, "@@// RNA:DONE 黑皇杖 id @@\n", "黑皇杖,id,@@", "// RNA:DONE 黑皇杖 id @@\n");
+        checkRnaDone(single, "// RNA:DONE BlackKingBar id", "BlackKingBar,id", "// RNA:DONE BlackKingBar id");
+        checkRnaDone(single, "@@// RNA:DONE BlackKingBar id @@", "BlackKingBar,id,@@", "// RNA:DONE BlackKingBar id @@");
+        checkRnaDone(single, "@@// RNA:DONE BlackKingBar id @@\n", "BlackKingBar,id,@@", "// RNA:DONE BlackKingBar id @@\n");
 
         checkRnaDone(single, "@@// RNA:DONE \n", null, "// RNA:DONE \n");
         checkRnaDone(single, "@@// RNA:DONE\n", null, "// RNA:DONE\n");
 
-        checkRnaDone(level5, "/* RNA:DONE 黑皇杖 id */", "黑皇杖,id", "/* RNA:DONE 黑皇杖 id */");
-        checkRnaDone(level5, "@@/* RNA:DONE 黑皇杖 id */", "黑皇杖,id", "/* RNA:DONE 黑皇杖 id */");
-        checkRnaDone(level5, "@@/* RNA:DONE 黑皇杖 id */\n", "黑皇杖,id", "/* RNA:DONE 黑皇杖 id */");
-        checkRnaDone(level5, "@@/* RNA:DONE 黑皇杖 id */@@", "黑皇杖,id", "/* RNA:DONE 黑皇杖 id */");
-        checkRnaDone(level5, "@@/* RNA:DONE 黑皇杖 id */\n@@", "黑皇杖,id", "/* RNA:DONE 黑皇杖 id */");
+        checkRnaDone(level5, "/* RNA:DONE BlackKingBar id */", "BlackKingBar,id", "/* RNA:DONE BlackKingBar id */");
+        checkRnaDone(level5, "@@/* RNA:DONE BlackKingBar id */", "BlackKingBar,id", "/* RNA:DONE BlackKingBar id */");
+        checkRnaDone(level5, "@@/* RNA:DONE BlackKingBar id */\n", "BlackKingBar,id", "/* RNA:DONE BlackKingBar id */");
+        checkRnaDone(level5, "@@/* RNA:DONE BlackKingBar id */@@", "BlackKingBar,id", "/* RNA:DONE BlackKingBar id */");
+        checkRnaDone(level5, "@@/* RNA:DONE BlackKingBar id */\n@@", "BlackKingBar,id", "/* RNA:DONE BlackKingBar id */");
 
         checkRnaDone(level5, "@@/* RNA:DONE */\n", null, "/* RNA:DONE */\n");
         checkRnaDone(level5, "@@/* RNA:DONE*/\n", null, "/* RNA:DONE*/\n");

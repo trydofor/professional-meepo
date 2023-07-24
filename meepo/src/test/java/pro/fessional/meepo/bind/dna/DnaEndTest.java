@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DnaEndTest extends TraceTest {
 
-    final DnaEnd d1 = new DnaEnd("// DNA:END 黑皇杖,id", new Clop(0, 17, 1, 1), Arrays.asList("黑皇杖", "id"));
-    final DnaEnd d2 = new DnaEnd(" // DNA:END 黑皇杖,id", new Clop(1, 18, 1, 1), Arrays.asList("id", "黑皇杖"));
+    final DnaEnd d1 = new DnaEnd("// DNA:END BlackKingBar,id", new Clop(0, 17, 1, 1), Arrays.asList("BlackKingBar", "id"));
+    final DnaEnd d2 = new DnaEnd(" // DNA:END BlackKingBar,id", new Clop(1, 18, 1, 1), Arrays.asList("id", "BlackKingBar"));
 
     @Test
     public void testEquals() {
@@ -29,7 +29,7 @@ public class DnaEndTest extends TraceTest {
 
     @Test
     public void testToString() {
-        System.out.println(d1.toString());
-        System.out.println(d2.toString());
+        System.out.println(d1);
+        System.out.println(d2);
     }
 }
