@@ -18,7 +18,7 @@ import java.util.Objects;
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
 
 /**
- * 从环境中获得变量
+ * Get Var from the environment
  *
  * @author trydofor
  * @since 2020-10-16

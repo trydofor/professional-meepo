@@ -1,7 +1,7 @@
 package pro.fessional.meepo.bind.kin;
 
 /**
- * 使用了RnaEngine或动态的else
+ * `RnaEngine` is used or dynamic `else`
  *
  * @author trydofor
  * @since 2020-10-30

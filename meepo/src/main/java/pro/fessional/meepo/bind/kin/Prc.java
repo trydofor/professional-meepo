@@ -1,7 +1,7 @@
 package pro.fessional.meepo.bind.kin;
 
 /**
- * 处理后续文本
+ * Handle the following text
  *
  * @author trydofor
  * @since 2020-10-30

@@ -13,14 +13,14 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` &lt;% DNA:BKB 黑皇杖 %&gt; \n`
- * edge=`&lt;% DNA:BKB 黑皇杖 %&gt;`
+ * ` &lt;% DNA:BKB BlackKingBar %&gt; \n`
+ * edge=`&lt;% DNA:BKB BlackKingBar %&gt;`
  *
- * ` // DNA:BKB 黑皇杖 \n`
- * edge=`// DNA:BKB 黑皇杖 \n`
+ * ` // DNA:BKB BlackKingBar \n`
+ * edge=`// DNA:BKB BlackKingBar \n`
  *
- * main=`DNA:BKB 黑皇杖`
- * life.name=`黑皇杖`
+ * main=`DNA:BKB BlackKingBar`
+ * life.name=`BlackKingBar`
  * </pre>
  *
  * @author trydofor

@@ -13,12 +13,12 @@ public interface Const {
     Object[] ARR$EMPTY_OBJECT = new Object[0];
     String[] ARR$EMPTY_STRING = new String[0];
 
-    // 站位
+    // Placeholder
     String TKN$VAR_PRE = "{{";
     String TKN$VAR_SUF = "}}";
     String TKN$VAR_ESC = "";
 
-    // 解析
+    // Parse Token
     String TKN$HIMEEPO = "HI-MEEPO";
 
     String TKN$DNA_ = "DNA:";
@@ -41,7 +41,7 @@ public interface Const {
     String TKN$WHEN_YES = "y|yes";
     String TKN$WHEN_NOT = "n|no|not";
 
-    // 引擎
+    // Execution Engine
     String ENGINE$MAP = "map";
     String ENGINE$RAW = "raw";
     String ENGINE$URI = "uri";
@@ -52,18 +52,18 @@ public interface Const {
     String ENGINE$JAVA = "java";
     String ENGINE$FUN = "fun";
 
-    // 对象
+    // Object
     char OBJ$NAVI_DOT = '.';
     char OBJ$PIPE_BAR = '|';
     char OBJ$CHAR_ESC = '\\';
 
-    // each
+    // Each loop
     String BLT$EACH_COUNT = "_count";
     String BLT$EACH_TOTAL = "_total";
     String BLT$EACH_FIRST = "_first";
     String BLT$EACH_LAST = "_last";
 
-    // literal
+    // Literal
     String ARG$BOOL_TRUE = "TRUE";
     String ARG$BOOL_FALSE = "FALSE";
 

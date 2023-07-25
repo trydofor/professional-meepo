@@ -16,7 +16,7 @@ import java.io.Writer;
 import java.util.Objects;
 
 /**
- * 通过引擎执行获得变量
+ * Get Var from the Execution Engine
  *
  * @author trydofor
  * @since 2020-10-16

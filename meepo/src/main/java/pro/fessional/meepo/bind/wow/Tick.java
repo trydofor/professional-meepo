@@ -12,7 +12,7 @@ import static pro.fessional.meepo.bind.wow.Life.State.Live;
 import static pro.fessional.meepo.bind.wow.Life.State.Skip;
 
 /**
- * 生命倒计时
+ * Countdown to Life
  *
  * @author trydofor
  * @since 2020-10-29

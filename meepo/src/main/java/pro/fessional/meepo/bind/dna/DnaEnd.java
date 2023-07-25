@@ -16,14 +16,14 @@ import java.util.Set;
 
 /**
  * <pre>
- * ` &lt;% DNA:END id 黑皇杖 %&gt; \n`
- * edge=`&lt;% DNA:END id 黑皇杖 %&gt;`
+ * ` &lt;% DNA:END id BlackKingBar %&gt; \n`
+ * edge=`&lt;% DNA:END id BlackKingBar %&gt;`
  *
- * ` // DNA:END id 黑皇杖 \n`
- * edge=`// DNA:END id 黑皇杖 \n`
+ * ` // DNA:END id BlackKingBar \n`
+ * edge=`// DNA:END id BlackKingBar \n`
  *
- * main=`DNA:END id 黑皇杖`
- * name={`id`,`黑皇杖`}
+ * main=`DNA:END id BlackKingBar`
+ * name={`id`,`BlackKingBar`}
  * </pre>
  *
  * @author trydofor

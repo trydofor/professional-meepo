@@ -31,10 +31,9 @@ public class Clop implements Comparable<Clop> {
     }
 
     /**
-     * 两个区间是否有交叠
+     * Whether the two intervals overlap
      *
-     * @param o 另外一个
-     * @return 是否交叠
+     * @param o other clop
      */
     public boolean cross(Clop o) {
         return until > o.start && o.until > start;

@@ -20,9 +20,18 @@ import java.util.Objects;
 public class Life {
 
     public enum State {
-        Dead, // 不可用，因用完
-        Skip, // 不可用，因跳过
-        Live // 可用
+        /**
+         * Unavailable due to run out
+         */
+        Dead,
+        /**
+         * Unavailable due to skip
+         */
+        Skip,
+        /**
+         * Available
+         */
+        Live
     }
 
     private int count = 0;
@@ -38,9 +47,7 @@ public class Life {
     }
 
     /**
-     * 享受一次人生，并返回状态
-     *
-     * @return 当前状态
+     * Enjoy the life once and return to the state
      */
     public State enjoy() {
         count++;
@@ -73,14 +80,14 @@ public class Life {
     }
 
     /**
-     * 清除余生
+     * Close the life
      */
     public void close() {
         index = -1;
     }
 
     /**
-     * 重新计数
+     * reset the life
      */
     public void reset() {
         count = 0;
@@ -161,10 +168,7 @@ public class Life {
     }
 
     /**
-     * 解析不含空白的作用，`1,2,3` 和 `1-3`
-     *
-     * @param str 字符串
-     * @return 解析
+     * Parse scope(Life) without blanks, `1,2,3` and `1-3`.
      */
     public static Life parse(String str) {
         int len = str.length();
@@ -198,7 +202,7 @@ public class Life {
             }
         }
 
-        //排序，检查区间
+        // sort and check range
         books.sort((o1, o2) -> o1[0] == o2[0] ? o2[o2.length - 1] - o1[o1.length - 1] : o1[0] - o2[0]);
         Iterator<int[]> it = books.iterator();
         int[] aa = it.next();
@@ -221,7 +225,7 @@ public class Life {
                 if (aa[1] >= bb[0]) it.remove();
             }
             else {
-                // aa.length == 1 && bb.length == 2 包含于此
+                // aa.length == 1 && bb.length == 2 (including)
                 aa = bb;
             }
         }

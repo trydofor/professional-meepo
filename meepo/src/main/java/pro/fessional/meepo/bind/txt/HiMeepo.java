@@ -35,15 +35,15 @@ public class HiMeepo extends Exon {
     @NotNull
     public final String tail;
     /**
-     * 是否支持字符重复
+     * Whether char repetition is supported
      */
     public final boolean echo;
     /**
-     * 是否以保留空白
+     * Whether to keep the blanks
      */
     public final boolean trim;
     /**
-     * 是否以\n结尾
+     * Whether it ends in `\n`
      */
     public final boolean crlf;
 

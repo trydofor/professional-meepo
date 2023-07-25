@@ -14,10 +14,10 @@ import java.util.Objects;
 
 /**
  * <pre>
- * ` &lt;% DNA:RAW 空白处都是一个空格 %&gt; \n`
- * edge=`&lt;% DNA:RAW 空白处都是一个空格 %&gt;`
- * main=`DNA:RAW 空白处都是一个空格`
- * xxxx9 为xxxx的char[]形式，一般为内部使用
+ * ` &lt;% DNA:RAW The gaps are all one space %&gt; \n`
+ * edge=`&lt;% DNA:RAW The gaps are all one space %&gt;`
+ * main=`DNA:RAW The gaps are all one space`
+ * xxxx9 is xxxx in char[] format, Usually for internal use
  * </pre>
  *
  * @author trydofor
@@ -26,15 +26,14 @@ import java.util.Objects;
 public class Exon {
 
     /**
-     * 原始模板的边缘区
+     * Edge area of the original template
      */
     @NotNull
     public final Clop edge;
 
     /**
-     * 边缘内字符串缓存
+     * Caching of edge area
      */
-
     protected final char @NotNull [] text9;
 
     protected Exon(char @NotNull [] text9, @NotNull Clop edge) {
@@ -47,23 +46,22 @@ public class Exon {
     }
 
     /**
-     * 匹配其他文本，并根据匹配状态，设置匹配区间
+     * Match other text with range and return Life.State
      *
-     * @param lst 匹配区间
-     * @param txt 文本
-     * @return 本次匹配状态
+     * @param lst the range
+     * @param txt other text
      */
     public Life.State match(List<N> lst, String txt) {
         return Life.State.Skip;
     }
 
     /**
-     * 应用匹配的文本
+     * Apply the matching text to generate Gene
      *
-     * @param pos 匹配
-     * @param txt 文本
-     * @param bar 左距
-     * @return 基因
+     * @param pos the range
+     * @param txt the text
+     * @param bar left margin
+     * @return Gene
      */
     @NotNull
     public List<Exon> apply(Clop pos, String txt, int bar) {
@@ -71,28 +69,28 @@ public class Exon {
     }
 
     /**
-     * 重建回解析前的模板，默认edge
+     * Rebuild the parsed template back to the original text.
      *
-     * @param buff buff
+     * @param buff buff to write
      */
     public void build(Writer buff) {
         Dent.write(buff, text9);
     }
 
     /**
-     * 合并模板输出结果，默认edge
+     * Merge the template to buffer
      *
-     * @param acid 执行环境
-     * @param buff 输出buff
+     * @param acid merge context
+     * @param buff buffer to write
      */
     public void merge(Acid acid, Writer buff) {
     }
 
     /**
-     * parse时，在加入gene时，对自身检查，预处理（引擎预热）
+     * When parsing and adding to gene, self check and preprocessing (engine warm-up)
      *
-     * @param err 错误信息队列
-     * @param rng rnaEngine缓存
+     * @param err err message builder
+     * @param rng rnaEngine caching
      */
     public void check(StringBuilder err, RngChecker rng) {
     }

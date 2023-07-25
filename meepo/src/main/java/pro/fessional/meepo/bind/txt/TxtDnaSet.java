@@ -12,7 +12,7 @@ import java.io.Writer;
 import java.util.Arrays;
 
 /**
- * 静态替换
+ * Static replacement
  *
  * @author trydofor
  * @since 2020-10-16
