@@ -25,7 +25,7 @@ public class Cal {
 
         @Override
         public @NotNull String info() {
-            return "根据数字对args长度的余数，取得args余数位置的值";
+            return "Using mod as index, get element in args";
         }
 
         @Override
@@ -62,7 +62,7 @@ public class Cal {
 
         @Override
         public @NotNull String info() {
-            return "取数字的绝对值，返回Long或BigDecimal";
+            return "Get absolute value in Long or BigDecimal type";
         }
 
         @Override

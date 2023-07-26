@@ -22,7 +22,7 @@ public class Elv {
 
         @Override
         public @NotNull String info() {
-            return "返回第一个可见值";
+            return "Output the first visiable value in arg";
         }
 
         @Override

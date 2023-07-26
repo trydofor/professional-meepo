@@ -1,13 +1,13 @@
 package pro.fessional.meepo.eval;
 
 /**
- * 函数按目的和参数类型分包
+ * Functions are registered by purpose and argument type
  *
  * @author trydofor
  * @since 2021-01-02
  */
 public class FunEnv {
-    // map 变量
+    // map
     public static final String KEY$PREFIX = "fun:";
 
     // time

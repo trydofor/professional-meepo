@@ -11,12 +11,12 @@ import java.util.Map;
 public interface JavaEval {
 
     /**
-     * java函数
+     * java function
      *
-     * @param ctx 上下文
-     * @param obj 管道第一个参数
-     * @param arg 管道参数
-     * @return 结果
+     * @param ctx the context
+     * @param obj The 1st arg of the pipeline
+     * @param arg other args of pipeline
+     * @return the result
      */
     Object eval(@NotNull Map<String, Object> ctx, Object obj, Object... arg);
 }

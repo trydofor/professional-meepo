@@ -39,7 +39,7 @@ public class Now {
         @Override
         @NotNull
         public String info() {
-            return "动态计算，根据pattern格式化";
+            return "Output the current date/time in specified format";
         }
 
         @Override
@@ -55,11 +55,11 @@ public class Now {
     // //////////////
 
     /**
-     * 有pattern对obj进行日期格式化。
+     * Format datetime object with the given pattern
      *
      * @param obj     Date, TemporalAccessor, else(=now)
      * @param pattern DateTimeFormatter
-     * @return 格式化后日期
+     * @return formatted current datetime
      */
     @NotNull
     public static String now(Object obj, String pattern) {

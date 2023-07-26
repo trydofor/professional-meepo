@@ -9,18 +9,15 @@ import org.jetbrains.annotations.NotNull;
 public interface NameEval extends JavaEval {
 
     /**
-     * eval名字，如 fun:fmt
+     * name of eval, eg. fun:fmt
      *
-     * @return 名字
      * @see FunEnv#KEY$PREFIX
      */
     @NotNull
     String[] name();
 
     /**
-     * 信息
-     *
-     * @return 信息
+     * information about eval
      */
     @NotNull
     String info();

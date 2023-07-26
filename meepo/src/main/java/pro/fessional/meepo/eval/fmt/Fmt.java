@@ -21,7 +21,7 @@ public class Fmt {
 
         @Override
         public @NotNull String info() {
-            return "printf格式化对象";
+            return "Use String.printf to format object";
         }
 
         @Override

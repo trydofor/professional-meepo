@@ -40,7 +40,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变camelCase";
+            return "Format String to camelCase";
         }
 
         @Override
@@ -58,7 +58,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变PascalCase";
+            return "Format String to PascalCase";
         }
 
         @Override
@@ -76,7 +76,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变snake_case";
+            return "Format String to snake_case";
         }
 
         @Override
@@ -94,7 +94,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变BIG_SNAKE";
+            return "Format String to BIG_SNAKE";
         }
 
         @Override
@@ -112,7 +112,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变kebab-case";
+            return "Format String to kebab-case";
         }
 
         @Override
@@ -130,7 +130,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变BIG-KEBAB";
+            return "Format String to BIG-KEBAB";
         }
 
         @Override
@@ -148,7 +148,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变dot.case";
+            return "Format String to dot.case";
         }
 
         @Override
@@ -167,7 +167,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变UPPERCASE";
+            return "Format String to UPPERCASE";
         }
 
         @Override
@@ -192,7 +192,7 @@ public class Case {
 
         @Override
         public @NotNull String info() {
-            return "字符串变lowercase";
+            return "Format String to lowercase";
         }
 
         @Override
@@ -212,71 +212,62 @@ public class Case {
     // /////////
 
     /**
-     * 首字小写，驼峰法
-     *
-     * @param str 字符串
-     * @return 驼峰
+     * lowercase 1st char, camelCase
      */
     public static String camelCase(String str) {
         return wordCase(str, false);
     }
 
     /**
-     * 首字大写，驼峰法
-     *
-     * @param str 字符串
-     * @return 驼峰
+     * Uppercase 1st char, PascalCase
      */
     public static String pascalCase(String str) {
         return wordCase(str, true);
     }
 
     /**
-     * 下划线分隔
-     *
-     * @param str  字符串
-     * @param type 全大写，小写，或原样不变
-     * @return 分隔
+     * underscore(_) delimited.
      */
     private static String snakeCase(String str, Type type) {
         return wordCase(str, type, '_');
     }
 
     /**
-     * 中划线分隔
-     *
-     * @param str  字符串
-     * @param type 全大写，小写，或原样不变
-     * @return 分隔
+     * minus sign(-) delimited.
      */
     private static String kebabCase(String str, Type type) {
         return wordCase(str, type, '-');
     }
 
     /**
-     * 句点分隔
-     *
-     * @param str  字符串
-     * @param type 全大写，小写，或原样不变
-     * @return 分隔
+     * dot sign(.) delimited.
      */
     private static String dotCase(String str, Type type) {
         return wordCase(str, type, '.');
     }
 
     public enum Type {
+        /**
+         * All Uppercase
+         */
         Upper,
+        /**
+         * All Lowercase
+         */
         Lower,
+        /**
+         * Keep the original shape
+         */
         Keep
     }
 
     /**
-     * 分割法，分隔符分隔
+     * parse string to words and use the given delimiter to format
      *
-     * @param str   字符串
-     * @param type  大小写及维持不变
-     * @param split 分隔符
-     * @return 格式
+     * @param str   The string to format
+     * @param type  Case type
+     * @param split the delimiter to split the word
+     * @return formatted string
      */
     public static String wordCase(String str, Type type, char split) {
         StringBuilder sb = new StringBuilder(str.length() + 16);
@@ -325,11 +316,11 @@ public class Case {
     }
 
     /**
-     * 驼峰法，camelCase和PascalCase转换
+     * convert to camelCase or PascalCase
      *
-     * @param str    字符串
-     * @param pascal 首字母大写
-     * @return 格式化
+     * @param str    The string to format
+     * @param pascal Whether 1st char Uppercase
+     * @return formatted string
      */
     public static String wordCase(String str, boolean pascal) {
         StringBuilder sb = new StringBuilder(str.length() + 16);
