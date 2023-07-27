@@ -27,7 +27,7 @@ import static pro.fessional.meepo.eval.FunEnv.ENV$NOW_DATE;
 import static pro.fessional.meepo.eval.FunEnv.ENV$NOW_TIME;
 
 /**
- * RnaEngine引擎工厂
+ * RnaEngine factory
  *
  * @author trydofor
  * @since 2020-10-15
@@ -78,10 +78,7 @@ public class RnaManager {
     }
 
     /**
-     * 返回一个新的引擎
-     *
-     * @param type 引擎类型
-     * @return 引擎
+     * Create a new engine of type.
      */
     @NotNull
     public static RnaEngine newEngine(String type) {
@@ -90,9 +87,7 @@ public class RnaManager {
     }
 
     /**
-     * 根据 engine的type注册
-     *
-     * @param engine 引擎
+     * Register an engine with its type
      */
     public static void register(RnaEngine engine) {
         if (engine != null) {
@@ -114,89 +109,76 @@ public class RnaManager {
     }
 
     /**
-     * 获得一个函数
-     *
-     * @param key 函数名
-     * @param <T> 函数类型
-     * @return 函数
+     * Get a function by its name.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getFunction(String key) {
-        return (T) functions.get(key);
+    public static <T> T getFunction(String name) {
+        return (T) functions.get(name);
     }
 
     /**
-     * 在上下文中注入function
-     *
-     * @param ctx 上下文
+     * Put functions to the context
      */
     public static void putFunction(Map<String, Object> ctx) {
         ctx.putAll(functions);
     }
 
     /**
-     * 注册一个函数变量
-     *
-     * @param key 函数名
-     * @param fun 函数体
+     * Register a function with its name
      */
-    public static void register(String key, Supplier<?> fun) {
-        register(key, fun, "Supplier");
+    public static void register(String name, Supplier<?> fun) {
+        register(name, fun, "Supplier");
     }
 
     /**
-     * 注册一个函数
-     *
-     * @param key 函数名
-     * @param fun 函数体
+     * Register a function with its name
      */
-    public static void register(String key, Function<?, ?> fun) {
-        register(key, fun, "Function");
+    public static void register(String name, Function<?, ?> fun) {
+        register(name, fun, "Function");
     }
 
     /**
-     * 注册一个函数
-     *
-     * @param key 函数名
-     * @param fun 函数体
+     * Register a function with its name
      */
-    public static void register(String key, JavaEval fun) {
-        register(key, fun, "JavaEval");
+    public static void register(String name, JavaEval fun) {
+        register(name, fun, "JavaEval");
     }
 
+    /**
+     * Register a function with its name
+     */
     public static void register(NameEval fun) {
         for (String name : fun.name()) {
             register(name, fun, fun.info());
         }
     }
 
-    private static void register(String key, Object fun, String info) {
-        Object old = functions.put(key, fun);
+    /**
+     * Register a function with its name
+     */
+    private static void register(String name, Object fun, String info) {
+        Object old = functions.put(name, fun);
         if (old == null) {
-            logger.info("register function for key={}, info={}", key, info);
+            logger.info("register function for name={}, info={}", name, info);
         }
         else if (fun == old) {
-            logger.info("skip same function for key={}, info={}", key, info);
+            logger.info("skip same function for name={}, info={}", name, info);
         }
         else {
-            logger.info("replace function for key={}, info={}", key, info);
+            logger.info("replace function for name={}, info={}", name, info);
         }
         funCount = functions.size();
     }
 
     /**
-     * 当前存在的引擎数量
-     *
-     * @return 数量
+     * Get the count of the registered engine
      */
     public static int getEngineCount() {
         return engCount;
     }
 
     /**
-     * 当前存在的函数数量
-     *
-     * @return 数量
+     * Get the count of the registered function
      */
     public static int getFunctionCount() {
         return funCount;
@@ -208,9 +190,7 @@ public class RnaManager {
     }
 
     /**
-     * 设置默认值，并注册引擎
-     *
-     * @param engine 引擎
+     * Set and register the default engine to handle unknown type
      */
     public static void setDefault(@NotNull RnaEngine engine) {
         defaultEngine.set(engine);

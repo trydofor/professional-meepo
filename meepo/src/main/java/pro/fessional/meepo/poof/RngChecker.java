@@ -22,12 +22,11 @@ public class RngChecker {
     }
 
     /**
-     * 同一expr仅check一次
+     * Warm up (check) the same expr only once
      *
-     * @param err  输出
-     * @param type 引擎类型
-     * @param expr 功能体
-     * @return 预热结果
+     * @param err  error message to output
+     * @param type engine type
+     * @param expr function body
      */
     public RnaWarmed check(StringBuilder err, String type, String expr) {
 
@@ -70,10 +69,7 @@ public class RngChecker {
     }
 
     /**
-     * 获得一个引擎
-     *
-     * @param type 类型
-     * @return 引擎
+     * Get the engine by its type
      */
     @NotNull
     public RnaEngine getEngine(String type) {

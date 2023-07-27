@@ -20,15 +20,15 @@ public class RnaWarmed {
     public final String expr;
 
     /**
-     * warm的预热类型
+     * warmed up kind
      */
     public final int kind;
     /**
-     * warm的预热对象
+     * warmed up object
      */
     private final Object work;
     /**
-     * warm后的信息
+     * warmed up info
      */
     public String info;
 

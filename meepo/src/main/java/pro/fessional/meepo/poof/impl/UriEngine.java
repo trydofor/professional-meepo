@@ -12,7 +12,7 @@ import java.util.Map;
 import static pro.fessional.meepo.bind.Const.ENGINE$URI;
 
 /**
- * 以UTF8输出URI内容
+ * Output the URI in UTF8
  *
  * @author trydofor
  * @since 2020-10-15
@@ -32,7 +32,7 @@ public class UriEngine implements RnaEngine {
     public Object eval(@NotNull Map<String, Object> ctx, @NotNull RnaWarmed expr, boolean mute) {
         Object obj = null;
         try {
-            // 作为静态String，不执行。若执行，需做安全防护
+            // Static String. Be aware of the security when execute it
             obj = ctx.computeIfAbsent(expr.expr, Read::read);
         }
         catch (Throwable t) {

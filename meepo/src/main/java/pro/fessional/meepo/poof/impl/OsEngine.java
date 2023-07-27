@@ -21,7 +21,7 @@ import static pro.fessional.meepo.bind.Const.ENGINE$SH;
 import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
- * 单线程简单的执行 exec (Runtime, ProcessBuilder);
+ * Exec (Runtime, ProcessBuilder) command line in single-thread
  *
  * @author trydofor
  * @since 2020-10-15

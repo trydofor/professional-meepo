@@ -91,7 +91,6 @@ public class MapHelper {
 
     public static Object get(Object ctx, String expr, Object[] args) {
 
-        // 整取
         Object obj = byMap(ctx, expr);
         if (obj != null) return obj;
 

@@ -19,7 +19,7 @@ import static pro.fessional.meepo.eval.FunEnv.KEY$PREFIX;
 import static pro.fessional.meepo.poof.impl.map.MapHelper.KIND_FUNC;
 
 /**
- * 依次从context，System.getProperty 和System.getenv 取值
+ * Get value from `context`, `System.getProperty` and `System.getenv` in order.
  *
  * @author trydofor
  * @since 2020-10-15
@@ -81,7 +81,7 @@ public class MapEngine implements RnaEngine {
                 curr = pip;
                 Object[] arg = pip.getTypedWork();
                 String key = pip.expr;
-                // 自定义或简化模式，function 可能不带前缀'fun:'
+                // Customized or simplified mode, function can be without prefixed 'fun:'
                 while (true) {
                     Object cmd = ctx.get(key);
                     if (cmd instanceof JavaEval) {

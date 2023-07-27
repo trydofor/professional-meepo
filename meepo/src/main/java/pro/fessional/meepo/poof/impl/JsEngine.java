@@ -13,8 +13,7 @@ import java.util.Map;
 import static pro.fessional.meepo.bind.Const.ENGINE$JS;
 
 /**
- * ScriptEngineManager.getEngineByName("JavaScript");
- * 执行js
+ * ScriptEngineManager.getEngineByName("JavaScript") to run js (java 11+ removed)
  *
  * @author trydofor
  * @since 2020-10-15

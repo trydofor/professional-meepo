@@ -22,7 +22,7 @@ import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 import static pro.fessional.meepo.poof.RnaWarmed.EMPTY;
 
 /**
- * 编译java代码并执行
+ * Compile java code and execute
  *
  * @author trydofor
  * @since 2020-10-15

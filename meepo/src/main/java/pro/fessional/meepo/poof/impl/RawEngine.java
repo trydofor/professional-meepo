@@ -9,7 +9,7 @@ import java.util.Map;
 import static pro.fessional.meepo.bind.Const.ENGINE$RAW;
 
 /**
- * 依次从context，System.getProperty 和System.getenv 取值
+ * Get the raw value of expression
  *
  * @author trydofor
  * @since 2020-10-15
