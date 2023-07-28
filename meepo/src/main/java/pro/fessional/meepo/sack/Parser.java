@@ -62,7 +62,13 @@ import static pro.fessional.meepo.bind.Const.TKN$WHEN_NOT;
 import static pro.fessional.meepo.bind.Const.TKN$WHEN_YES;
 
 /**
- * static thread safe parser, if logger and you safe
+ * <pre>
+ * Meepo template parser, thead safe.
+ *
+ * When syntax errors are found in the directive,
+ * `lax` mode to log as warn and treat as plain text,
+ * `strict` mode to throw exceptions
+ * </pre>
  *
  * @author trydofor
  * @since 2020-10-15
@@ -75,10 +81,10 @@ public class Parser {
     protected static final int RegxFlag = Pattern.UNIX_LINES | Pattern.MULTILINE;
 
     /**
-     * 解析文本，严格模式。
+     * Parse template, strict mode.
      *
-     * @param txt 文本
-     * @return 基因
+     * @param txt text to parse
+     * @return Gene
      */
     @Contract("null->null;!null->!null")
     public static Gene parse(String txt) {
@@ -86,11 +92,11 @@ public class Parser {
     }
 
     /**
-     * 解析文本。发现指令的语法错误时，有放松模式（日志warn，并视为普通文本）和严格模式（抛异常）
+     * Parse template.
      *
-     * @param txt 文本
-     * @param lax 放松模式
-     * @return 基因
+     * @param lax lax mode (not strict)
+     * @param txt text to parse
+     * @return Gene
      */
     @Contract("null,_->null;!null,_->!null")
     public static Gene parse(String txt, boolean lax) {
@@ -98,11 +104,12 @@ public class Parser {
     }
 
     /**
-     * 解析文本，严格模式。设定模板路径，可以以相对路径include。
+     * Parse template, strict mode.
+     * Set the template path, then others can be `include`  by relative path.
      *
-     * @param txt 文本
-     * @param pwd 模板位置
-     * @return 基因
+     * @param txt text to parse
+     * @param pwd template path
+     * @return Gene
      */
     @Contract("null, _->null;!null, _->!null")
     public static Gene parse(String txt, String pwd) {
@@ -110,13 +117,13 @@ public class Parser {
     }
 
     /**
-     * 解析文本。发现指令的语法错误时，有放松模式（日志warn，并视为普通文本）和严格模式（抛异常）
-     * 设定模板路径，可以以相对路径include。
+     * Parse template, strict mode.
+     * Set the template path, then others can be `include`  by relative path.
      *
-     * @param txt 文本
-     * @param pwd 模板位置
-     * @param lax 放松模式
-     * @return 基因
+     * @param txt text to parse
+     * @param pwd template path
+     * @param lax lax mode (not strict)
+     * @return Gene
      */
     @Contract("null,_,_->null;!null,_,_->!null")
     public static Gene parse(String txt, String pwd, boolean lax) {
@@ -131,32 +138,32 @@ public class Parser {
     protected static void parse(Ctx ctx) {
         for (ctx.edge0 = 0; ctx.edge0 < ctx.end; ctx.edge0 = ctx.edge1) {
 
-            // 标记米波，文本分段，找到edge0
+            // Mark Meepo, segment text, find edge0
             if (markHiMeepo(ctx)) {
                 continue;
             }
 
             Exon exon = SkipThis;
-            // 查找`DNA:`
+            // find `DNA:`
             if (findXnaGrp(ctx, TKN$DNA_)) {
                 exon = dealDnaGroup(ctx);
             }
 
-            // 查找`RNA:`
+            // find `RNA:`
             else if (findXnaGrp(ctx, TKN$RNA_)) {
                 exon = dealRnaGroup(ctx);
             }
 
-            dealTxtPlain(ctx, ctx.edge0, exon); // 循环处理
+            dealTxtPlain(ctx, ctx.edge0, exon); // looping
         }
 
-        dealTxtPlain(ctx, ctx.end, DealText); // 处理最后
+        dealTxtPlain(ctx, ctx.end, DealText); // last
     }
 
     /**
-     * 处理 DNA 组
+     * deal DNA group
      *
-     * @param ctx 上下文
+     * @param ctx the context
      * @return Exon
      */
     @NotNull
@@ -180,9 +187,9 @@ public class Parser {
     }
 
     /**
-     * 处理 RNA 组
+     * deal RNA group
      *
-     * @param ctx 上下文
+     * @param ctx the context
      * @return Exon
      */
     @NotNull
@@ -213,21 +220,21 @@ public class Parser {
     }
 
     /**
-     * 查找并处理meepo，是否停止后续处理
+     * find and handle Meepo, and decide whether to stop follow-up processing
      *
-     * @param ctx 上下文
-     * @return 是否停止后续处理
+     * @param ctx the context
+     * @return Whether to stop
      */
     protected static boolean markHiMeepo(Ctx ctx) {
         final String txt = ctx.txt;
         final int edg0 = ctx.edge0;
         final int end1 = ctx.end;
         HiMeepo meepo = ctx.meepo;
-        if (meepo == null) { // 首次查找
+        if (meepo == null) { // 1st find
             meepo = bornHiMeepo(ctx, edg0, end1);
-            if (meepo == null) { // 不是米波模板
+            if (meepo == null) { // Not meepo
                 logger.trace("[👹Parse:Parse:markHiMeepo] no meepo found");
-                dealTxtPlain(ctx, end1, null); // 非米波模板
+                dealTxtPlain(ctx, end1, null);
                 ctx.edge1 = end1;
                 return true;
             }
@@ -236,12 +243,12 @@ public class Parser {
             }
         }
         else {
-            // 标记起点
+            // mark start point
             String head = meepo.head;
             int head0 = Seek.seekToken(txt, edg0, end1, head, meepo.echo);
 
             meepo = null;
-            if (ctx.notBkb()) { // 米波-标记起点
+            if (ctx.notBkb()) { // Meepo-start point
                 meepo = bornHiMeepo(ctx, edg0, head0 > edg0 ? head0 : end1);
             }
             else {
@@ -256,7 +263,7 @@ public class Parser {
                     return false;
                 }
                 else {
-                    dealTxtPlain(ctx, end1, DealText); // 无米波头
+                    dealTxtPlain(ctx, end1, DealText); // headless Meepo
                     ctx.edge1 = end1;
                     logger.trace("[👹Parse:markHiMeepo] no meepo head found");
                     return true;
@@ -267,12 +274,12 @@ public class Parser {
             }
         }
 
-        //发现新米波
+        // new Meepo
         int edge0 = meepo.edge.start;
         int edge1 = meepo.edge.until;
 
         logger.trace("[👹markHiMeepo] deal text at done1={}, edge0={}", ctx.done1, edge0);
-        dealTxtPlain(ctx, edge0, meepo); // 米波前文字
+        dealTxtPlain(ctx, edge0, meepo); // before Meepo
         ctx.meepo = meepo;
         ctx.done1 = edge1;
         ctx.edge0 = edge0;
@@ -281,10 +288,10 @@ public class Parser {
     }
 
     /**
-     * 处理普通文本
+     * handle plain text
      *
-     * @param ctx   上下文
-     * @param edge0 左边缘
+     * @param ctx   the context
+     * @param edge0 the left edge
      * @param exon  exon
      */
     protected static void dealTxtPlain(Ctx ctx, int edge0, Exon exon) {
@@ -313,19 +320,19 @@ public class Parser {
             logger.trace("deal next at done1={}, edge0={}", done1, edge0);
         }
         else {
-            if (ctx.notBkb()) { // 处理文本
-                // 应用指令
+            if (ctx.notBkb()) { // handle text
+                // apply directive
                 ctx.procText(done1, edge0);
-                // 增加指令
+                // append directive
                 ctx.procExon(exon);
                 ctx.done1 = exon.edge.until;
             }
             else {
                 if (ctx.endBkb(exon)) {
-                    // BKB文本
+                    // BKB text
                     TxtSimple txt = new TxtSimple(ctx.txt, ctx.newClop(done1, edge0));
                     ctx.procExon(txt);
-                    // 增加指令
+                    // append directive
                     ctx.procExon(exon);
                     ctx.done1 = exon.edge.until;
                 }
@@ -337,11 +344,11 @@ public class Parser {
     }
 
     /**
-     * 查找`DNA:`或`RNA:`，并返回查找到的3个值
+     * find `DNA:` or `RNA:`
      *
-     * @param ctx   上下文
-     * @param token 特征
-     * @return 是否找到
+     * @param ctx   the context
+     * @param token token
+     * @return Whether found
      */
     protected static boolean findXnaGrp(Ctx ctx, String token) {
         HiMeepo meepo = ctx.meepo;
@@ -381,10 +388,7 @@ public class Parser {
     }
 
     /**
-     * 处理DNA:RAW，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:RAW`
      */
     protected static Exon dealDnaRaw(Ctx ctx) {
         String txt = ctx.txt;
@@ -399,10 +403,7 @@ public class Parser {
     }
 
     /**
-     * 处理DNA:SON，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:SON`
      */
     protected static Exon dealDnaSon(Ctx ctx) {
         String txt = ctx.txt;
@@ -418,10 +419,7 @@ public class Parser {
     }
 
     /**
-     * 处理DNA:BKB，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:BKB`
      */
     protected static Exon dealDnaBkb(Ctx ctx) {
         String txt = ctx.txt;
@@ -449,10 +447,7 @@ public class Parser {
     }
 
     /**
-     * 处理DNA:END，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:END`
      */
     protected static Exon dealDnaEnd(Ctx ctx) {
         final String txt = ctx.txt;
@@ -480,10 +475,7 @@ public class Parser {
     }
 
     /**
-     * 处理DNA:SET，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:SET`
      */
     protected static Exon dealDnaSet(Ctx ctx) {
         final String txt = ctx.txt;
@@ -499,7 +491,7 @@ public class Parser {
         }
         else {
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "DNA:SET");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         final Exon dna;
@@ -525,10 +517,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:RUN，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:RUN`
      */
     protected static Exon dealRnaRun(Ctx ctx) {
         final String txt = ctx.txt;
@@ -549,7 +538,7 @@ public class Parser {
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "RNA:RUN");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         final Exon rna;
@@ -574,10 +563,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:USE，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:USE`
      */
     protected static Exon dealRnaUse(Ctx ctx) {
         final String txt = ctx.txt;
@@ -593,7 +579,7 @@ public class Parser {
         }
         else {
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "RNA:USE");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         final Exon rna;
@@ -618,10 +604,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:PUT，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:PUT`
      */
     protected static Exon dealRnaPut(Ctx ctx) {
         final String txt = ctx.txt;
@@ -642,7 +625,7 @@ public class Parser {
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "RNA:PUT");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         final Exon rna;
@@ -666,10 +649,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:WHEN，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:WHEN`
      */
     protected static Exon dealRnaWhen(Ctx ctx) {
         final String txt = ctx.txt;
@@ -690,7 +670,7 @@ public class Parser {
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "RNA:WHEN");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         boolean nope = false;
@@ -738,10 +718,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:EACH，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:EACH`
      */
     protected static Exon dealRnaEach(Ctx ctx) {
         final String txt = ctx.txt;
@@ -762,7 +739,7 @@ public class Parser {
             mute = parseMute(txt, typ2);
             type = parseType(txt, typ2);
             pos3 = new int[]{spl0, -1, -1};
-            note = parseSplit(txt, pos3, ctx.main1, "RNA:EACH");
+            note = parseSplit(txt, pos3, ctx.main1);
         }
 
         int step = 1;
@@ -807,10 +784,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:ELSE，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:ELSE`
      */
     protected static Exon dealRnaElse(Ctx ctx) {
         String txt = ctx.txt;
@@ -838,10 +812,7 @@ public class Parser {
     }
 
     /**
-     * 处理RNA:DONE，并决定是否停止后续处理
-     *
-     * @param ctx 上下文
-     * @return 是否停止后续处理。
+     * handle `DNA:DONE`
      */
     protected static Exon dealRnaDone(Ctx ctx) {
         final String txt = ctx.txt;
@@ -879,7 +850,7 @@ public class Parser {
         int hd0 = Seek.seekPrevEdge(txt, hd[0]);
         if (hd[0] == hd[1] || hd0 < 0) {
             logger.trace("[👹Parse:bornHiMeepo] skip HI-MEEPO without prefix");
-            return null; // 不是边界
+            return null;
         }
         String head = txt.substring(hd[0], hd[1]);
         int tk1 = tkn0 + TKN$HIMEEPO.length();
@@ -892,7 +863,7 @@ public class Parser {
         int tl1 = Seek.seekNextEdge(txt, tl[1]);
         if (tl1 < 0) {
             logger.trace("[👹Parse:bornHiMeepo] skip HI-MEEPO without suffix");
-            return null; // 不是边界
+            return null;
         }
 
         String tail;
@@ -977,7 +948,7 @@ public class Parser {
         return tock;
     }
 
-    private static String parseSplit(String txt, int[] pos3, int main1, String xna) {
+    private static String parseSplit(String txt, int[] pos3, int main1) {
         char splt = txt.charAt(pos3[0]);
         for (int i = 1; i < pos3.length; i++) {
             int o1 = pos3[i - 1] + 1;
@@ -1039,20 +1010,20 @@ public class Parser {
     }
 
     /**
-     * 命名约定：0 - 表示起点，包含；1 - 表示终点，不含；
+     * Naming convention: 0 - start point, include; 1 - end point, exclude;
      */
     protected static class Ctx {
-        protected final String txt; // 模板原始文本
-        protected final String pwd; // 模板路径文本
-        protected final boolean lax; // 宽松模式
-        protected final int end; // 文本的length（不含）
-        protected int done1 = 0; // 已解析完毕的位置（不含）
-        protected int edge0 = 0; // 待解析行块开始位置（包含）
-        protected int main0 = -1; // 待解析指令开始位置（包含）
-        protected int grpx1 = -1; // XNAGroup结束位置（不含）
-        protected int main1 = -1; // 待解析指令结束位置（不含）
-        protected int edge1 = -1; // 待解析行块结束位置（不含）
-        protected HiMeepo meepo = null; // 当前作用的米波
+        protected final String txt; // template raw text
+        protected final String pwd; // template path
+        protected final boolean lax; // lax mode
+        protected final int end; // text length
+        protected int done1 = 0; // parsed end point (exclude)
+        protected int edge0 = 0; // to parse block start point (include)
+        protected int main0 = -1; // to parse directive start point (include)
+        protected int grpx1 = -1; // XNAGroup end point (exclude)
+        protected int main1 = -1; // to parse directive end point (exclude)
+        protected int edge1 = -1; // to parse block end point (exclude)
+        protected HiMeepo meepo = null; // current scope Meepo
 
         protected final ArrayDeque<G> tree = new ArrayDeque<>();
 
@@ -1131,7 +1102,7 @@ public class Parser {
                 }
             }
 
-            // 调整gene栈 - 开始
+            // adjust gene stack - start
             if (exon instanceof RnaDone) {
                 RnaDone rna = (RnaDone) exon;
                 Set<String> done = rna.name;
@@ -1157,7 +1128,7 @@ public class Parser {
                 String clz = exon.getClass().getSimpleName();
                 Tock t = (Tock) exon;
                 G g = tree.getLast();
-                // 相同tock则替换，否则追加
+                // replace the same tock, otherwise append
                 if (g.tock.equalsIgnoreCase(t.tock)) {
                     tree.removeLast();
                     addGene(exon);
@@ -1170,7 +1141,7 @@ public class Parser {
                     logger.trace("[👹Parse:procExon] append {}, tock={}, stack={}", clz, t.tock, tree.size());
                 }
             }
-            // 调整gene栈 - 结束
+            // adjust gene stack - end
             else if (exon instanceof DnaSon) {
                 String clz = exon.getClass().getSimpleName();
                 logger.trace("[👹Parse:procExon] append {}, and parse sons", clz);

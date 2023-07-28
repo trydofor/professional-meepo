@@ -13,7 +13,7 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * 单线程下执行
+ * Executed in single thread
  *
  * @author trydofor
  * @since 2020-11-02
@@ -28,10 +28,10 @@ public class Acid {
     private final Map<String, RnaEngine> engines;
 
     /**
-     * 构造一个包含ctx所有元素的新HashMap
+     * Create a new context, and copy ctx (putAll) and rng (new) into it.
      *
-     * @param ctx 上下文
-     * @param rng 引擎名
+     * @param ctx the context copy from
+     * @param rng the engine name
      */
     public Acid(Map<String, Object> ctx, Set<String> rng) {
         this.execute = new HashMap<>();

@@ -35,10 +35,7 @@ public class Gene {
     }
 
     /**
-     * 使用context合并
-     *
-     * @param ctx 上下文
-     * @return 结果
+     * Merge with the context, and output as string.
      */
     @NotNull
     public String merge(Map<String, Object> ctx) {
@@ -46,11 +43,11 @@ public class Gene {
     }
 
     /**
-     * 使用context合并
+     * Merge with the context, and output as string.
      *
-     * @param ctx 上下文
-     * @param len 预计结果的大小，避免buff扩容
-     * @return 结果
+     * @param ctx the context
+     * @param len Estimate the size of the result to avoid buffer expansion.
+     * @return result
      */
     @NotNull
     public String merge(Map<String, Object> ctx, int len) {
@@ -70,10 +67,7 @@ public class Gene {
     }
 
     /**
-     * 使用context合并
-     *
-     * @param ctx 上下文
-     * @param out 输出
+     * Merge with the context, and output to the Writer.
      */
     public void merge(Map<String, Object> ctx, Writer out) {
         if (rngs.isEmpty()) {
@@ -92,9 +86,7 @@ public class Gene {
     }
 
     /**
-     * 通过gene构造原始或转移后文本，有用调试。
-     *
-     * @return template
+     * Build back to the raw template or escaped text via gene. usually for debugging.
      */
     @NotNull
     public String build() {
@@ -106,9 +98,10 @@ public class Gene {
     }
 
     /**
-     * 打印层级语法树，并校验edge的连续性，`#`表示有交叉
+     * Print the syntax tree and check for edge continuity.
+     * `#` means an intersection
      *
-     * @return 语法树
+     * @return syntax tree
      */
     public String graph() {
         StringWriter buff = new StringWriter();
@@ -120,13 +113,14 @@ public class Gene {
     }
 
     /**
-     * 打印层级语法树，并校验edge的连续性
+     * Print the syntax tree and check for edge continuity.
+     * `#` means an intersection
      *
-     * @param buff  输出
-     * @param exon  列表
-     * @param level 层级，1-base
-     * @param start 校验起点（包含），0-base
-     * @return 校验终点，不包含
+     * @param buff  the buffer to print
+     * @param exon  list of exon
+     * @param level level, 1-base
+     * @param start start point (include), 0-base
+     * @return end point of checking (exclude)
      */
     public static int graph(Writer buff, List<Exon> exon, int level, int start) {
         for (Exon ex : exon) {

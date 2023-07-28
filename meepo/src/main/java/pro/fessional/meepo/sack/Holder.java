@@ -3,6 +3,7 @@ package pro.fessional.meepo.sack;
 import org.jetbrains.annotations.Contract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fessional.meepo.bind.Const;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.txt.TxtRnaUse;
 import pro.fessional.meepo.bind.txt.TxtSimple;
@@ -18,7 +19,13 @@ import static pro.fessional.meepo.bind.Const.TKN$VAR_PRE;
 import static pro.fessional.meepo.bind.Const.TKN$VAR_SUF;
 
 /**
- * place holder parser thead safe
+ * <pre>
+ * Placeholder template parser, thead safe.
+ *
+ * When syntax errors are found in the directive,
+ * `lax` mode to log as warn and treat as plain text,
+ * `strict` mode to throw exceptions
+ * </pre>
  *
  * @author trydofor
  * @since 2021-01-03
@@ -28,10 +35,13 @@ public class Holder {
     protected static final Logger logger = LoggerFactory.getLogger(Holder.class);
 
     /**
-     * 解析占位符模板，严谨模式。
+     * Parse placeholder template, strict mode.
      *
-     * @param txt 文本
-     * @return 基因
+     * @param txt text to parse
+     * @return Gene
+     * @see Const#TKN$VAR_PRE
+     * @see Const#TKN$VAR_SUF
+     * @see Const#TKN$VAR_ESC
      */
     @Contract("null->null;!null->!null")
     public static Gene parse(String txt) {
@@ -39,11 +49,14 @@ public class Holder {
     }
 
     /**
-     * 解析占位符模板。
+     * Parse placeholder template.
      *
-     * @param lax 放松模式
-     * @param txt 文本
-     * @return 基因
+     * @param lax lax mode (not strict)
+     * @param txt text to parse
+     * @return Gene
+     * @see Const#TKN$VAR_PRE
+     * @see Const#TKN$VAR_SUF
+     * @see Const#TKN$VAR_ESC
      */
     @Contract("_,null->null;_,!null->!null")
     public static Gene parse(boolean lax, String txt) {
@@ -51,12 +64,13 @@ public class Holder {
     }
 
     /**
-     * 解析占位符模板，严谨模式。
+     * Parse placeholder template, strict mode.
      *
-     * @param txt 文本
-     * @param pre 前界定符
-     * @param suf 后界定符
-     * @return 基因
+     * @param txt text to parse
+     * @param pre starting defining symbol
+     * @param suf ending defining symbol
+     * @return Gene
+     * @see Const#TKN$VAR_ESC
      */
     @Contract("null,_,_->null;!null,_,_->!null")
     public static Gene parse(String txt, String pre, String suf) {
@@ -64,13 +78,14 @@ public class Holder {
     }
 
     /**
-     * 解析占位符模板。
+     * Parse placeholder template.
      *
-     * @param lax 放松模式
-     * @param txt 文本
-     * @param pre 前界定符
-     * @param suf 后界定符
-     * @return 基因
+     * @param lax lax mode (not strict)
+     * @param txt text to parse
+     * @param pre starting defining symbol
+     * @param suf ending defining symbol
+     * @return Gene
+     * @see Const#TKN$VAR_ESC
      */
     @Contract("_,null,_,_->null;_,!null,_,_->!null")
     public static Gene parse(boolean lax, String txt, String pre, String suf) {
@@ -78,13 +93,13 @@ public class Holder {
     }
 
     /**
-     * 解析占位符模板，严谨模式。
+     * Parse placeholder template, strict mode.
      *
-     * @param txt 文本
-     * @param pre 前界定符
-     * @param suf 后界定符
-     * @param esc 前转义符
-     * @return 基因
+     * @param txt text to parse
+     * @param pre starting defining symbol
+     * @param suf ending defining symbol
+     * @param esc escaping symbol
+     * @return Gene
      */
     @Contract("null,_,_,_->null;!null,_,_,_->!null")
     public static Gene parse(String txt, String pre, String suf, String esc) {
@@ -92,20 +107,20 @@ public class Holder {
     }
 
     /**
-     * 解析占位符模板。
+     * Parse placeholder template.
      *
-     * @param lax 放松模式
-     * @param txt 文本
-     * @param pre 前界定符
-     * @param suf 后界定符
-     * @param esc 前转义符
-     * @return 基因
+     * @param lax lax mode (not strict)
+     * @param txt text to parse
+     * @param pre starting defining symbol
+     * @param suf ending defining symbol
+     * @param esc escaping symbol
+     * @return Gene
      */
     @Contract("_,null,_,_,_->null;_,!null,_,_,_->!null")
     public static Gene parse(boolean lax, String txt, String pre, String suf, String esc) {
         if (txt == null) return null;
 
-        // 空或异常
+        // empty or exception
         final int pln = pre.length(), sln = suf.length(), len = txt.length();
         final ArrayList<Exon> exon = new ArrayList<>();
         if (pln == 0 || sln == 0) {
@@ -114,7 +129,7 @@ public class Holder {
             return new Gene(exon, emptySet());
         }
 
-        //转义和标记
+        // escape and mark
         final StringBuilder buff = new StringBuilder();
         final ArrayList<int[]> edge = new ArrayList<>();
         int off = 0, ipe, hze = 0;
@@ -133,7 +148,7 @@ public class Holder {
                 continue;
             }
 
-            // 清理相连转义符
+            // handle continuous escapes
             int ec = Seek.countPreToken(txt, off, esc);
             if (ec > 0) {
                 hze++;
@@ -164,7 +179,7 @@ public class Holder {
             return new Gene(exon, emptySet());
         }
 
-        //解析
+        // parse
         final RngChecker rngs = new RngChecker();
         int[] es = null;
         off = 0;
@@ -184,7 +199,7 @@ public class Holder {
                     }
                 }
             }
-            else if (es[1] == 0) { // 前
+            else if (es[1] == 0) { // pre
                 if (ed[1] == 1) {
                     int p1s = es[0] + pln;
                     int p2e = ed[0] + sln;
@@ -205,7 +220,7 @@ public class Holder {
                     }
                 }
             }
-            else { // 后
+            else { // suf
                 if (ed[1] == 0) {
                     addText(exon, rst, es[0] + sln, ed[0]);
                     off = ed[0];
