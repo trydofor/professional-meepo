@@ -6,14 +6,14 @@ package pro.fessional.meepo.util;
  */
 public class Seek {
     /**
-     * 区域内查找特征字符
+     * Find `token` string within a range between `off` and `end`.
      *
-     * @param txt  源
-     * @param off  开始位置，包含
-     * @param end  结束位置，不包含
-     * @param tkn  特征
-     * @param echo 是否叠字
-     * @return -1 如果没有
+     * @param txt  the source string
+     * @param off  offset (include)
+     * @param end  the end (exclude)
+     * @param tkn  token
+     * @param echo whether repetition char
+     * @return the start index, or -1 if not found
      */
     public static int seekToken(String txt, int off, int end, String tkn, boolean echo) {
         int tln = tkn.length();
@@ -190,11 +190,11 @@ public class Seek {
     }
 
     /**
-     * 左侧不包含`\n`，index为start
+     * the left of edge (exclude `\n`), index is start
      *
-     * @param txt 文本
-     * @param end 结束，不含
-     * @return 边缘位置
+     * @param txt source string
+     * @param end end (exclude)
+     * @return index of edge
      */
     public static int seekPrevEdge(CharSequence txt, int end) {
         for (int i = end - 1; i >= 0; i--) {
@@ -207,11 +207,11 @@ public class Seek {
     }
 
     /**
-     * 右侧包含`\n`，index为end
+     * the right of edge (include `\n`), index is end
      *
-     * @param txt 文本
-     * @param off 开始，含
-     * @return 边缘位置
+     * @param txt the source string
+     * @param off offset (include)
+     * @return index of edge
      */
     public static int seekNextEdge(CharSequence txt, int off) {
         int len = txt.length();
@@ -253,12 +253,12 @@ public class Seek {
     //////
 
     /**
-     * 特征字符的次数
+     * count the token occurrences form offset (backward)
      *
-     * @param txt 源
-     * @param off 开始位置，包含
-     * @param tkn 特征字符
-     * @return 特征字符的次数
+     * @param txt the source string
+     * @param off offset (include)
+     * @param tkn token
+     * @return the count
      */
     public static int countPreToken(String txt, int off, String tkn) {
         if (tkn == null || tkn.isEmpty()) return 0;
@@ -275,14 +275,14 @@ public class Seek {
     }
 
     /**
-     * 向前找特征字符（未被转义）及转义数量
+     * find prev token (no escape) and escaped count (backward)
      *
-     * @param txt 源
-     * @param off 开始位置，包含
-     * @param end 结束位置，不包含
-     * @param tkn 特征字符
-     * @param esc 转义字符
-     * @return 特征字符的offset及转义数量
+     * @param txt the source string
+     * @param off offset (include)
+     * @param end end (exclude)
+     * @param tkn token
+     * @param esc escape char
+     * @return token offset and escaped count
      */
     public static int[] seekPrevToken(String txt, int off, int end, String tkn, String esc) {
         for (int ln = tkn.length(), i = end - 1; i >= off; i--) {
@@ -296,14 +296,14 @@ public class Seek {
     }
 
     /**
-     * 向后找特征字符（未被转义）及转义数量
+     * find next token (no escape) and escaped count (forward)
      *
-     * @param txt 源
-     * @param off 开始位置，包含
-     * @param end 结束位置，不包含
-     * @param tkn 特征字符
-     * @param esc 转义字符
-     * @return 特征字符的offset及转义数量
+     * @param txt the source string
+     * @param off offset (include)
+     * @param end end (exclude)
+     * @param tkn token
+     * @param esc escape char
+     * @return token offset and escaped count
      */
     public static int[] seekNextToken(String txt, int off, int end, String tkn, String esc) {
         for (int ln = tkn.length(), i = off; i < end; i++) {

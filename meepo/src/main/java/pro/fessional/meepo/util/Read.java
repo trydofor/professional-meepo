@@ -17,8 +17,8 @@ import java.nio.file.Paths;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 自动读取`classpath:`，`file://`和URL格式，
- * 如果没有协议部分，尝试以classpath和file读取
+ * Auto read `classpath:`, `file://` and URL format.
+ * If there is no protocol section, try to read in classpath and file
  *
  * @author trydofor
  * @since 2020-10-31
@@ -94,11 +94,7 @@ public class Read {
     }
 
     /**
-     * 自动close InputStream
-     *
-     * @param is 输入流
-     * @param cs 字符集，默认UTF8
-     * @return 字符串
+     * Read all to string and close InputStream
      */
     @NotNull
     public static String read(InputStream is, Charset cs) {
@@ -106,10 +102,7 @@ public class Read {
     }
 
     /**
-     * 自动close Reader
-     *
-     * @param rd reader
-     * @return 字符串
+     * Read all to string and close InputStream
      */
     @NotNull
     public static String read(Reader rd) {

@@ -26,13 +26,16 @@ import static pro.fessional.meepo.bind.Const.ARG$NUMBER_REGEX;
 public class Eval {
 
     /**
-     * boolean的`false`
-     * 对象 `null`
-     * Number的double值是`NaN`或在正负`0.0000001`
-     * `empty`  空字符串，空数组，空集合
+     * <pre>
+     * Any of the following is as false
+     * - `false` of boolean
+     * - `null` of Object
+     * - `NaN` or abs in `0.0000001` of Number as double
+     * - `empty` of String, Array, Collection
+     * </pre>
      *
-     * @param obj 对象
-     * @return 当做false
+     * @param obj Object
+     * @return as false
      */
     public static boolean asFalse(Object obj) {
         final boolean f;
@@ -93,7 +96,7 @@ public class Eval {
     public abstract static class ArgType<T> {
 
         /**
-         * 自动解析成可以识别的对象：Number, Boolean, RefStr
+         * Auto parsed into supported objects: Number, Boolean, RefStr
          */
         public static final ArgType<Object> Obj = new ArgType<Object>() {
             @Override
@@ -197,13 +200,13 @@ public class Eval {
     }
 
     /**
-     * 按空白解析命令行，支持引号块和转义 "one\" arg"和数字解析。
-     * 支持，String，Long，Integer，Double，Float, Boolean类型。
+     * Parses command line by whitespace, supports quote blocks, escaping "one\" arg" and number parsing.
+     * Supports: String, Long, Integer, Double, Float, Boolean.
      *
-     * @param line 参数行
-     * @param type 解析类型
-     * @param <T>  命令行结果类型
-     * @return 解析后命令行
+     * @param line command line
+     * @param type type to parse
+     * @param <T>  type of command
+     * @return command
      */
     @NotNull
     public static <T> List<T> parseArgs(CharSequence line, ArgType<T> type) {
