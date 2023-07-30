@@ -260,7 +260,7 @@ public class Seek {
      * @param tkn token
      * @return the count
      */
-    public static int countPreToken(String txt, int off, String tkn) {
+    public static int countPrevToken(String txt, int off, String tkn) {
         if (tkn == null || tkn.isEmpty()) return 0;
         int cnt = 0;
         for (int ln = tkn.length(), i = off - ln; i >= 0; i -= ln) {
@@ -287,7 +287,7 @@ public class Seek {
     public static int[] seekPrevToken(String txt, int off, int end, String tkn, String esc) {
         for (int ln = tkn.length(), i = end - 1; i >= off; i--) {
             if (txt.regionMatches(i, tkn, 0, ln)) {
-                int ct = countPreToken(txt, i, esc);
+                int ct = countPrevToken(txt, i, esc);
                 return new int[]{i, ct};
             }
         }
@@ -308,7 +308,7 @@ public class Seek {
     public static int[] seekNextToken(String txt, int off, int end, String tkn, String esc) {
         for (int ln = tkn.length(), i = off; i < end; i++) {
             if (txt.regionMatches(i, tkn, 0, ln)) {
-                int ct = countPreToken(txt, i, esc);
+                int ct = countPrevToken(txt, i, esc);
                 return new int[]{i, ct};
             }
         }

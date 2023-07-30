@@ -149,7 +149,7 @@ public class Holder {
             }
 
             // handle continuous escapes
-            int ec = Seek.countPreToken(txt, off, esc);
+            int ec = Seek.countPrevToken(txt, off, esc);
             if (ec > 0) {
                 hze++;
                 logger.trace("[👹Holder:parse:origin] find escape at {}, ec={}", off, ec);

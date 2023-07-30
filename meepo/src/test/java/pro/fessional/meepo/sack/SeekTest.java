@@ -81,12 +81,12 @@ public class SeekTest extends TraceTest {
 
     @Test
     public void countPreToken() {
-        assertEquals(0, Seek.countPreToken("/{", 1, ""));
-        assertEquals(1, Seek.countPreToken("/{", 1, "/"));
-        assertEquals(3, Seek.countPreToken("///{", 3, "/"));
-        assertEquals(2, Seek.countPreToken("//{", 2, "/"));
-        assertEquals(4, Seek.countPreToken("////{", 4, "/"));
-        assertEquals(2, Seek.countPreToken("////{", 4, "//"));
+        assertEquals(0, Seek.countPrevToken("/{", 1, ""));
+        assertEquals(1, Seek.countPrevToken("/{", 1, "/"));
+        assertEquals(3, Seek.countPrevToken("///{", 3, "/"));
+        assertEquals(2, Seek.countPrevToken("//{", 2, "/"));
+        assertEquals(4, Seek.countPrevToken("////{", 4, "/"));
+        assertEquals(2, Seek.countPrevToken("////{", 4, "//"));
     }
 
     @Test
