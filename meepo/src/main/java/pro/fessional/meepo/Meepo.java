@@ -19,8 +19,8 @@ import java.util.function.Supplier;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * 通过Meepo类，load的模板，可以缓存。
- * ttl表示，缓存的秒数，小于0为不过期，等于0为不缓存。
+ * Use Meepo to load the template and can it.
+ * `ttl` means the seconds to cache, less than 0 is not expired, equal to 0 is not cached.
  *
  * @author trydofor
  * @since 2020-10-15
@@ -37,11 +37,8 @@ public class Meepo {
     private static final ConcurrentHashMap<String, Gene> CACHING = new ConcurrentHashMap<>();
 
     /**
-     * 通过uri解析（ttl=CACHE_ALWAYS）
-     * URI支持`file://`,`classpath:`,`http://`等
-     *
-     * @param uri 模板uri
-     * @return 基因
+     * Parse form the URI with ttl=CACHE_ALWAYS
+     * URI support `file://`,`classpath:`,`http://`
      */
     @NotNull
     public static Gene parse(@NotNull String uri) {
@@ -49,11 +46,8 @@ public class Meepo {
     }
 
     /**
-     * 通过uri解析，URI支持`file://`,`classpath:`,`http://`等
-     *
-     * @param uri 模板uri
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 基因
+     * Parse form the URI with the given ttl.
+     * URI support `file://`,`classpath:`,`http://`
      */
     @NotNull
     public static Gene parse(@NotNull String uri, int ttl) {
@@ -61,11 +55,7 @@ public class Meepo {
     }
 
     /**
-     * 直接解析文本，并通过key控制缓存（ttl=CACHE_ALWAYS）
-     *
-     * @param key 缓存key
-     * @param txt 模板文本
-     * @return 基因
+     * Parses text directly and cache by key with ttl=CACHE_ALWAYS
      */
     @NotNull
     public static Gene parse(@NotNull String key, @NotNull String txt) {
@@ -73,12 +63,7 @@ public class Meepo {
     }
 
     /**
-     * 直接解析文本，并通过key控制缓存
-     *
-     * @param key 缓存key
-     * @param txt 模板文本
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 基因
+     * Parses text directly and cache by key with the given ttl.
      */
     @NotNull
     public static Gene parse(@NotNull String key, @NotNull String txt, int ttl) {
@@ -86,10 +71,7 @@ public class Meepo {
     }
 
     /**
-     * 解析文件，并通过key控制缓存（ttl=CACHE_ALWAYS）
-     *
-     * @param file 模板文件
-     * @return 基因
+     * Parses from file and cache by its path with ttl=CACHE_ALWAYS
      */
     @NotNull
     public static Gene parse(@NotNull File file) {
@@ -97,11 +79,7 @@ public class Meepo {
     }
 
     /**
-     * 解析文件，并通过key控制缓存
-     *
-     * @param file 模板文件
-     * @param ttl  缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 基因
+     * Parses from file and cache by its path with the given ttl.
      */
     @NotNull
     public static Gene parse(@NotNull File file, int ttl) {
@@ -114,11 +92,7 @@ public class Meepo {
     }
 
     /**
-     * 解析文本，并通过key控制缓存（ttl=CACHE_ALWAYS）
-     *
-     * @param key 缓存key
-     * @param ins 模板流
-     * @return 基因
+     * Parses from stream and cache by its path with ttl=CACHE_ALWAYS
      */
     @NotNull
     public static Gene parse(@NotNull String key, @NotNull InputStream ins) {
@@ -126,12 +100,7 @@ public class Meepo {
     }
 
     /**
-     * 解析文本，并通过key控制缓存
-     *
-     * @param key 缓存key
-     * @param ins 模板流
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 基因
+     * Parses from stream and cache by its path with the given ttl.
      */
     @NotNull
     public static Gene parse(@NotNull String key, @NotNull InputStream ins, int ttl) {
@@ -141,11 +110,11 @@ public class Meepo {
     /////////////
 
     /**
-     * 通过缓存，解析并合并占位符模板（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param txt 占位符模板
-     * @return 合并后文本
+     * @param ctx the context
+     * @param txt placeholder template
+     * @return result
      * @see #piece(Map, String, int)
      */
     @NotNull
@@ -154,12 +123,12 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并占位符模板
+     * Parse and cache the template, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param txt 占位符模板
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
+     * @param ctx the context
+     * @param txt placeholder template
+     * @param ttl cache ttl
+     * @return result
      * @see #parse(String, int)
      * @see pro.fessional.meepo.sack.Holder#parse(String)
      */
@@ -184,11 +153,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template form URI, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param uri 模板uri
-     * @return 合并后文本
      * @see #parse(String, int)
      */
     @NotNull
@@ -197,12 +163,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并
+     * Parse and cache the template form URI, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param uri 模板uri
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, int)
      */
     @NotNull
@@ -212,12 +174,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template form stream, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param ins 模板流
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -226,13 +184,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并
+     * Parse and cache the template form stream, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param ins 模板流
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -242,12 +195,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template text, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param txt 模板文本
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -256,13 +205,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并
+     * Parse and cache the template text, then merge with the context.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param txt 模板文本
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -272,11 +216,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template form file, then merge with the context.
      *
-     * @param ctx  合并环境
-     * @param file 模板文件
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -285,12 +226,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并
+     * Parse and cache the template form file, then merge with the context.
      *
-     * @param ctx  合并环境
-     * @param file 模板文件
-     * @param ttl  缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -301,11 +238,8 @@ public class Meepo {
     /////////////
 
     /**
-     * 通过缓存，解析并合并，蒸汽它（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template form URI, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param uri 模板uri
-     * @return 合并后文本
      * @see #parse(String, int)
      */
     @NotNull
@@ -314,12 +248,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它
+     * Parse and cache the template form URI, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param uri 模板uri
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, int)
      */
     @NotNull
@@ -329,12 +259,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template form stream, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param ins 模板流
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -343,13 +269,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它
+     * Parse and cache the template form stream, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param ins 模板流
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -359,12 +280,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template text, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param txt 模板文本
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -373,13 +290,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它
+     * Parse and cache the template text, then merge with the context to stream.
      *
-     * @param ctx 合并环境
-     * @param key 模板key
-     * @param txt 模板文本
-     * @param ttl 缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -389,11 +301,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它（ttl=CACHE_ALWAYS）
+     * Parse and cache (ttl=CACHE_ALWAYS) the template from file, then merge with the context to stream.
      *
-     * @param ctx  合并环境
-     * @param file 模板文件
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -402,12 +311,8 @@ public class Meepo {
     }
 
     /**
-     * 通过缓存，解析并合并，蒸汽它
+     * Parse and cache the template from file, then merge with the context to stream.
      *
-     * @param ctx  合并环境
-     * @param file 模板文件
-     * @param ttl  缓存秒数，小于0为不过期，等于0为不缓存。
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -417,11 +322,8 @@ public class Meepo {
     }
 
     /**
-     * 合并模板，并蒸汽它
+     * Merge the Gene with the context to stream.
      *
-     * @param ctx  合并环境
-     * @param gene 模板基因
-     * @return 合并后文本
      * @see #parse(String, InputStream, int)
      */
     @NotNull
@@ -433,10 +335,7 @@ public class Meepo {
     ////////////
 
     /**
-     * 不缓存，通过uri解析，URI支持`file://`,`classpath:`,`http://`等
-     *
-     * @param uri 模板uri
-     * @return 基因
+     * No cache, only parse template from URI support `file://`,`classpath:`,`http://`
      */
     @NotNull
     private static Gene parse0(String uri) {
@@ -446,10 +345,7 @@ public class Meepo {
 
 
     /**
-     * 不缓存，解析文件
-     *
-     * @param file 模板文件
-     * @return 基因
+     * No cache, only parse template from file
      */
     @NotNull
     private static Gene parse0(File file) {
@@ -463,10 +359,7 @@ public class Meepo {
     }
 
     /**
-     * 不缓存，解析流
-     *
-     * @param ins 模板流
-     * @return 基因
+     * No cache, only parse template from stream
      */
     @NotNull
     private static Gene parse0(InputStream ins) {
