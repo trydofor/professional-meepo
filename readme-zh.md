@@ -37,7 +37,6 @@
 ③ 使用 SNAPSHOT 与时俱进。
 
 ```xml
-<!-- 1.0.0-SNAPSHOT -->
 <repository>
     <id>oss-sonatype</id>
     <name>oss-sonatype</name>
@@ -66,7 +65,7 @@
 <dependency>
     <groupId>pro.fessional.meepo</groupId>
     <artifactId>spring-mvc</artifactId>
-    <version>${meepo.version}</version>
+    <version>${meepo-spring.version}</version>
 </dependency>
 ```
 
@@ -78,7 +77,7 @@
 <dependency>
     <groupId>pro.fessional.meepo</groupId>
     <artifactId>spring-spel</artifactId>
-    <version>${meepo.version}</version>
+    <version>${meepo-spring.version}</version>
 </dependency>
 ```
 

@@ -72,7 +72,7 @@ can be used independently or pre-processed with other templates.
 <dependency>
     <groupId>pro.fessional.meepo</groupId>
     <artifactId>spring-mvc</artifactId>
-    <version>${meepo.version}</version>
+    <version>${meepo-spring.version}</version>
 </dependency>
 ```
 
@@ -84,7 +84,7 @@ can be used independently or pre-processed with other templates.
 <dependency>
     <groupId>pro.fessional.meepo</groupId>
     <artifactId>spring-spel</artifactId>
-    <version>${meepo.version}</version>
+    <version>${meepo-spring.version}</version>
 </dependency>
 ```
 
