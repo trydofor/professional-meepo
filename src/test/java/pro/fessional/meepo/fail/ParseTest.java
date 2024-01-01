@@ -2,6 +2,8 @@ package pro.fessional.meepo.fail;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.sack.Parser;
 
 /**
@@ -9,7 +11,7 @@ import pro.fessional.meepo.sack.Parser;
  * @since 2022-09-15
  */
 public class ParseTest {
-
+    protected static final Logger logger = LoggerFactory.getLogger(ParseTest.class);
     @Test
     public void testCross() {
         String tmpl = "// HI-MEEPO\n"
@@ -25,7 +27,7 @@ public class ParseTest {
             Assertions.fail();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.info("test exception", e);
         }
     }
 }

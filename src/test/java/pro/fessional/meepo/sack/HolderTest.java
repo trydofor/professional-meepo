@@ -20,8 +20,8 @@ class HolderTest extends TraceTest {
     void parseSimple() {
         String hd = "this is {{var | PascalCase}} here";
         final Gene gene = Holder.parse(hd);
-        System.out.println(gene.build());
-        System.out.println(gene.graph());
+        logger.debug(gene.build());
+        logger.debug(gene.graph());
         String str = gene.merge(ctx);
         assertEquals("this is TryDoFor here", str);
     }
@@ -30,9 +30,9 @@ class HolderTest extends TraceTest {
     void parseEsc1() {
         String hd = "this is /{{ //{{ var | PascalCase | BIG_SNAKE }} /}} here";
         final Gene gene = Holder.parse(true, hd, "{{", "}}", "/");
-        System.out.println(hd);
-        System.out.println(gene.build());
-        System.out.println(gene.graph());
+        logger.debug(hd);
+        logger.debug(gene.build());
+        logger.debug(gene.graph());
         String str = gene.merge(ctx);
         assertEquals("this is {{ /TRY_DO_FOR }} here", str);
     }
@@ -41,9 +41,9 @@ class HolderTest extends TraceTest {
     void parseEsc2() {
         String hd = "} this is /${ //${ var | PascalCase | BIG_SNAKE } /} here ${";
         final Gene gene = Holder.parse(true, hd, "${", "}", "/");
-        System.out.println(hd);
-        System.out.println(gene.build());
-        System.out.println(gene.graph());
+        logger.debug(hd);
+        logger.debug(gene.build());
+        logger.debug(gene.graph());
         String str = gene.merge(ctx);
         assertEquals("} this is ${ /TRY_DO_FOR } here ${", str);
     }
@@ -52,9 +52,9 @@ class HolderTest extends TraceTest {
     void parseEsc3() {
         String hd = "}}}} this is /${ //${ var | PascalCase | BIG_SNAKE }}} /}}}} here ${";
         final Gene gene = Holder.parse(true, hd, "${", "}}}", "/");
-        System.out.println(hd);
-        System.out.println(gene.build());
-        System.out.println(gene.graph());
+        logger.debug(hd);
+        logger.debug(gene.build());
+        logger.debug(gene.graph());
         String str = gene.merge(ctx);
         assertEquals("}}}} this is ${ /TRY_DO_FOR }}}} here ${", str);
     }

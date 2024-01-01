@@ -179,7 +179,7 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealDnaBkb(ctx);
         assertNotNull(exon);
-        System.out.println(exon);
+        logger.debug("{}", exon);
         if (name == null) {
             assertEquals(0, exon.edge.until);
         }

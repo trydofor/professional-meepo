@@ -1,6 +1,8 @@
 package pro.fessional.meepo;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author trydofor
@@ -8,8 +10,14 @@ import org.junit.jupiter.api.BeforeAll;
  */
 public class TraceTest {
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @BeforeAll
     public static void setTrace() {
-        System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", "trace");
+        String lvl = System.getProperty("meepo.log-level");
+        if (lvl == null || lvl.isEmpty()) {
+            lvl = "trace";
+        }
+        System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", lvl);
     }
 }

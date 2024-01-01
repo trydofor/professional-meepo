@@ -1,6 +1,7 @@
 package pro.fessional.meepo.poof;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.eval.JavaEval;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author trydofor
  * @since 2020-11-14
  */
-public class RnaManagerTest {
+public class RnaManagerTest extends TraceTest {
 
     @Test
     public void testFunNow1() {
@@ -28,7 +29,7 @@ public class RnaManagerTest {
         Gene gene = Parser.parse(meepo);
         Map<String, Object> ctx = new HashMap<>();
         String out = gene.merge(ctx);
-        System.out.println(out);
+        logger.debug(out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
         assertTrue(ptn.matcher(out).find());
     }
@@ -39,7 +40,7 @@ public class RnaManagerTest {
         Gene gene = Parser.parse(meepo);
         Map<String, Object> ctx = new HashMap<>();
         String out = gene.merge(ctx);
-        System.out.println(out);
+        logger.debug(out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
         assertTrue(ptn.matcher(out).find());
     }
@@ -51,7 +52,7 @@ public class RnaManagerTest {
         Map<String, Object> ctx = new HashMap<>();
         {
             Object obj = fun.eval(ctx, null);
-            System.out.println(obj);
+            logger.debug("obj={}", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.util.Date(0));
@@ -96,7 +97,7 @@ public class RnaManagerTest {
         ctx.put("number", -1);
         Gene gene = Parser.parse(meepo);
         String out = gene.merge(ctx);
-        System.out.println(out);
+        logger.debug(out);
         assertEquals("1", out);
     }
 
@@ -111,7 +112,7 @@ public class RnaManagerTest {
 
         Gene gene = Parser.parse(meepo);
         String out = gene.merge(ctx);
-        System.out.println(out);
+        logger.debug(out);
         assertEquals("1", out);
     }
 }

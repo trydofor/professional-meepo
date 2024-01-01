@@ -27,7 +27,7 @@ public class TxtSimpleTest extends TraceTest {
 
     @Test
     public void testToString() {
-        System.out.println(d1.toString());
-        System.out.println(d2.toString());
+        logger.debug("d1={}", d1);
+        logger.debug("d2={}", d2);
     }
 }

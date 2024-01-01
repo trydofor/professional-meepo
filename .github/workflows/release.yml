@@ -68,6 +68,7 @@ jobs:
         run: >
           mvn -P ci --quiet
           -DrepoToken=${{ secrets.COVERALLS_REPO_TOKEN }}
+          -Dmeepo.log-level=ERROR
           clean test jacoco:report coveralls:report
         env:
           JAVA_HOME: ${{ steps.java-env.outputs.JAVA_HOME }}

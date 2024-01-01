@@ -1,6 +1,7 @@
 package pro.fessional.meepo.poof.impl.map;
 
 import org.junit.jupiter.api.Test;
+import pro.fessional.meepo.TraceTest;
 
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -15,7 +16,7 @@ import static pro.fessional.meepo.bind.Const.ARR$EMPTY_STRING;
  * @author trydofor
  * @since 2020-11-10
  */
-public class MapHelperTest {
+public class MapHelperTest extends TraceTest {
 
     /**
      * java.runtime.name
@@ -31,16 +32,16 @@ public class MapHelperTest {
      */
     @Test
     public void env() throws NoSuchMethodException {
-        System.out.println(Bean.class.getName());
+        logger.debug(Bean.class.getName());
         Object a = new Object() {};
-        System.out.println(a.getClass().getName());
+        logger.debug(a.getClass().getName());
         Method md = Bean.class.getMethod(getName("code"));
-        System.out.println(md.getName());
-        System.out.println(md.getParameterCount());
+        logger.debug(md.getName());
+        logger.debug("{}", md.getParameterCount());
 
         Enumeration<?> en = System.getProperties().propertyNames();
         while (en.hasMoreElements()) {
-            System.out.println(en.nextElement());
+            logger.debug("{}", en.nextElement());
         }
     }
 
@@ -53,18 +54,18 @@ public class MapHelperTest {
         Bean bean = new Bean();
 
         int tm = 100_0000;
-        System.out.println("loop " + tm + " times");
+        logger.debug("loop {} times", tm);
         long s1 = System.currentTimeMillis();
         for (int i = 0; i < tm; i++) {
             map.get("code");
         }
-        System.out.println("map.get cost " + (System.currentTimeMillis() - s1) + "ms");
+        logger.debug("map.get cost {}ms",System.currentTimeMillis() - s1);
         //
         long s2 = System.currentTimeMillis();
         for (int i = 0; i < tm; i++) {
             bean.getCode();
         }
-        System.out.println("bean.get cost " + (System.currentTimeMillis() - s2) + "ms");
+        logger.debug("bean.get cost {}ms", System.currentTimeMillis() - s2);
 
         //
         long s3 = System.currentTimeMillis();
@@ -72,7 +73,7 @@ public class MapHelperTest {
             Method md = bean.getClass().getMethod(getName("code"));
             md.invoke(bean);
         }
-        System.out.println("bean.each-reflect cost " + (System.currentTimeMillis() - s3) + "ms");
+        logger.debug("bean.each-reflect cost {}ms", System.currentTimeMillis() - s3);
 
         /*
          loop 1000000 times
@@ -95,13 +96,13 @@ public class MapHelperTest {
             });
             md.invoke(bean);
         }
-        System.out.println("bean.cached-reflect cost " + (System.currentTimeMillis() - s4) + "ms");
+        logger.debug("bean.cached-reflect cost {}ms", System.currentTimeMillis() - s4);
 
         long s5 = System.currentTimeMillis();
         for (int i = 0; i < tm; i++) {
             MapHelper.get(bean, "code", ARR$EMPTY_STRING); // bean.naviget cost 417ms
         }
-        System.out.println("bean.naviget cost " + (System.currentTimeMillis() - s5) + "ms");
+        logger.debug("bean.naviget cost {}ms", System.currentTimeMillis() - s5);
     }
 
     private String getName(String prop) {

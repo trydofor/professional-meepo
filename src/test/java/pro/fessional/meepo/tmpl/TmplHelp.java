@@ -1,5 +1,6 @@
 package pro.fessional.meepo.tmpl;
 
+import org.slf4j.Logger;
 import pro.fessional.meepo.sack.Gene;
 import pro.fessional.meepo.sack.Parser;
 import pro.fessional.meepo.util.Read;
@@ -32,9 +33,9 @@ public class TmplHelp {
         assertEquals(strIn, build, "build mismatch");
     }
 
-    public static void printGene(String clzPath) {
+    public static void printGene(Logger logger, String clzPath) {
         String strIn = Read.read(TmplHelp.class.getResourceAsStream(clzPath));
         Gene gene = Parser.parse(strIn);
-        System.out.println(gene.graph());
+        logger.debug(gene.graph());
     }
 }

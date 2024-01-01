@@ -34,7 +34,7 @@ public class EachTest extends TraceTest {
 
     @Test
     public void printGene() {
-        TmplHelp.printGene("/template/each/each-c7s1f3-i.htm");
+        TmplHelp.printGene(logger, "/template/each/each-c7s1f3-i.htm");
     }
 
     @Test

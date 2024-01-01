@@ -29,7 +29,7 @@ public class DnaEndTest extends TraceTest {
 
     @Test
     public void testToString() {
-        System.out.println(d1);
-        System.out.println(d2);
+        logger.debug("d1={}", d1);
+        logger.debug("d2={}", d2);
     }
 }
