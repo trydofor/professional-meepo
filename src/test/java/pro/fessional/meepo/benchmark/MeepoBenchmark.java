@@ -1,8 +1,6 @@
 package pro.fessional.meepo.benchmark;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.error.PebbleException;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,6 +15,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import pro.fessional.meepo.sack.Gene;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,24 +33,21 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class PebbleBenchmark {
+public class MeepoBenchmark {
 
-    private PebbleTemplate template;
-
+    private Gene template;
     private Map<String, Object> context;
 
     @Setup
     public void setup() throws PebbleException {
         context = Stock.mockContext();
-        PebbleEngine engine = new PebbleEngine.Builder()
-                .autoEscaping(false).build();
-        template = engine.getTemplate("template/jmh/stocks.pebble.html");
+        template = pro.fessional.meepo.Meepo.parse("classpath:/template/jmh/stocks.meepo.html");
     }
 
     @Benchmark
     public String benchmark() throws PebbleException, IOException {
         try (Writer writer = new StringWriter(10240)) {
-            template.evaluate(writer, context);
+            template.merge(context, writer);
             return writer.toString();
         }
     }
@@ -59,7 +55,7 @@ public class PebbleBenchmark {
     public static void main(String[] args) throws RunnerException {
         System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", "error");
         Options opt = new OptionsBuilder()
-                .include(PebbleBenchmark.class.getSimpleName())
+                .include(MeepoBenchmark.class.getSimpleName())
                 .build();
 
         new Runner(opt).run();

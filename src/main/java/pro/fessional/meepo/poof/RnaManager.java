@@ -10,7 +10,6 @@ import pro.fessional.meepo.eval.fmt.Case;
 import pro.fessional.meepo.eval.fmt.Fmt;
 import pro.fessional.meepo.eval.num.Cal;
 import pro.fessional.meepo.eval.time.Now;
-import pro.fessional.meepo.poof.impl.JsEngine;
 import pro.fessional.meepo.poof.impl.OsEngine;
 import pro.fessional.meepo.poof.impl.RawEngine;
 import pro.fessional.meepo.poof.impl.UriEngine;
@@ -49,7 +48,6 @@ public class RnaManager {
 
         RnaManager.register(new RawEngine());
         RnaManager.register(new UriEngine());
-        RnaManager.register(new JsEngine());
         RnaManager.register(new JavaEngine());
         RnaManager.register(new OsEngine());
         //

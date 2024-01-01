@@ -2,7 +2,7 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/pro.fessional/meepo?color=00DD00)
 ![Sonatype Snapshots](https://img.shields.io/nexus/s/pro.fessional/meepo?server=https%3A%2F%2Foss.sonatype.org)
-[![Coverage Status](https://coveralls.io/repos/github/trydofor/pro.fessional.meepo/badge.svg)](https://coveralls.io/github/trydofor/pro.fessional.meepo)
+[![Coverage Status](https://coveralls.io/repos/github/trydofor/professional-meepo/badge.svg)](https://coveralls.io/github/trydofor/professional-meepo)
 
 > English 🇺🇸 | [中文 🇨🇳](readme-zh.md)
 

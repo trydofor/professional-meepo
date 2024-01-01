@@ -1,6 +1,6 @@
 package pro.fessional.meepo.benchmark;
 
-import com.mitchellbosecke.pebble.error.PebbleException;
+import io.pebbletemplates.pebble.error.PebbleException;
 import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.util.Read;

@@ -13,11 +13,14 @@ import java.util.Map;
 import static pro.fessional.meepo.bind.Const.ENGINE$JS;
 
 /**
- * ScriptEngineManager.getEngineByName("JavaScript") to run js (java 11+ removed)
+ * ScriptEngineManager.getEngineByName("JavaScript") for java8 Nashorn JavaScript.
+ * GraalVM JavaScript for java11+ instead.
  *
  * @author trydofor
  * @since 2020-10-15
+ * @deprecated java 11+ removed
  */
+@Deprecated
 public class JsEngine implements RnaEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(JsEngine.class);

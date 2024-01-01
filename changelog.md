@@ -2,7 +2,16 @@
 
 <https://keepachangelog.com>
 
-## [1.4.1] - Unreleased
+## [1.5.0] - 2024-01-01
+
+bump version, ready for stable channel.
+
+### Changed
+
+- deprecated JsEngine.
+- RnaManager NOT register JsEngine
+
+## [1.4.1] - 1.4.14 snapshot
 
 ### Added
 
@@ -34,6 +43,7 @@
 
 ## [master]
 
-[master]: https://github.com/trydofor/pro.fessional.meepo
-[1.0.0]: https://github.com/trydofor/pro.fessional.meepo/releases/tag/1.0.0
-[1.4.0]: https://github.com/trydofor/pro.fessional.meepo/releases/tag/1.4.0
+[master]: https://github.com/trydofor/professional-meepo
+[1.0.0]: https://github.com/trydofor/professional-meepo/releases/tag/1.0.0
+[1.4.0]: https://github.com/trydofor/professional-meepo/releases/tag/1.4.0
+[1.5.0]: https://github.com/trydofor/professional-meepo/releases/tag/1.5.0
