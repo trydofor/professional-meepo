@@ -1,8 +1,6 @@
 package pro.fessional.meepo.sack;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.dna.DnaEnd;
@@ -36,8 +34,6 @@ import static pro.fessional.meepo.bind.Const.TKN$RNA_;
  * @since 2020-10-18
  */
 public class ParserTest extends TraceTest {
-
-    private final Logger logger = LoggerFactory.getLogger(ParserTest.class);
 
     private static class TestCtx extends Parser.Ctx {
         public TestCtx(String txt) {

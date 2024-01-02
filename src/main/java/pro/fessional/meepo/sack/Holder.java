@@ -190,7 +190,7 @@ public class Holder {
                     off = ed[0];
                     es = ed;
                 }
-                else {
+                else if (ed[0] != 0) {
                     if (lax) {
                         logger.warn("[👹Holder:parse:escape] drop unmatched suffix at origin text pos=" + ed[2]);
                     }
