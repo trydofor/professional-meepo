@@ -66,7 +66,7 @@
     </issueManagement>
 
     <properties>
-        <revision>1.5.1-SNAPSHOT</revision>
+        <revision>1.5.2-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -74,7 +74,7 @@
         <maven.test.skip>true</maven.test.skip>
         <!-- main -->
         <nonull.version>24.1.0</nonull.version>
-        <slf4j.version>2.0.10</slf4j.version>
+        <slf4j.version>2.0.11</slf4j.version>
         <!-- test -->
         <pebble.version>3.2.2</pebble.version>
         <junit.version>5.10.1</junit.version>
@@ -236,7 +236,7 @@
                 <!-- https://www.mojohaus.org/flatten-maven-plugin/flatten-mojo.html -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.5.0</version>
+                <version>1.6.0</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
