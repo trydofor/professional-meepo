@@ -8,7 +8,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -62,23 +61,6 @@ public class HiMeepo extends Exon {
         }
         this.echo = b;
         this.crlf = "\n".equals(tail);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        HiMeepo hiMeepo = (HiMeepo) o;
-        return echo == hiMeepo.echo &&
-               trim == hiMeepo.trim &&
-               crlf == hiMeepo.crlf &&
-               head.equals(hiMeepo.head) &&
-               tail.equals(hiMeepo.tail);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(head, tail, echo, trim, crlf);
     }
 
     @Override

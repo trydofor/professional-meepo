@@ -12,26 +12,15 @@ public class TraceTest {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final String MeepoLogLevel = "meepo.log-level";
-    public static final String TestVerbose = "test-verbose";
+    public static final String TestVerbose = "TEST_VERBOSE";
 
-    private static volatile boolean done = false;
+    private static volatile Boolean NotTestVerbose = null;
 
     @BeforeAll
     public static void setMeepoLogLevel() {
-        if (done) return;
-
-        String lvl = System.getProperty(MeepoLogLevel);
-        if (lvl == null || lvl.isEmpty()) {
-            if ("false".equalsIgnoreCase(System.getProperty(TestVerbose))) {
-                lvl = "ERROR";
-            }
-            else {
-                lvl = "TRACE";
-            }
+        if (NotTestVerbose == null) {
+            NotTestVerbose = "false".equalsIgnoreCase(System.getenv(TestVerbose));
+            System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", NotTestVerbose ? "ERROR" : "DEBUG");
         }
-        System.setProperty("org.slf4j.simpleLogger.log.pro.fessional.meepo", lvl);
-
-        done = true;
     }
 }

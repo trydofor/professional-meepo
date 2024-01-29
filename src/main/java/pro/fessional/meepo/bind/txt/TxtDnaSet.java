@@ -9,7 +9,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Arrays;
 
 /**
  * Static replacement
@@ -30,19 +29,6 @@ public class TxtDnaSet extends Exon {
     @Override
     public void merge(Acid acid, Writer buff) {
         Dent.write(buff, repl9);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TxtDnaSet txtDnaSet = (TxtDnaSet) o;
-        return Arrays.equals(repl9, txtDnaSet.repl9);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(repl9);
     }
 
     @Override

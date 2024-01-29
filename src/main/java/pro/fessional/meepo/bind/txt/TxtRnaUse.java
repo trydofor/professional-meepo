@@ -13,7 +13,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 import static pro.fessional.meepo.bind.Const.ENGINE$MAP;
 
@@ -49,19 +48,6 @@ public class TxtRnaUse extends Exon implements Rng {
 
         Object o = eng.eval(acid.context, warmed, true);
         Dent.indent(buff, left, o);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TxtRnaUse txtRnaUse = (TxtRnaUse) o;
-        return expr.equals(txtRnaUse.expr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(expr);
     }
 
     @Override

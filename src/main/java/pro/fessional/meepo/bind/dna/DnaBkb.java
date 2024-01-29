@@ -9,7 +9,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -36,19 +35,6 @@ public class DnaBkb extends Tick {
         super(text, edge, Life.namedAny(name));
         this.name = name;
         this.name9 = name.toCharArray();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DnaBkb dnaBkb = (DnaBkb) o;
-        return name.equals(dnaBkb.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 
     @Override

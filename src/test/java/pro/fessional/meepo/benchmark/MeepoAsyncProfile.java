@@ -1,5 +1,6 @@
 package pro.fessional.meepo.benchmark;
 
+import pro.fessional.meepo.TestingHelper;
 import pro.fessional.meepo.sack.Gene;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ public class MeepoAsyncProfile {
     private Map<String, Object> context;
 
     public void setup() {
-        context = Stock.mockContext();
+        context = TestingHelper.mockContext();
         template = pro.fessional.meepo.Meepo.parse("classpath:/template/jmh/stocks.meepo.html");
     }
 

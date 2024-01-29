@@ -13,7 +13,6 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -57,20 +56,6 @@ public class RnaDone extends Tock {
             logger.trace("[👹Merge:tock] deal RNA:DONE tock={}", tock);
             acid.execute.remove(tock);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaDone rnaDone = (RnaDone) o;
-        return name.equals(rnaDone.name) &&
-               tock.equals(rnaDone.tock);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, tock);
     }
 
     @Override

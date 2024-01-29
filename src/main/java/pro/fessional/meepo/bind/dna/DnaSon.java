@@ -47,11 +47,6 @@ public class DnaSon extends Exon {
     }
 
     @Override
-    public int hashCode() {
-        return path.hashCode();
-    }
-
-    @Override
     public String toString() {
         StringWriter buff = new StringWriter();
         toString(buff);

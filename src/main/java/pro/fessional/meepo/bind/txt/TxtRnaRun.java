@@ -13,7 +13,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * Get Var from the Execution Engine
@@ -53,21 +52,6 @@ public class TxtRnaRun extends Exon implements Rng {
         if (edge.length > 0) {
             Dent.indent(buff, left, s);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TxtRnaRun txtRnaRun = (TxtRnaRun) o;
-        return mute == txtRnaRun.mute &&
-               type.equals(txtRnaRun.type) &&
-               expr.equals(txtRnaRun.expr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, expr, mute);
     }
 
     @Override

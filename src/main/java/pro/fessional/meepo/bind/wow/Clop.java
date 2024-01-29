@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * close-open range
@@ -37,19 +36,6 @@ public class Clop implements Comparable<Clop> {
      */
     public boolean cross(Clop o) {
         return until > o.start && o.until > start;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Clop n = (Clop) o;
-        return start == n.start && until == n.until;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(start, until);
     }
 
     @Override

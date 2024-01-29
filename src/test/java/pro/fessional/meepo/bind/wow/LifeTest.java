@@ -86,10 +86,14 @@ public class LifeTest extends TraceTest {
 
     @Test
     public void testOther() {
-        assertEquals(Life.parse("1"), Life.parse("   1   "));
-        assertEquals(Life.parse("1"), Life.parse("   1,   "));
-        assertEquals(Life.parse("1,3"), Life.parse("   1,3   "));
-        assertEquals(Life.parse("1,3"), Life.parse("   1,3,   "));
-        assertEquals(Life.parse("1-3"), Life.parse("   1-3,   "));
+        equalsLive(Life.parse("1"), Life.parse("   1   "));
+        equalsLive(Life.parse("1"), Life.parse("   1,   "));
+        equalsLive(Life.parse("1,3"), Life.parse("   1,3   "));
+        equalsLive(Life.parse("1,3"), Life.parse("   1,3,   "));
+        equalsLive(Life.parse("1-3"), Life.parse("   1-3,   "));
+    }
+
+    void equalsLive(Life l1, Life l2){
+        assertEquals(l1.toString(), l2.toString());
     }
 }

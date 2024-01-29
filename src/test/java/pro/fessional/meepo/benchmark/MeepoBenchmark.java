@@ -15,6 +15,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import pro.fessional.meepo.TestingHelper;
 import pro.fessional.meepo.sack.Gene;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class MeepoBenchmark {
 
     @Setup
     public void setup() throws PebbleException {
-        context = Stock.mockContext();
+        context = TestingHelper.mockContext();
         template = pro.fessional.meepo.Meepo.parse("classpath:/template/jmh/stocks.meepo.html");
     }
 
