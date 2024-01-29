@@ -7,8 +7,6 @@ import pro.fessional.meepo.bind.wow.Life;
 
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
  * @author trydofor
  * @since 2020-10-22
@@ -17,16 +15,6 @@ public class RnaUseTest extends TraceTest {
 
     final RnaUse d1 = new RnaUse("// DNA:USE /meepo/who/1-3", new Clop(0, 25, 1, 1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
     final RnaUse d2 = new RnaUse(" // DNA:USE /meepo/who/1-3", new Clop(1, 26, 1, 1), Life.parse("1-3"), Pattern.compile("meepo"), "who");
-
-    @Test
-    public void testEquals() {
-        assertEquals(d1, d2);
-    }
-
-    @Test
-    public void testHashCode() {
-        assertEquals(d1.hashCode(), d2.hashCode());
-    }
 
     @Test
     public void testToString() {

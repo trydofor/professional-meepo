@@ -3,11 +3,12 @@ package pro.fessional.meepo.benchmark;
 import io.pebbletemplates.pebble.error.PebbleException;
 import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
-import pro.fessional.meepo.util.Read;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static pro.fessional.meepo.TestingHelper.ExpectOutputContent;
+import static pro.fessional.meepo.TestingHelper.trimOutput;
 
 /**
  * @author trydofor
@@ -19,10 +20,9 @@ public class ExpectedOutputTest extends TraceTest {
     public void testMeepoOutput() throws IOException {
         MeepoBenchmark meepo = new MeepoBenchmark();
         meepo.setup();
-        String expect = trim(Read.read("classpath:/template/jmh/expected-output.html"));
         for (int i = 0; i < 10; i++) {
-            String actual = trim(meepo.benchmark());
-            assertEquals(expect, actual);
+            String actual = trimOutput(meepo.benchmark());
+            assertEquals(ExpectOutputContent, actual);
         }
     }
 
@@ -30,19 +30,9 @@ public class ExpectedOutputTest extends TraceTest {
     public void testPebbleOutput() throws IOException, PebbleException {
         PebbleBenchmark pebble = new PebbleBenchmark();
         pebble.setup();
-        String expect = trim(Read.read("classpath:/template/jmh/expected-output.html"));
         for (int i = 0; i < 10; i++) {
-            String actual = trim(pebble.benchmark());
-            assertEquals(expect, actual);
+            String actual = trimOutput(pebble.benchmark());
+            assertEquals(ExpectOutputContent, actual);
         }
-    }
-
-
-    private String trim(String str) {
-        return str
-                .replaceAll("\\s", "")
-                .replaceAll("<td", "\n<td")
-                .replaceAll("<tr", "\n<tr")
-                .replaceAll("</tr", "\n</tr");
     }
 }

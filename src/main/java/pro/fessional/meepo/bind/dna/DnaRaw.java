@@ -8,7 +8,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Arrays;
 
 /**
  * <pre>
@@ -36,19 +35,6 @@ public class DnaRaw extends Exon {
     @Override
     public void merge(Acid acid, Writer buff) {
         Dent.write(buff, body9);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DnaRaw dnaRaw = (DnaRaw) o;
-        return Arrays.equals(body9, dnaRaw.body9);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(body9);
     }
 
     @Override

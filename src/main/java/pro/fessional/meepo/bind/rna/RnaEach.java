@@ -20,7 +20,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.RandomAccess;
 
 import static pro.fessional.meepo.bind.Const.BLT$EACH_COUNT;
@@ -203,24 +202,6 @@ public class RnaEach extends Tock implements Rng {
                 }
             }
         }
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaEach rnaEach = (RnaEach) o;
-        return mute == rnaEach.mute &&
-               step == rnaEach.step &&
-               tock.equals(rnaEach.tock) &&
-               type.equals(rnaEach.type) &&
-               expr.equals(rnaEach.expr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tock, type, step, expr, mute);
     }
 
     @Override

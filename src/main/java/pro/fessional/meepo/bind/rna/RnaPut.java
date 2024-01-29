@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -65,22 +64,6 @@ public class RnaPut extends Exon implements Rng {
         Map<String, Object> ctx = acid.context;
         Object obj = eng.eval(ctx, warmed, mute);
         ctx.put(para, obj);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaPut rnaPut = (RnaPut) o;
-        return type.equals(rnaPut.type) &&
-               para.equals(rnaPut.para) &&
-               expr.equals(rnaPut.expr) &&
-               mute == rnaPut.mute;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, para, expr, mute);
     }
 
     @Override

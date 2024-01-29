@@ -9,7 +9,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Arrays;
 
 /**
  * <pre>
@@ -32,18 +31,6 @@ public class TxtSimple extends Exon {
         Dent.write(buff, text9);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TxtSimple txt = (TxtSimple) o;
-        return Arrays.equals(text9, txt.text9);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(text9);
-    }
 
     @Override
     public String toString() {

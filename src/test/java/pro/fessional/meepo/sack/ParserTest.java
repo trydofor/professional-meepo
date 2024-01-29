@@ -1,10 +1,12 @@
 package pro.fessional.meepo.sack;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.Exon;
 import pro.fessional.meepo.bind.dna.DnaEnd;
 import pro.fessional.meepo.bind.dna.DnaSet;
+import pro.fessional.meepo.bind.dna.DnaSon;
 import pro.fessional.meepo.bind.rna.RnaDone;
 import pro.fessional.meepo.bind.rna.RnaEach;
 import pro.fessional.meepo.bind.rna.RnaElse;
@@ -13,6 +15,7 @@ import pro.fessional.meepo.bind.rna.RnaRun;
 import pro.fessional.meepo.bind.rna.RnaUse;
 import pro.fessional.meepo.bind.rna.RnaWhen;
 import pro.fessional.meepo.bind.txt.HiMeepo;
+import pro.fessional.meepo.bind.txt.TxtDnaSet;
 import pro.fessional.meepo.bind.txt.TxtSimple;
 import pro.fessional.meepo.bind.wow.Clop;
 import pro.fessional.meepo.bind.wow.Life;
@@ -153,6 +156,7 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealDnaSon(ctx);
         assertNotNull(exon);
+        Assertions.assertTrue(exon.toString().contains(((DnaSon) exon).path));
 
         CharArrayWriter buf = new CharArrayWriter();
         exon.merge(newAcid(ctx), buf);
@@ -274,7 +278,7 @@ public class ParserTest extends TraceTest {
             DnaSet dna = (DnaSet) exon;
             assertEquals(find, dna.find.pattern());
             assertEquals(repl, dna.repl);
-            assertEquals(life, dna.life);
+            assertEquals(life.toString(), dna.life.toString());
 
             dna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
@@ -312,6 +316,10 @@ public class ParserTest extends TraceTest {
 
         checkDnaSet(level5, "@@/* DNA:SET false/{{user.male}}/mail */\n@@", null, null, null, "/* DNA:SET false/{{user.male}}/mail */");
         checkDnaSet(level5, "@@/* DNA:SET /false/mail */\n@@", null, null, null, "/* DNA:SET /false/mail */");
+
+        // nothing to test
+        TxtDnaSet tds = new TxtDnaSet("a", new Clop(0, 1,0,0), "TxtDnaSet-toString-Test");
+        Assertions.assertTrue(tds.toString().contains("TxtDnaSet-toString-Test"));
     }
 
     private void checkRnaRun(HiMeepo meepo, String txt, Life life, String type, String find, String expr, boolean quiet, String build) {
@@ -332,7 +340,7 @@ public class ParserTest extends TraceTest {
             assertEquals(type, rna.type);
             assertEquals(find, rna.find.pattern());
             assertEquals(expr, rna.expr);
-            assertEquals(life, rna.life);
+            assertEquals(life.toString(), rna.life.toString());
             assertEquals(quiet, rna.mute);
             rna.merge(newAcid(ctx), buf);
             assertEquals("", buf.toString());
@@ -394,7 +402,7 @@ public class ParserTest extends TraceTest {
             RnaUse rna = (RnaUse) exon;
             assertEquals(find, rna.find.pattern());
             assertEquals(para, rna.para);
-            assertEquals(life, rna.life);
+            assertEquals(life.toString(), rna.life.toString());
 
             Acid ctx1 = newAcid(ctx);
             ctx1.context.put("who", "meepo");

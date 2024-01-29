@@ -15,7 +15,6 @@ import pro.fessional.meepo.util.Eval;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -85,23 +84,6 @@ public class RnaWhen extends Tock implements Rng {
         else {
             logger.trace("[👹Merge:tock] skip RNA:WHEN tock={}, type={}, expr={}", tock, type, expr);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaWhen rnaWhen = (RnaWhen) o;
-        return nope == rnaWhen.nope &&
-               mute == rnaWhen.mute &&
-               tock.equals(rnaWhen.tock) &&
-               type.equals(rnaWhen.type) &&
-               expr.equals(rnaWhen.expr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tock, type, nope, expr, mute);
     }
 
     @Override

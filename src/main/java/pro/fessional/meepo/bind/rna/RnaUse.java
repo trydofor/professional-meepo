@@ -15,7 +15,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -56,21 +55,6 @@ public class RnaUse extends Tick implements Bar, Prc {
     @Override
     public @NotNull List<Exon> apply(Clop pos, String txt, int bar) {
         return Collections.singletonList(new TxtRnaUse(txt, pos, para, bar));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaUse rnaUse = (RnaUse) o;
-        return find.pattern().equals(rnaUse.find.pattern()) &&
-               para.equals(rnaUse.para) &&
-               life.equals(rnaUse.life);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(find.pattern(), para, life);
     }
 
     @Override

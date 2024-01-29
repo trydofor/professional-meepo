@@ -17,6 +17,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import pro.fessional.meepo.TestingHelper;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,7 +43,7 @@ public class PebbleBenchmark {
 
     @Setup
     public void setup() throws PebbleException {
-        context = Stock.mockContext();
+        context = TestingHelper.mockContext();
         PebbleEngine engine = new PebbleEngine.Builder()
                 .autoEscaping(false).build();
         template = engine.getTemplate("template/jmh/stocks.pebble.html");

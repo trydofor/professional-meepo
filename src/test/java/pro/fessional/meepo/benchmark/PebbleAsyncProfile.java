@@ -3,6 +3,7 @@ package pro.fessional.meepo.benchmark;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.error.PebbleException;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import pro.fessional.meepo.TestingHelper;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -20,7 +21,7 @@ public class PebbleAsyncProfile {
     private Map<String, Object> context;
 
     public void setup() throws PebbleException {
-        context = Stock.mockContext();
+        context = TestingHelper.mockContext();
         PebbleEngine engine = new PebbleEngine.Builder()
                 .autoEscaping(false).build();
         template = engine.getTemplate("template/jmh/stocks.pebble.html");

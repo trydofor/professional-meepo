@@ -10,7 +10,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -113,19 +112,6 @@ public class Exon {
         @Override
         public int compareTo(@NotNull Exon.N o) {
             return start == o.start ? o.until - until : start - o.start;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(start, until, xna);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof N)) return false;
-            N n = (N) o;
-            return start == n.start && until == n.until && Objects.equals(xna, n.xna);
         }
     }
 }

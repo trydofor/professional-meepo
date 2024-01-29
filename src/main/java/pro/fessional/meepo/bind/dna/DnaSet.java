@@ -14,7 +14,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -60,21 +59,6 @@ public class DnaSet extends Tick implements Prc {
         else {
             return Collections.emptyList();
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DnaSet dnaSet = (DnaSet) o;
-        return Objects.equals(find.pattern(), dnaSet.find.pattern()) &&
-               Objects.equals(repl, dnaSet.repl) &&
-               Objects.equals(life, dnaSet.life);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(find.pattern(), repl, life);
     }
 
     @Override

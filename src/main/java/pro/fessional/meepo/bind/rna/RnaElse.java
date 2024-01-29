@@ -10,7 +10,6 @@ import pro.fessional.meepo.util.Dent;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Objects;
 
 /**
  * <pre>
@@ -38,19 +37,6 @@ public class RnaElse extends Tock implements Rng {
         else {
             logger.trace("[👹Merge:tock] skip RNA:ELSE tock={}", tock);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaElse tock1 = (RnaElse) o;
-        return tock.equals(tock1.tock);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tock);
     }
 
     @Override

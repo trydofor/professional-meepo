@@ -11,7 +11,6 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -43,19 +42,6 @@ public class DnaEnd extends Exon {
             Set<String> set = new HashSet<>(name);
             this.name = Collections.unmodifiableSet(set);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DnaEnd dnaEnd = (DnaEnd) o;
-        return name.equals(dnaEnd.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 
     @Override

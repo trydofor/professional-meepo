@@ -2,8 +2,6 @@ package pro.fessional.meepo.poof;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import static pro.fessional.meepo.bind.Const.TXT$EMPTY;
 
 /**
@@ -56,22 +54,7 @@ public class RnaWarmed {
     }
 
     public boolean hasInfo() {
-        return info != null && info.length() > 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RnaWarmed warmed = (RnaWarmed) o;
-        return kind == warmed.kind &&
-               type.equals(warmed.type) &&
-               expr.equals(warmed.expr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(type, expr, kind);
+        return info != null && !info.isEmpty();
     }
 
     @Override

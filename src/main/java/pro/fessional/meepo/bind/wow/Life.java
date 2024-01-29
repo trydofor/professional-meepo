@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author trydofor
@@ -34,10 +33,10 @@ public class Life {
         Live
     }
 
-    private int count = 0;
-    private int index = 0;
+    protected int count = 0;
+    protected int index = 0;
     @NotNull
-    private final List<int[]> book; // null = any
+    protected final List<int[]> book; // null = any
     @NotNull
     public final String name;
 
@@ -92,54 +91,6 @@ public class Life {
     public void reset() {
         count = 0;
         index = 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Life life = (Life) o;
-        if (count == life.count &&
-            index == life.index &&
-            book.size() == life.book.size() &&
-            Objects.equals(name, life.name)) {
-            Iterator<int[]> it0 = book.iterator();
-            Iterator<int[]> it1 = life.book.iterator();
-            while (it0.hasNext()) {
-                int[] i0 = it0.next();
-                int[] i2 = it1.next();
-                if (i0.length != i2.length) return false;
-                for (int i = 0; i < i0.length; i++) {
-                    if (i0[i] != i2[i]) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        int[] objs = new int[2 + book.size() * 2];
-        int off = 0;
-        objs[off++] = count;
-        objs[off++] = index;
-        for (int[] arr : book) {
-            if (arr.length == 1) {
-                objs[off++] = arr[0];
-                objs[off++] = arr[0];
-            }
-            else {
-                objs[off++] = arr[0];
-                objs[off++] = arr[1];
-            }
-        }
-
-        return Arrays.hashCode(objs) + 31 * name.hashCode();
     }
 
     @Override
