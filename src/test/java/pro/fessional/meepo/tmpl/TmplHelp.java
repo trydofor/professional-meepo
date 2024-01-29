@@ -36,6 +36,7 @@ public class TmplHelp {
     public static void printGene(Logger logger, String clzPath) {
         String strIn = Read.read(TmplHelp.class.getResourceAsStream(clzPath));
         Gene gene = Parser.parse(strIn);
-        logger.debug(gene.graph());
+        String graph = gene.graph();
+        logger.debug("printGene={}", graph);
     }
 }

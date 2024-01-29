@@ -179,7 +179,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealDnaBkb(ctx);
         assertNotNull(exon);
-        logger.debug("{}", exon);
+        String str = exon.toString();
+        logger.debug("checkDnaBkb={}", str);
         if (name == null) {
             assertEquals(0, exon.edge.until);
         }
@@ -220,7 +221,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealDnaEnd(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkDnaEnd={}", str);
 
         if (name == null) {
             assertEquals(0, exon.edge.until);
@@ -268,7 +270,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealDnaSet(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkDnaSet={}", str);
 
         if (life == null) {
             assertEquals(0, exon.edge.until);
@@ -318,7 +321,7 @@ public class ParserTest extends TraceTest {
         checkDnaSet(level5, "@@/* DNA:SET /false/mail */\n@@", null, null, null, "/* DNA:SET /false/mail */");
 
         // nothing to test
-        TxtDnaSet tds = new TxtDnaSet("a", new Clop(0, 1,0,0), "TxtDnaSet-toString-Test");
+        TxtDnaSet tds = new TxtDnaSet("a", new Clop(0, 1, 0, 0), "TxtDnaSet-toString-Test");
         Assertions.assertTrue(tds.toString().contains("TxtDnaSet-toString-Test"));
     }
 
@@ -329,7 +332,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealRnaRun(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaRun={}", str);
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
@@ -392,7 +396,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealRnaUse(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaUse={}", str);
 
         if (life == null) {
             assertEquals(0, exon.edge.until);
@@ -451,7 +456,8 @@ public class ParserTest extends TraceTest {
         Exon exon = Parser.dealRnaPut(ctx);
         assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaPut={}", str);
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
@@ -511,7 +517,8 @@ public class ParserTest extends TraceTest {
         Exon exon = Parser.dealRnaWhen(ctx);
         assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaWhen={}", str);
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
@@ -557,7 +564,8 @@ public class ParserTest extends TraceTest {
         Exon exon = Parser.dealRnaEach(ctx);
         assertNotNull(exon);
         exon.check(ctx.errs, ctx.rngs);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaEach={}", str);
 
         if (type == null) {
             assertEquals(0, exon.edge.until);
@@ -601,7 +609,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealRnaElse(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaElse={}", str);
 
         if (tock == null) {
             assertEquals(0, exon.edge.until);
@@ -637,7 +646,8 @@ public class ParserTest extends TraceTest {
 
         Exon exon = Parser.dealRnaDone(ctx);
         assertNotNull(exon);
-        logger.debug(exon.toString());
+        String str = exon.toString();
+        logger.debug("checkRnaDone={}", str);
 
         if (name == null) {
             assertEquals(0, exon.edge.until);

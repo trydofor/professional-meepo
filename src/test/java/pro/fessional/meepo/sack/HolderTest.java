@@ -20,42 +20,55 @@ class HolderTest extends TraceTest {
     void parseSimple() {
         String hd = "this is {{var | PascalCase}} here";
         final Gene gene = Holder.parse(hd);
-        logger.debug(gene.build());
-        logger.debug(gene.graph());
+        String build = gene.build();
+        String graph = gene.graph();
+        logger.debug("hd={}", hd);
+        logger.debug("build={}", build);
+        logger.debug("graph={}", graph);
         String str = gene.merge(ctx);
         assertEquals("this is TryDoFor here", str);
+        assertEquals(hd, build);
     }
 
     @Test
     void parseEsc1() {
         String hd = "this is /{{ //{{ var | PascalCase | BIG_SNAKE }} /}} here";
         final Gene gene = Holder.parse(true, hd, "{{", "}}", "/");
-        logger.debug(hd);
-        logger.debug(gene.build());
-        logger.debug(gene.graph());
+        String build = gene.build();
+        String graph = gene.graph();
+        logger.debug("hd={}", hd);
+        logger.debug("build={}", build);
+        logger.debug("graph={}", graph);
         String str = gene.merge(ctx);
         assertEquals("this is {{ /TRY_DO_FOR }} here", str);
+        assertEquals("this is {{ /{{ var | PascalCase | BIG_SNAKE }} }} here", build);
     }
 
     @Test
     void parseEsc2() {
         String hd = "} this is /${ //${ var | PascalCase | BIG_SNAKE } /} here ${";
         final Gene gene = Holder.parse(true, hd, "${", "}", "/");
-        logger.debug(hd);
-        logger.debug(gene.build());
-        logger.debug(gene.graph());
+        String build = gene.build();
+        String graph = gene.graph();
+        logger.debug("hd={}", hd);
+        logger.debug("build={}", build);
+        logger.debug("graph={}", graph);
         String str = gene.merge(ctx);
         assertEquals("} this is ${ /TRY_DO_FOR } here ${", str);
+        assertEquals("} this is ${ /${ var | PascalCase | BIG_SNAKE } } here ${", build);
     }
 
     @Test
     void parseEsc3() {
         String hd = "}}}} this is /${ //${ var | PascalCase | BIG_SNAKE }}} /}}}} here ${";
         final Gene gene = Holder.parse(true, hd, "${", "}}}", "/");
-        logger.debug(hd);
-        logger.debug(gene.build());
-        logger.debug(gene.graph());
+        String graph = gene.graph();
+        String build = gene.build();
+        logger.debug("hd={}", hd);
+        logger.debug("build={}", build);
+        logger.debug("graph={}", graph);
         String str = gene.merge(ctx);
         assertEquals("}}}} this is ${ /TRY_DO_FOR }}}} here ${", str);
+        assertEquals("}}}} this is ${ /${ var | PascalCase | BIG_SNAKE }}} }}}} here ${", build);
     }
 }
