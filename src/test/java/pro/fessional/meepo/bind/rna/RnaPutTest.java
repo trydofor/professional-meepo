@@ -1,5 +1,6 @@
 package pro.fessional.meepo.bind.rna;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pro.fessional.meepo.TraceTest;
 import pro.fessional.meepo.bind.wow.Clop;
@@ -17,5 +18,8 @@ public class RnaPutTest extends TraceTest {
     public void testToString() {
         logger.debug("d1={}", d1);
         logger.debug("d2={}", d2);
+
+        Assertions.assertTrue(d1.toString().contains("type='os', para='who', expr='basename $(pwd)'"));
+        Assertions.assertTrue(d2.toString().contains("type='os', para='who', expr='basename $(pwd)'"));
     }
 }

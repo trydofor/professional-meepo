@@ -29,7 +29,7 @@ public class RnaManagerTest extends TraceTest {
         Gene gene = Parser.parse(meepo);
         Map<String, Object> ctx = new HashMap<>();
         String out = gene.merge(ctx);
-        logger.debug(out);
+        logger.debug("testFunNow={}", out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
         assertTrue(ptn.matcher(out).find());
     }
@@ -40,7 +40,7 @@ public class RnaManagerTest extends TraceTest {
         Gene gene = Parser.parse(meepo);
         Map<String, Object> ctx = new HashMap<>();
         String out = gene.merge(ctx);
-        logger.debug(out);
+        logger.debug("testFunNow={}", out);
         Pattern ptn = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
         assertTrue(ptn.matcher(out).find());
     }
@@ -52,7 +52,7 @@ public class RnaManagerTest extends TraceTest {
         Map<String, Object> ctx = new HashMap<>();
         {
             Object obj = fun.eval(ctx, null);
-            logger.debug("obj={}", obj);
+            logger.debug("testFunNow.obj={}", obj);
         }
         {
             Object obj = fun.eval(ctx, new java.util.Date(0));
@@ -97,7 +97,7 @@ public class RnaManagerTest extends TraceTest {
         ctx.put("number", -1);
         Gene gene = Parser.parse(meepo);
         String out = gene.merge(ctx);
-        logger.debug(out);
+        logger.debug("testFunAbs={}", out);
         assertEquals("1", out);
     }
 
@@ -112,7 +112,7 @@ public class RnaManagerTest extends TraceTest {
 
         Gene gene = Parser.parse(meepo);
         String out = gene.merge(ctx);
-        logger.debug(out);
+        logger.debug("testFunCtx={}", out);
         assertEquals("1", out);
     }
 }
