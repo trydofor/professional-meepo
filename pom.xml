@@ -176,7 +176,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.2.5</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -298,7 +298,7 @@
             </build>
         </profile>
         <profile>
-            <id>ossrh</id>
+            <id>deploy</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
             </properties>
@@ -321,6 +321,13 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ossrh</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -345,6 +352,15 @@
                     <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
+        </profile>
+        <profile>
+            <id>altrh</id>
+            <properties>
+                <!--suppress UnresolvedMavenProperty -->
+                <altReleaseDeploymentRepository>altrh::${MVN_ALT_REPO}</altReleaseDeploymentRepository>
+                <!--suppress UnresolvedMavenProperty -->
+                <altSnapshotDeploymentRepository>altrh::${MVN_ALT_SNAP}</altSnapshotDeploymentRepository>
+            </properties>
         </profile>
     </profiles>
 </project>
